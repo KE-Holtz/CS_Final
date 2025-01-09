@@ -38,3 +38,13 @@ Large/Difficult to make:
 5. The session contains all the players, the game (User prompt), and possibly serves as a lobby while waiting for a game to start
 6. Once a game ends, all players are returned to the session
 7. If a player leaves the session, their client needs to clean up all the files they made at any point. **This may mean the host must be the last person to leave, since the session folder they created may not be able to be deleted while other clients still have files inside it.**
+
+
+## (Hopeful) Features list
+
+- Communication between multiple players
+- More than one complete game to choose from
+- No leftover files in Mr. Wuest's dropbox
+- Sessions where clients can play multiple games without rejoining
+- Well-written code 
+- Well animated and good looking animations
