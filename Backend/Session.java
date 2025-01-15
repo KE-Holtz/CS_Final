@@ -31,17 +31,38 @@ public class Session {
         this.id = Math.random() + "";//Generate a unique id for the session (Might be unnecessary)
         this.sessionSpacePath = sessionSpacePath;
 
-        clientPlayer = new Player();
+        clientPlayer = new Player(playerName);
         players.add(clientPlayer);
         isHost = true;
+
+        initialize();
     }
 
     public void initialize(){
         //Create the session folder
         File sessionFolder = new File(sessionSpacePath + "\\" + name);
+        File playerFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
+        //TODO: Check if the folder already exists
         sessionFolder.mkdir();
+        playerFolder.mkdir();
 
-        
+        for (Player player : players) {
+            for (File file : player.getPlayerFile(playerFolder)) {
+                file.mkdir();
+            }
+        }
+    }
+
+    public void clean(){
+        if (isHost) {
+            File sessionFolder = new File(sessionSpacePath + "\\" + name);
+            File playerFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
+            //TODO: remove recursive (check if exists too)
+            while(!playerFolder.delete())
+                System.out.println("Failed to delete session folder. Retrying...");
+            while(!sessionFolder.delete())
+                System.out.println("Failed to delete session folder. Retrying...");
+        }
     }
 
     //Constructor ONLY FOR JOINING
