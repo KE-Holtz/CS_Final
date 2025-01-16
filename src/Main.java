@@ -18,7 +18,7 @@ public class Main {
         } else {
             session = new Session("A", sessionSpacePath, "Kyle");
         }
-        temp.next();//DEBUG - Wait to clean up 
+        temp.next();//DEBUG - SsWait to clean up 
         session.clean();
     }
 }
