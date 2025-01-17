@@ -1,12 +1,11 @@
 package Backend;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
+import java.util.Scanner;
 
-import gameplay.Player;
 import gameplay.Game;
+import gameplay.Player;
 
 public class Session {
     private final String sessionName;
@@ -23,11 +22,6 @@ public class Session {
     // Host has extra responsibilities - add files for games, etc
     // ? Make helper methods that return custom errors
     public Session(String name, String sessionSpacePath, String playerName, ArrayList<Game> games) {
-        // Solution to the problem of overwriting sessions
-        while(new File(sessionSpacePath + "\\" + name).exists()) {
-            System.out.println("Session already exists. Please enter a new name.");
-            name = System.console().readLine();
-        }
         this.sessionName = name;
         this.sessionSpacePath = sessionSpacePath;
 
@@ -45,8 +39,8 @@ public class Session {
         this.sessionSpacePath = sessionSpacePath;
 
         clientPlayer = new Player(playerName, new File(sessionSpacePath + "\\" + sessionName + "\\" + "players"));// TODO:
-                                                                                                           // move?
-                                                                                                           // rework?
+        // move?
+        // rework?
         players.add(clientPlayer);
         isHost = false;
 
@@ -73,22 +67,27 @@ public class Session {
                 file.mkdir();
             }
         }
-        //TODO: syncronize
+        // TODO: syncronize
     }
 
     public void syncronize() {
-        //TODO: implement
-        /*Synchronizing makes me think that we are going to need more custom data structures
+        // TODO: implement
+        /*
+         * Synchronizing makes me think that we are going to need more custom data
+         * structures
          * - A custom tree structure for files
-         * - A 'Lobby' Structure that can store players in a way that is easy to syncronize
+         * - A 'Lobby' Structure that can store players in a way that is easy to
+         * syncronize
          */
     }
+
     public void clean() {
         if (isHost) {
             File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
             deleteRecursively(sessionFolder);
         } else {
-            File playerFolder = new File(sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\" + clientPlayer.getName());
+            File playerFolder = new File(
+                    sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\" + clientPlayer.getName());
             deleteRecursively(playerFolder);
         }
     }
@@ -104,6 +103,20 @@ public class Session {
         if (dir.exists()) {
             dir.delete();
         }
+    }
+
+    public static String getSessionChoice(String sessionSpacePath, Scanner console) {
+        System.out.println("Available sessions:");
+        for (String i : new File(sessionSpacePath).list()) {
+            System.out.println(i);
+        }
+        System.out.print("Enter the name of the session you would like to join: ");
+        String sessionName = console.nextLine();
+        while (!new File(sessionSpacePath + "\\" + sessionName).exists()) {
+            System.out.println("Session does not exist. Please enter a valid session name: ");
+            sessionName = console.nextLine();
+        }
+        return sessionName;
     }
 
     // Constructor ONLY FOR JOINING

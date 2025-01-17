@@ -17,7 +17,7 @@ public class Main {
         if (hosting) {
             System.out.print("Enter a session name: ");
             String sessionName = temp.nextLine();
-            while(new File(sessionSpacePath + "\\" + sessionName).exists()) {
+            while (new File(sessionSpacePath + "\\" + sessionName).exists()) {
                 System.out.println("Session already exists. Please enter a valid session name: ");
                 sessionName = temp.nextLine();
             }
@@ -25,21 +25,12 @@ public class Main {
             String name = temp.nextLine();
             session = new Session(sessionName, sessionSpacePath, name, games);
         } else {
-            System.out.println("Available sessions:");
-            for(String i : new File(sessionSpacePath).list()) {
-                System.out.println(i);
-            }
-            System.out.print("Enter the name of the session you would like to join: ");
-            String sessionName = temp.nextLine();
-            while(!new File(sessionSpacePath + "\\" + sessionName).exists()) {
-                System.out.println("Session does not exist. Please enter a valid session name: ");
-                sessionName = temp.nextLine();
-            }
+            String sessionName = Session.getSessionChoice(sessionSpacePath, temp);
             System.out.print("Enter your name: ");
             String name = temp.nextLine();
             session = new Session(sessionName, sessionSpacePath, name);
         }
-        temp.next();//DEBUG - SsWait to clean up
+        temp.next();// DEBUG - SsWait to clean up
         session.clean();
     }
 }
