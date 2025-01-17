@@ -23,6 +23,11 @@ public class Session {
     // Host has extra responsibilities - add files for games, etc
     // ? Make helper methods that return custom errors
     public Session(String name, String sessionSpacePath, String playerName, ArrayList<Game> games) {
+        // Solution to the problem of overwriting sessions
+        while(new File(sessionSpacePath + "\\" + name).exists()) {
+            System.out.println("Session already exists. Please enter a new name.");
+            name = System.console().readLine();
+        }
         this.sessionName = name;
         this.sessionSpacePath = sessionSpacePath;
 
@@ -52,7 +57,6 @@ public class Session {
         // Create the session folder
         File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
         File playerFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
-        // TODO: Check if the folder already exists
         sessionFolder.mkdir();
         playerFolder.mkdir();
 
@@ -64,8 +68,12 @@ public class Session {
     }
 
     public void joinInitialize() {
-        System.out.println("I'm  a player");
-        //TODO: implement, syncronize
+        for (Player player : players) {
+            for (File file : player.files()) {
+                file.mkdir();
+            }
+        }
+        //TODO: syncronize
     }
 
     public void syncronize() {
@@ -78,12 +86,10 @@ public class Session {
     public void clean() {
         if (isHost) {
             File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
-            File playerFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
-            // TODO: remove recursive (check if exists too)
-            while (!playerFolder.delete())
-                System.out.println("Failed to delete session folder. Retrying...");
-            while (!sessionFolder.delete())
-                System.out.println("Failed to delete session folder. Retrying...");
+            deleteRecursively(sessionFolder);
+        } else {
+            File playerFolder = new File(sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\" + clientPlayer.getName());
+            deleteRecursively(playerFolder);
         }
     }
 
