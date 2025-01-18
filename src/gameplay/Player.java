@@ -1,4 +1,4 @@
-package gameplay;
+ package gameplay;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 */
 public class Player {
     private String name;
-    
+
     private ArrayList<File> playerFiles;// TODO: Tree? This could have some limitations.
     private File allPlayersDirectory;
     private File playerFolder;
@@ -44,9 +44,14 @@ public class Player {
                                                               // here they should just be named normally and not given
                                                               // the key:value format
 
+
     }
 
     public File[] files() {
         return playerFiles.toArray(new File[playerFiles.size()]);
+    }
+
+    public String getName() {
+        return name;
     }
 }

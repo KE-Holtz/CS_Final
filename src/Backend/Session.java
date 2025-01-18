@@ -1,12 +1,11 @@
 package Backend;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
+import java.util.Scanner;
 
-import gameplay.Player;
 import gameplay.Game;
+import gameplay.Player;
 
 public class Session {
     private final String sessionName;
@@ -40,8 +39,8 @@ public class Session {
         this.sessionSpacePath = sessionSpacePath;
 
         clientPlayer = new Player(playerName, new File(sessionSpacePath + "\\" + sessionName + "\\" + "players"));// TODO:
-                                                                                                           // move?
-                                                                                                           // rework?
+        // move?
+        // rework?
         players.add(clientPlayer);
         isHost = false;
 
@@ -52,7 +51,6 @@ public class Session {
         // Create the session folder
         File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
         File playerFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
-        // TODO: Check if the folder already exists
         sessionFolder.mkdir();
         playerFolder.mkdir();
 
@@ -64,26 +62,33 @@ public class Session {
     }
 
     public void joinInitialize() {
-        System.out.println("I'm  a player");
-        //TODO: implement, syncronize
+        for (Player player : players) {
+            for (File file : player.files()) {
+                file.mkdir();
+            }
+        }
+        // TODO: syncronize
     }
 
     public void syncronize() {
-        //TODO: implement
-        /*Synchronizing makes me think that we are going to need more custom data structures
+        // TODO: implement
+        /*
+         * Synchronizing makes me think that we are going to need more custom data
+         * structures
          * - A custom tree structure for files
-         * - A 'Lobby' Structure that can store players in a way that is easy to syncronize
+         * - A 'Lobby' Structure that can store players in a way that is easy to
+         * syncronize
          */
     }
+
     public void clean() {
         if (isHost) {
             File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
-            File playerFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
-            // TODO: remove recursive (check if exists too)
-            while (!playerFolder.delete())
-                System.out.println("Failed to delete session folder. Retrying...");
-            while (!sessionFolder.delete())
-                System.out.println("Failed to delete session folder. Retrying...");
+            deleteRecursively(sessionFolder);
+        } else {
+            File playerFolder = new File(
+                    sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\" + clientPlayer.getName());
+            deleteRecursively(playerFolder);
         }
     }
 
@@ -98,6 +103,20 @@ public class Session {
         if (dir.exists()) {
             dir.delete();
         }
+    }
+
+    public static String getSessionChoice(String sessionSpacePath, Scanner console) {
+        System.out.println("Available sessions:");
+        for (String i : new File(sessionSpacePath).list()) {
+            System.out.println(i);
+        }
+        System.out.print("Enter the name of the session you would like to join: ");
+        String sessionName = console.nextLine();
+        while (!new File(sessionSpacePath + "\\" + sessionName).exists()) {
+            System.out.println("Session does not exist. Please enter a valid session name: ");
+            sessionName = console.nextLine();
+        }
+        return sessionName;
     }
 
     // Constructor ONLY FOR JOINING
