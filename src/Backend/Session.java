@@ -106,6 +106,9 @@ public class Session {
     }
 
     public static String getSessionChoice(String sessionSpacePath, Scanner console) {
+        if(new File(sessionSpacePath).list().length == 0)
+            System.out.println("Waiting for avaliable sessions...");
+        while(new File(sessionSpacePath).list().length == 0);
         System.out.println("Available sessions:");
         for (String i : new File(sessionSpacePath).list()) {
             System.out.println(i);

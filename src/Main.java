@@ -11,7 +11,20 @@ public class Main {
         Scanner temp = new Scanner(System.in);
 
         final String sessionSpacePath = "G:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
-        final boolean hosting = false;// DEBUGGING - change this locally to test hosting/player joining
+        String host = "";
+        boolean valid = false;
+        boolean hosting = false;
+        System.out.print("Are you hosting? (Y/N)");
+        while(!valid) {
+            host = temp.nextLine();
+            if (host.equalsIgnoreCase("y")) {
+                hosting = true;
+                valid = true;
+            } else if (host.equalsIgnoreCase("n")) {
+                hosting = false;
+                valid = true;
+            }
+        }
         ArrayList<Game> games = new ArrayList<Game>();
         Session session;
         if (hosting) {
