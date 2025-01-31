@@ -8,29 +8,29 @@ import gameplay.Game;
 import gameplay.Player;
 
 public class Session {
-    private final String sessionName;
-    private final String sessionSpacePath; // Path to the folder where the session is stored.
+    private final String  sessionName;
+    private final String  sessionSpacePath; // Path to the folder where the
+                                            // session is stored.
+    private final boolean isHost;
 
-    private ArrayList<Player> players = new ArrayList<Player>();// TODO: consider - does the order of players matter?
-    private Player clientPlayer; // This user's player object
-    private boolean isHost = false;
+    private Lobby lobby;
 
-    private ArrayList<Game> games;// ? List of all available games - TODO: Add an object that automatically
-                                  // narrows down available games? could have other functionality as well
+    private ArrayList<Game> games;// ? List of all available games - TODO: Add
+                                  // an object that automatically
+                                  // narrows down available games? could have
+                                  // other functionality as well
 
     // Constructor ONLY FOR HOSTING
     // Host has extra responsibilities - add files for games, etc
+
     // ? Make helper methods that return custom errors
-    public Session(String name, String sessionSpacePath, String playerName, ArrayList<Game> games) {
-        this.sessionName = name;
+    public Session(String sessionName, String sessionSpacePath, String clientName,
+                   ArrayList<Game> games) {
         this.sessionSpacePath = sessionSpacePath;
-
-        clientPlayer = new Player(playerName, new File(sessionSpacePath + "\\" + name + "\\" + "players"));// TODO:
-                                                                                                           // move?
-                                                                                                           // rework?
-        players.add(clientPlayer);
+        this.sessionName = sessionName;
+        this.lobby = new Lobby(sessionSpacePath + "\\" + sessionName + "\\" + "players", clientName,
+                               true);
         isHost = true;
-
         hostInitialize();
     }
 
@@ -38,12 +38,9 @@ public class Session {
         this.sessionName = sessionName;
         this.sessionSpacePath = sessionSpacePath;
 
-        clientPlayer = new Player(playerName, new File(sessionSpacePath + "\\" + sessionName + "\\" + "players"));// TODO:
-        // move?
-        // rework?
-        players.add(clientPlayer);
+        lobby = new Lobby(sessionSpacePath + "\\" + sessionName + "\\" + "players", playerName,
+                          false);
         isHost = false;
-
         joinInitialize();
     }
 
@@ -54,31 +51,20 @@ public class Session {
         sessionFolder.mkdir();
         playerFolder.mkdir();
 
-        for (Player player : players) {
-            for (File file : player.files()) {
-                file.mkdir();
-            }
-        }
+        lobby.makeClientFiles();
     }
 
     public void joinInitialize() {
-        for (Player player : players) {
-            for (File file : player.files()) {
-                file.mkdir();
-            }
-        }
+        lobby.makeClientFiles();
         // TODO: syncronize
     }
 
     public void syncronize() {
         // TODO: implement
-        /*
-         * Synchronizing makes me think that we are going to need more custom data
-         * structures
-         * - A custom tree structure for files
-         * - A 'Lobby' Structure that can store players in a way that is easy to
-         * syncronize
-         */
+        /* Synchronizing makes me think that we are going to need more custom
+         * data structures - A custom tree structure for files - A 'Lobby'
+         * Structure that can store players in a way that is easy to
+         * syncronize */
     }
 
     public void clean() {
@@ -86,19 +72,15 @@ public class Session {
             File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
             deleteRecursively(sessionFolder);
         } else {
-            File playerFolder = new File(
-                    sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\" + clientPlayer.getName());
-            deleteRecursively(playerFolder);
+            lobby.deleteClientFiles();
         }
     }
 
     // Delete the folder and all of its contents
     // TODO: handle failing to delete a file
     private void deleteRecursively(File dir) {
-        if (dir.isDirectory()) {
-            for (File file : dir.listFiles()) {
-                deleteRecursively(file);
-            }
+        for (File file : dir.listFiles()) {
+            deleteRecursively(file);
         }
         if (dir.exists()) {
             dir.delete();
@@ -127,7 +109,8 @@ public class Session {
     // }
 
     // public static Session joinSession(String name){
-    // //TODO: Use the metadata file to get the session, add a new player and join
+    // //TODO: Use the metadata file to get the session, add a new player and
+    // join
     // the session.
     // return new Session(name, name, name);
     // }
