@@ -11,9 +11,9 @@ import java.util.ArrayList;
 */
 public class Player {
     private String name;
+    private final String playerSpacePath;
 
     private ArrayList<File> playerFiles;// TODO: Tree? This could have some limitations.
-    private File allPlayersDirectory;
     private File playerFolder;
     private File metadata;
 
@@ -24,14 +24,14 @@ public class Player {
     // are any extra files that have not been created
     // TODO: Create a validator method here or in the session class
 
-    public Player(String name, File allPlayersDirectory) {
+    public Player(String name, String playerSpacePath) {
         this.name = name;
 
         playerFiles = new ArrayList<File>();
 
-        this.allPlayersDirectory = allPlayersDirectory;
+        this.playerSpacePath = playerSpacePath;
 
-        playerFolder = new File(allPlayersDirectory.getAbsolutePath() + "\\" + name);
+        playerFolder = new File(playerSpacePath + "\\" + name);
         playerFiles.add(playerFolder);
 
         metadata = new File(playerFolder.getAbsolutePath() + "\\" + "metadata");
@@ -47,11 +47,20 @@ public class Player {
 
     }
 
+    public static Player fromFile(File playerFile){
+        //Add more funcitonality when theres more than a name
+        return new Player(playerFile.getName(), playerFile.getParentFile().getPath());
+    }
+
     public File[] files() {
         return playerFiles.toArray(new File[playerFiles.size()]);
     }
 
     public String getName() {
         return name;
+    }
+
+    public File getPlayerFolder() {
+        return playerFolder;
     }
 }

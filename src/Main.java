@@ -10,7 +10,7 @@ public class Main {
 
         Scanner temp = new Scanner(System.in);
 
-        final String sessionSpacePath = "G:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
+        final String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
         String host = "";
         boolean valid = false;
         boolean hosting = false;
@@ -43,7 +43,13 @@ public class Main {
             String name = temp.nextLine();
             session = new Session(sessionName, sessionSpacePath, name);
         }
-        temp.next();// DEBUG - SsWait to clean up
-        session.clean();
+        temp.next();// DEBUG - Wait to clean up
+        temp.nextLine();
+        while (!session.clean()){
+            System.out.println("Failed to clean up session. Enter \"exit\" to force quit or anything else to try again.");
+            if(temp.nextLine().equalsIgnoreCase("exit")){
+                break;
+            }
+        }
     }
 }
