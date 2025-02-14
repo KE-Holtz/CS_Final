@@ -47,9 +47,17 @@ public class Session {
     public void hostInitialize() {
         // Create the session folder
         File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
-        File playerFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
-        sessionFolder.mkdir();
-        playerFolder.mkdir();
+        File playerSpaceFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
+        if (sessionFolder.mkdir()){
+            System.out.println("Session folder created");
+        } else {
+            System.out.println("Session folder failed to create at " + sessionFolder.getAbsolutePath());
+        }
+        if(playerSpaceFolder.mkdir()){
+            System.out.println("Player space folder created");
+        } else {
+            System.out.println("Player space folder failed to create at " + playerSpaceFolder.getAbsolutePath());
+        }
 
         lobby.makeClientFiles();
     }
@@ -67,24 +75,30 @@ public class Session {
          * syncronize */
     }
 
-    public void clean() {
+    public boolean clean() {
         if (isHost) {
             File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
-            deleteRecursively(sessionFolder);
+            if(!deleteRecursively(sessionFolder)){
+                return false;
+            }
         } else {
             lobby.deleteClientFiles();
         }
+        return true;
     }
 
     // Delete the folder and all of its contents
     // TODO: handle failing to delete a file
-    private void deleteRecursively(File dir) {
+    private boolean deleteRecursively(File dir) {
         for (File file : dir.listFiles()) {
             deleteRecursively(file);
         }
         if (dir.exists()) {
-            dir.delete();
+            if(!dir.delete()){
+                return false;
+            }
         }
+        return true;
     }
 
     public static String getSessionChoice(String sessionSpacePath, Scanner console) {

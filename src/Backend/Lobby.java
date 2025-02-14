@@ -31,22 +31,29 @@ public class Lobby {
 
     public void makeClientFiles(){
         for (File file : clientPlayer.files()) {
-            file.mkdir();
+            if(file.mkdir()){
+                System.out.println("Directory created: " + file.getName());
+            } else {
+                System.out.println("Failed to create directory: " + file.getName());
+            }
         }
     }
 
-    public void deleteClientFiles(){
-        deleteRecursively(clientPlayer.getPlayerFolder());
+    public boolean deleteClientFiles(){
+        return deleteRecursively(clientPlayer.getPlayerFolder());
     }
 
     // Delete the folder and all of its contents
     // TODO: handle failing to delete a file
-    private void deleteRecursively(File dir) {
+    private boolean deleteRecursively(File dir) {
         for (File file : dir.listFiles()) {
             deleteRecursively(file);
         }
         if (dir.exists()) {
-            dir.delete();
+            if(!dir.delete()){
+                return false;
+            }
         }
+        return true;
     }
 }
