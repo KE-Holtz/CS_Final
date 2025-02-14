@@ -48,7 +48,7 @@ public class Player {
     }
 
     public static Player fromFile(File playerFile){
-        //Add more funcitonality when theres more than a name
+        //Add more functionality when theres more than a name
         return new Player(playerFile.getName(), playerFile.getParentFile().getPath());
     }
 

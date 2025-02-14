@@ -18,7 +18,7 @@ public class Lobby {
         players = new ArrayList<Player>();
     }
 
-    public void syncronize() {
+    public void synchronize() {
         players.clear();
         players.add(clientPlayer);
         for (File playerFile : new File(playerSpacePath).listFiles()) {

@@ -64,15 +64,15 @@ public class Session {
 
     public void joinInitialize() {
         lobby.makeClientFiles();
-        // TODO: syncronize
+        // TODO: synchronize
     }
 
-    public void syncronize() {
+    public void synchronize() {
         // TODO: implement
         /* Synchronizing makes me think that we are going to need more custom
          * data structures - A custom tree structure for files - A 'Lobby'
          * Structure that can store players in a way that is easy to
-         * syncronize */
+         * synchronize */
     }
 
     public boolean clean() {
@@ -103,7 +103,7 @@ public class Session {
 
     public static String getSessionChoice(String sessionSpacePath, Scanner console) {
         if(new File(sessionSpacePath).list().length == 0)
-            System.out.println("Waiting for avaliable sessions...");
+            System.out.println("Waiting for available sessions...");
         while(new File(sessionSpacePath).list().length == 0);
         System.out.println("Available sessions:");
         for (String i : new File(sessionSpacePath).list()) {

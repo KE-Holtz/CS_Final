@@ -8,7 +8,7 @@ Small/Easy to make:
 - Mancala
 
 Large/Difficult to make:
-- Pool 
+- Pool
     - requires 2d physics engine, but could be reused
     - 2 Players
 - Chess
@@ -46,5 +46,7 @@ Large/Difficult to make:
 - More than one complete game to choose from
 - No leftover files in Mr. Wuest's dropbox
 - Sessions where clients can play multiple games without rejoining
-- Well-written code 
+- Well-written code
 - Well animated and good looking animations
+
+## 
