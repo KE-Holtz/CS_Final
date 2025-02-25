@@ -2,7 +2,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import Backend.Session;
+import backend.Session;
 import gameplay.Game;
 
 public class Main {
