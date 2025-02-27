@@ -12,7 +12,6 @@ public class GlobalInt {
 
     private final String name;
     private final File varFile;
-    private int value;
 
     public GlobalInt(String playerSpacePath, String clientName, String name) {
         this.playerSpacePath = playerSpacePath;
@@ -24,7 +23,7 @@ public class GlobalInt {
         this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
 
         varFile.mkdir();
-        synchronize();
+        setValue(0, "default");
     }
 
     public GlobalInt(String playerSpacePath, String clientName, String name, int value) {
@@ -58,8 +57,12 @@ public class GlobalInt {
     }
 
     public void setValue(int value) {
+        setValue(value, "");
+    }
+
+    public void setValue(int value, String tag){
         deleteContents(varFile);
-        File newFile = new File(varFile.getPath() + "\\" + value);
+        File newFile = new File(varFile.getPath() + "\\" + "(" + tag + ")" + value);
     }
 
     public void synchronize() {
@@ -73,5 +76,13 @@ public class GlobalInt {
             }
             f.delete();
         }
+    }
+
+    private String tagOf(String value){
+        return value.substring(1, value.indexOf(")"));
+    }
+
+    private String valueOf(String value){
+        return value.substring(value.indexOf(")") + 1);
     }
 }
