@@ -28,7 +28,7 @@ public class GlobalVar<T> {
         this.valueParser = valueParser;
 
         varFile.mkdir();
-        setValue(valueParser.apply("0"), "default");
+        setValue(valueParser.apply("0"), "default"); //? TODO: give default value for different types? Current setup -> Numbers become zero, boolean becomes false, string becomes "0"
     }
 
     public GlobalVar(String playerSpacePath, String clientName, String name, Function<String, T> valueParser, T value) {
