@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public abstract class GlobalVar<T> {
+public class GlobalVar<T> {
 
     private final String playerSpacePath;
     private final File   playerSpaceFolder;
@@ -55,7 +55,7 @@ public abstract class GlobalVar<T> {
         long newestTime = Long.MAX_VALUE;
         T value = null;
         for(File instance : instances){
-            if(instance.lastModified() < newestTime && instance.exists()){
+            if(instance.lastModified() < newestTime && instance.exists() && tagOf(instance.getName()).equals("default")){
                 newestTime = instance.lastModified();
                 value = valueParser.apply(valueOf(instance.getName()));
             }
