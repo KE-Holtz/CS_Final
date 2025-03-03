@@ -18,5 +18,10 @@ public abstract class Game {
 
     //The "game loop"
     public abstract boolean periodic();
+
     public abstract void endGame();
+
+    public String getName(){
+        return name;
+    }
 }
