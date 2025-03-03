@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import backend.Session;
-import gameplay.Game;
+import gameplay.games.Game;
 
 public class Main {
     public static void main(String[] args) {

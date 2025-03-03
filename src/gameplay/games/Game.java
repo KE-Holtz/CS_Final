@@ -1,4 +1,4 @@
-package gameplay;
+package gameplay.games;
 /*The reason to use an abstract class is to serve as a template
  * for the different types of games that can be played.
  * Other classes can extend this class to create a new game
