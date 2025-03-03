@@ -71,6 +71,7 @@ public class GlobalVar<T> {
     public void setValue(T value, String tag){
         deleteContents(varFile);
         File newFile = new File(varFile.getPath() + "\\" + "(" + tag + ")" + value);
+        newFile.mkdir();
     }
 
     public void synchronize() {
