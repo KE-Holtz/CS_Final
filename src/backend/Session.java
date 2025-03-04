@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import gameplay.Game;
 import gameplay.Player;
+import gameplay.games.Game;
 
 public class Session {
     private final String  sessionName;
