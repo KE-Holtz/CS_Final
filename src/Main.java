@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import backend.Session;
 import gameplay.games.Game;
+import gameplay.games.ReadWriteGame;
 
 public class Main {
     public static void main(String[] args) {
@@ -25,7 +26,10 @@ public class Main {
                 valid = true;
             }
         }
+
         ArrayList<Game> games = new ArrayList<Game>();
+        games.add(new ReadWriteGame());
+        
         Session session;
         System.out.print("Enter a session name: ");
         String sessionName = temp.nextLine();

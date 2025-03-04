@@ -9,25 +9,31 @@ import gameplay.Player;
 import gameplay.games.Game;
 
 public class Session {
-    private final String  sessionName;
-    private final String  sessionSpacePath; // Path to the folder where the
-                                            // session is stored.
-    private final boolean isHost;
+    private final String sessionName;
+    private final String sessionSpacePath; // Path to the folder where the
+                                           // session is stored.
 
-    private Lobby lobby;
+    private final boolean isHost;
+    private final Player clientPlayer;
+
+    private final Lobby lobby;
 
     private HashMap<String, Game> games = new HashMap<>();
     // Constructor ONLY FOR HOSTING
     // Host has extra responsibilities - add files for games, etc
 
     public Session(String sessionName, String sessionSpacePath, String clientName,
-                   ArrayList<Game> games, boolean hosting) {
-        this.sessionSpacePath = sessionSpacePath;
+            ArrayList<Game> games, boolean hosting) {
+  
         this.sessionName = sessionName;
-        this.lobby = new Lobby(sessionSpacePath + "\\" + sessionName + "\\" + "players", clientName,
-                               hosting);
+        this.sessionSpacePath = sessionSpacePath;
+  
+        this.clientPlayer = new Player(clientName, getPlayerSpacePath());
         isHost = hosting;
+  
+        this.lobby = new Lobby(this);
         this.games = mapGames(games);
+  
         if (hosting) {
             hostInitialize();
         } else {
@@ -70,10 +76,12 @@ public class Session {
 
     public void synchronize() {
         // TODO: implement
-        /* Synchronizing makes me think that we are going to need more custom
+        /*
+         * Synchronizing makes me think that we are going to need more custom
          * data structures - A custom tree structure for files - A 'Lobby'
          * Structure that can store players in a way that is easy to
-         * synchronize */
+         * synchronize
+         */
     }
 
     public boolean clean() {
@@ -105,7 +113,8 @@ public class Session {
     public static String getSessionChoice(String sessionSpacePath, Scanner console) {
         if (new File(sessionSpacePath).list().length == 0)
             System.out.println("Waiting for available sessions...");
-        while (new File(sessionSpacePath).list().length == 0);
+        while (new File(sessionSpacePath).list().length == 0)
+            ;
         System.out.println("Available sessions:");
         for (String i : new File(sessionSpacePath).list()) {
             System.out.println(i);
@@ -121,7 +130,35 @@ public class Session {
 
     // TODO: temporary
     public void runGame(String gameName) {
-
+        Game game = games.get(gameName);
+        game.initialize(this);
+        game.startGame();
+        while (game.periodic());
+        game.endGame();
+        System.out.println("Game ended");
     }
 
+    public String getSessionSpace() {
+        return sessionSpacePath;
+    }
+
+    public String getSessionName() {
+        return sessionName;
+    }
+
+    public String sessionFolder() {
+        return sessionSpacePath + "\\" + sessionName;
+    }
+
+    public String getPlayerSpacePath() {
+        return sessionFolder() + "\\" + "players";
+    }
+
+    public Player getClientPlayer() {
+        return clientPlayer;
+    }
+
+    public boolean clientIsHost() {
+        return isHost;
+    }
 }

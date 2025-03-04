@@ -1,4 +1,7 @@
 package gameplay.games;
+
+import backend.Session;
+
 /*The reason to use an abstract class is to serve as a template
  * for the different types of games that can be played.
  * Other classes can extend this class to create a new game
@@ -10,10 +13,9 @@ package gameplay.games;
  */
 public abstract class Game {
     private String name;
+    private Session session;
 
-    private int minPlayers;
-    private int maxPlayers;
-
+    public abstract void initialize(Session session);
     public abstract void startGame();
 
     //The "game loop"

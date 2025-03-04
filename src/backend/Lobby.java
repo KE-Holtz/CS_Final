@@ -11,10 +11,10 @@ public class Lobby {
     private final ArrayList<Player> players;
     private final Player            clientPlayer;
 
-    public Lobby(String playerSpacePath, String clientName, boolean clientIsHost) {
-        this.playerSpacePath = playerSpacePath;
-        clientPlayer = new Player(clientName, playerSpacePath);
-        this.clientIsHost = clientIsHost;
+    public Lobby(Session session) {
+        playerSpacePath = session.getPlayerSpacePath(); 
+        clientPlayer = session.getClientPlayer();
+        clientIsHost = session.clientIsHost();
         players = new ArrayList<Player>();
     }
 

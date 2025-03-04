@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import backend.Session;
+
 public class GlobalVar<T> {
 
     private final String playerSpacePath;
@@ -16,26 +18,25 @@ public class GlobalVar<T> {
 
     private final Function<String, T> valueParser;
 
-    public GlobalVar(String playerSpacePath, String clientName, String name, Function<String, T> valueParser) {
-        this.playerSpacePath = playerSpacePath;
-        this.playerSpaceFolder = new File(playerSpacePath);
+    public GlobalVar(Session session, String name, Function<String, T> valueParser) {
+        playerSpacePath = session.getPlayerSpacePath();
+        playerSpaceFolder = new File(playerSpacePath);
 
-        this.clientName = clientName;
+        clientName = session.getClientPlayer().getName();
 
         this.name = name;
         this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
-
         this.valueParser = valueParser;
 
         varFile.mkdir();
-        setValue(valueParser.apply("0"), "default"); //? TODO: give default value for different types? Current setup -> Numbers become zero, boolean becomes false, string becomes "0"
+        setValue(valueParser.apply("0"), "default");
     }
 
-    public GlobalVar(String playerSpacePath, String clientName, String name, Function<String, T> valueParser, T value) {
-        this.playerSpacePath = playerSpacePath;
-        this.playerSpaceFolder = new File(playerSpacePath);
+    public GlobalVar(Session session, String name, Function<String, T> valueParser, T value) {
+        playerSpacePath = session.getPlayerSpacePath();
+        playerSpaceFolder = new File(playerSpacePath);
 
-        this.clientName = clientName;
+        clientName = session.getClientPlayer().getName();
 
         this.name = name;
         this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);

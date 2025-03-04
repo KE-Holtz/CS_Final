@@ -1,10 +1,12 @@
 package backend.globalvars;
+import backend.Session;
 
-public class GlobalInt extends GlobalVar<Integer>{
-    public GlobalInt(String playerSpacePath, String clientName, String name){
-        super(playerSpacePath, clientName, name, Integer::parseInt);
+public class GlobalInt extends GlobalVar<Integer> {
+    public GlobalInt(Session session, String name) {
+        super(session, name, Integer::parseInt);
     }
-    public GlobalInt(String playerSpacePath, String clientName, String name, Integer value){
-        super(playerSpacePath, clientName, name, Integer::parseInt, value);
+
+    public GlobalInt(Session session, String name, Integer value) {
+        super(session, name, Integer::parseInt, value);
     }
 }
