@@ -26,4 +26,8 @@ public abstract class Game {
     public String getName(){
         return name;
     }
+
+    protected void setName(String name){
+        this.name = name;
+    }
 }
