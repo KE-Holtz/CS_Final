@@ -50,7 +50,7 @@ public class GlobalVar<T> {
     //? Returns null if no value is found - is this ok?
     public T getValue() {
         File[] instances = Stream.of(playerSpaceFolder.listFiles())
-                                 .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
+                                 .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + "globalString" + name)
                                  .map(File::new)
                                  .toArray(File[]::new);
         long newestTime = Long.MAX_VALUE;
