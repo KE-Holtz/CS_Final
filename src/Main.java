@@ -8,7 +8,6 @@ import gameplay.games.ReadWriteGame;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println(String.valueOf("adf"));
         Scanner temp = new Scanner(System.in);
 
         final String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
@@ -47,7 +46,7 @@ public class Main {
         session = new Session(sessionName, sessionSpacePath, name, games, hosting);
         temp.next();// DEBUG - Wait to clean up
         temp.nextLine();
-        session.runGame("ReadWrite");// TODO: Add games
+        session.runGame("ReadWrite");//TODO: Add games
         while (!session.clean()) {
             System.out.println("Failed to clean up session. Enter \"exit\" to force quit or anything else to try again.");
             if (temp.nextLine()
