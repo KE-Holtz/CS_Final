@@ -14,21 +14,22 @@ enum State {
 }
 
 public class ReadWriteGame extends Game {
-    private static final String name = "ReadWrite";    
-    
+    private static final String name = "ReadWrite";
+
     private State state;
     private final Scanner scanner = new Scanner(System.in);
 
     private GlobalString globalString;
 
     public ReadWriteGame() {
+        setName(name);
     }
 
     @Override
     public void initialize(Session session) {
         globalString = new GlobalString(session, "globalString");
     }
-    
+
     @Override
     public void startGame() {
         System.out.println("Starting ReadWrite game");

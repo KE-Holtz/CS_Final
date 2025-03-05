@@ -24,16 +24,16 @@ public class Session {
 
     public Session(String sessionName, String sessionSpacePath, String clientName,
             ArrayList<Game> games, boolean hosting) {
-  
+
         this.sessionName = sessionName;
         this.sessionSpacePath = sessionSpacePath;
-  
+
         this.clientPlayer = new Player(clientName, getPlayerSpacePath());
         isHost = hosting;
-  
+
         this.lobby = new Lobby(this);
         this.games = mapGames(games);
-  
+
         if (hosting) {
             hostInitialize();
         } else {
