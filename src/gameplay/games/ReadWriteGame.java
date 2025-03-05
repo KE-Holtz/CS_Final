@@ -41,10 +41,12 @@ public class ReadWriteGame extends Game {
         switch (state) {
             case READ_ONCE:
                 System.out.println("Reading once: " + globalString.getValue());
+                setState();
                 break;
             case WRITE_ONCE:
                 System.out.println("Enter a value to write: ");
                 globalString.setValue(scanner.nextLine());
+                setState();
                 break;
             case READ_CONTINUOUS:
                 do {

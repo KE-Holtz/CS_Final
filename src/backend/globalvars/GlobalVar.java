@@ -89,7 +89,7 @@ public class GlobalVar<T> {
     }
 
     private String tagOf(String value){
-        return value.substring(1, value.indexOf(")"));
+        return value.substring(0, value.indexOf(")"));
     }
 
     private String valueOf(String value){
