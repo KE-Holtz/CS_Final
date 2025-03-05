@@ -58,11 +58,11 @@ public class GlobalVar<T> {
                                  .map(File::new)
                                  .map((x) -> x.listFiles()[0])
                                  .toArray(File[]::new);
-        long newestTime = Long.MAX_VALUE;
+        long newestTime = Long.MIN_VALUE;
         T value = null;
         for (File instance : values) {
-            if (instance.lastModified() < newestTime && instance.exists()
-                    && tagOf(instance.getName()).equals("default")) {
+            if (instance.lastModified() > newestTime && instance.exists()
+                    && !tagOf(instance.getName()).equals("default")) {
                 newestTime = instance.lastModified();
                 value = valueParser.apply(valueOf(instance.getName()));
             }
