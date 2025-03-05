@@ -22,7 +22,7 @@ public class GlobalString extends GlobalVar<String>{
     @Override
     public void setValue(String value) {
         value.replaceAll(ESCAPE, ESCAPE+ESCAPE);
-        value.replaceAll("\\", ESCAPE + BACKSLASH);
+        value.replaceAll("\\\\", ESCAPE + BACKSLASH);
         value.replaceAll("/", ESCAPE + SLASH);
         value.replaceAll(":", ESCAPE + COLON);
         value.replaceAll("\\*", ESCAPE + ASTERISK);
