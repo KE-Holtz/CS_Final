@@ -1,62 +1,61 @@
-package Backend;
+package backend;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
-import gameplay.Game;
 import gameplay.Player;
+import gameplay.games.Game;
 
 public class Session {
-    private final String  sessionName;
-    private final String  sessionSpacePath; // Path to the folder where the
-                                            // session is stored.
+    private final String sessionName;
+    private final String sessionSpacePath; // Path to the folder where the
+                                           // session is stored.
+
     private final boolean isHost;
+    private final Player clientPlayer;
 
-    private Lobby lobby;
+    private final Lobby lobby;
 
-    private ArrayList<Game> games;// ? List of all available games - TODO: Add
-                                  // an object that automatically
-                                  // narrows down available games? could have
-                                  // other functionality as well
-
+    private HashMap<String, Game> games = new HashMap<>();
     // Constructor ONLY FOR HOSTING
     // Host has extra responsibilities - add files for games, etc
 
-    // ? Make helper methods that return custom errors
     public Session(String sessionName, String sessionSpacePath, String clientName,
-                   ArrayList<Game> games) {
-        this.sessionSpacePath = sessionSpacePath;
-        this.sessionName = sessionName;
-        this.lobby = new Lobby(sessionSpacePath + "\\" + sessionName + "\\" + "players", clientName,
-                               true);
-        isHost = true;
-        hostInitialize();
-    }
+            ArrayList<Game> games, boolean hosting) {
 
-    public Session(String sessionName, String sessionSpacePath, String playerName) {
         this.sessionName = sessionName;
         this.sessionSpacePath = sessionSpacePath;
 
-        lobby = new Lobby(sessionSpacePath + "\\" + sessionName + "\\" + "players", playerName,
-                          false);
-        isHost = false;
-        joinInitialize();
+        this.clientPlayer = new Player(clientName, getPlayerSpacePath());
+        isHost = hosting;
+
+        this.lobby = new Lobby(this);
+        this.games = mapGames(games);
+
+        if (hosting) {
+            hostInitialize();
+        } else {
+            joinInitialize();
+        }
     }
 
     public void hostInitialize() {
         // Create the session folder
         File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
         File playerSpaceFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
-        if (sessionFolder.mkdir()){
+        if (sessionFolder.mkdir()) {
             System.out.println("Session folder created");
         } else {
-            System.out.println("Session folder failed to create at " + sessionFolder.getAbsolutePath());
+            System.out.println("Session folder failed to create at "
+                    + sessionFolder.getAbsolutePath());
         }
-        if(playerSpaceFolder.mkdir()){
+        if (playerSpaceFolder.mkdir()) {
             System.out.println("Player space folder created");
         } else {
-            System.out.println("Player space folder failed to create at " + playerSpaceFolder.getAbsolutePath());
+            System.out.println("Player space folder failed to create at "
+                    + playerSpaceFolder.getAbsolutePath());
         }
 
         lobby.makeClientFiles();
@@ -67,18 +66,28 @@ public class Session {
         // TODO: synchronize
     }
 
+    public HashMap<String, Game> mapGames(ArrayList<Game> games) {
+        HashMap<String, Game> map = new HashMap<>();
+        for (Game game : games) {
+            map.put(game.getName(), game);
+        }
+        return map;
+    }
+
     public void synchronize() {
         // TODO: implement
-        /* Synchronizing makes me think that we are going to need more custom
+        /*
+         * Synchronizing makes me think that we are going to need more custom
          * data structures - A custom tree structure for files - A 'Lobby'
          * Structure that can store players in a way that is easy to
-         * synchronize */
+         * synchronize
+         */
     }
 
     public boolean clean() {
         if (isHost) {
             File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
-            if(!deleteRecursively(sessionFolder)){
+            if (!deleteRecursively(sessionFolder)) {
                 return false;
             }
         } else {
@@ -94,7 +103,7 @@ public class Session {
             deleteRecursively(file);
         }
         if (dir.exists()) {
-            if(!dir.delete()){
+            if (!dir.delete()) {
                 return false;
             }
         }
@@ -102,9 +111,10 @@ public class Session {
     }
 
     public static String getSessionChoice(String sessionSpacePath, Scanner console) {
-        if(new File(sessionSpacePath).list().length == 0)
+        if (new File(sessionSpacePath).list().length == 0)
             System.out.println("Waiting for available sessions...");
-        while(new File(sessionSpacePath).list().length == 0);
+        while (new File(sessionSpacePath).list().length == 0)
+            ;
         System.out.println("Available sessions:");
         for (String i : new File(sessionSpacePath).list()) {
             System.out.println(i);
@@ -118,17 +128,37 @@ public class Session {
         return sessionName;
     }
 
-    // Constructor ONLY FOR JOINING
-    // TODO: Make the joining constuctor
-    // TODO: Decide on a format for the metadata
-    // public Session(File metadataFile){
+    // TODO: temporary
+    public void runGame(String gameName) {
+        Game game = games.get(gameName);
+        game.initialize(this);
+        game.startGame();
+        while (game.periodic());
+        game.endGame();
+        System.out.println("Game ended");
+    }
 
-    // }
+    public String getSessionSpace() {
+        return sessionSpacePath;
+    }
 
-    // public static Session joinSession(String name){
-    // //TODO: Use the metadata file to get the session, add a new player and
-    // join
-    // the session.
-    // return new Session(name, name, name);
-    // }
+    public String getSessionName() {
+        return sessionName;
+    }
+
+    public String sessionFolder() {
+        return sessionSpacePath + "\\" + sessionName;
+    }
+
+    public String getPlayerSpacePath() {
+        return sessionFolder() + "\\" + "players";
+    }
+
+    public Player getClientPlayer() {
+        return clientPlayer;
+    }
+
+    public boolean clientIsHost() {
+        return isHost;
+    }
 }

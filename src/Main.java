@@ -2,12 +2,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import Backend.Session;
-import gameplay.Game;
+import backend.Session;
+import gameplay.games.Game;
+import gameplay.games.ReadWriteGame;
 
 public class Main {
     public static void main(String[] args) {
-
         Scanner temp = new Scanner(System.in);
 
         final String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
@@ -15,7 +15,7 @@ public class Main {
         boolean valid = false;
         boolean hosting = false;
         System.out.print("Are you hosting? (Y/N)");
-        while(!valid) {
+        while (!valid) {
             host = temp.nextLine();
             if (host.equalsIgnoreCase("y")) {
                 hosting = true;
@@ -25,29 +25,32 @@ public class Main {
                 valid = true;
             }
         }
+
         ArrayList<Game> games = new ArrayList<Game>();
+        games.add(new ReadWriteGame());
+
         Session session;
+        String sessionName;
         if (hosting) {
             System.out.print("Enter a session name: ");
-            String sessionName = temp.nextLine();
+            sessionName = temp.nextLine();
             while (new File(sessionSpacePath + "\\" + sessionName).exists()) {
                 System.out.println("Session already exists. Please enter a valid session name: ");
                 sessionName = temp.nextLine();
             }
-            System.out.print("Enter your name: ");
-            String name = temp.nextLine();
-            session = new Session(sessionName, sessionSpacePath, name, games);
         } else {
-            String sessionName = Session.getSessionChoice(sessionSpacePath, temp);
-            System.out.print("Enter your name: ");
-            String name = temp.nextLine();
-            session = new Session(sessionName, sessionSpacePath, name);
+            sessionName = Session.getSessionChoice(sessionSpacePath, temp);
         }
+        System.out.print("Enter your name: ");
+        String name = temp.nextLine();
+        session = new Session(sessionName, sessionSpacePath, name, games, hosting);
         temp.next();// DEBUG - Wait to clean up
         temp.nextLine();
-        while (!session.clean()){
+        session.runGame("ReadWrite");//TODO: Add games
+        while (!session.clean()) {
             System.out.println("Failed to clean up session. Enter \"exit\" to force quit or anything else to try again.");
-            if(temp.nextLine().equalsIgnoreCase("exit")){
+            if (temp.nextLine()
+                    .equalsIgnoreCase("exit")) {
                 break;
             }
         }
