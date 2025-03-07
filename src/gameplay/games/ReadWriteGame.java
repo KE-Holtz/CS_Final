@@ -2,6 +2,7 @@ package gameplay.games;
 
 import java.util.Scanner;
 
+import backend.Session;
 import backend.globalvars.GlobalString;
 
 enum State {
@@ -14,13 +15,19 @@ enum State {
 
 public class ReadWriteGame extends Game {
     private static final String name = "ReadWrite";
+
     private State state;
     private final Scanner scanner = new Scanner(System.in);
 
     private GlobalString globalString;
 
     public ReadWriteGame() {
+        setName(name);
+    }
 
+    @Override
+    public void initialize(Session session) {
+        globalString = new GlobalString(session, "globalString");
     }
 
     @Override
@@ -34,10 +41,12 @@ public class ReadWriteGame extends Game {
         switch (state) {
             case READ_ONCE:
                 System.out.println("Reading once: " + globalString.getValue());
+                setState();
                 break;
             case WRITE_ONCE:
                 System.out.println("Enter a value to write: ");
                 globalString.setValue(scanner.nextLine());
+                setState();
                 break;
             case READ_CONTINUOUS:
                 do {

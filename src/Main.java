@@ -4,10 +4,10 @@ import java.util.Scanner;
 
 import backend.Session;
 import gameplay.games.Game;
+import gameplay.games.ReadWriteGame;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println(String.valueOf("adf"));
         Scanner temp = new Scanner(System.in);
 
         final String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
@@ -25,20 +25,28 @@ public class Main {
                 valid = true;
             }
         }
+
         ArrayList<Game> games = new ArrayList<Game>();
+        games.add(new ReadWriteGame());
+
         Session session;
-        System.out.print("Enter a session name: ");
-        String sessionName = temp.nextLine();
-        while (new File(sessionSpacePath + "\\" + sessionName).exists()) {
-            System.out.println("Session already exists. Please enter a valid session name: ");
+        String sessionName;
+        if (hosting) {
+            System.out.print("Enter a session name: ");
             sessionName = temp.nextLine();
+            while (new File(sessionSpacePath + "\\" + sessionName).exists()) {
+                System.out.println("Session already exists. Please enter a valid session name: ");
+                sessionName = temp.nextLine();
+            }
+        } else {
+            sessionName = Session.getSessionChoice(sessionSpacePath, temp);
         }
         System.out.print("Enter your name: ");
         String name = temp.nextLine();
         session = new Session(sessionName, sessionSpacePath, name, games, hosting);
         temp.next();// DEBUG - Wait to clean up
         temp.nextLine();
-        session.runGame("test");//TODO: Add games
+        session.runGame("ReadWrite");//TODO: Add games
         while (!session.clean()) {
             System.out.println("Failed to clean up session. Enter \"exit\" to force quit or anything else to try again.");
             if (temp.nextLine()

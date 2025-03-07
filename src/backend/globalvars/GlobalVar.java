@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import backend.Session;
+
 public class GlobalVar<T> {
 
     private final String playerSpacePath;
@@ -12,33 +14,36 @@ public class GlobalVar<T> {
     private final String clientName;
 
     private final String name;
-    private final File varFile;
+    private final File   varFile;
 
     private final Function<String, T> valueParser;
 
-    public GlobalVar(String playerSpacePath, String clientName, String name, Function<String, T> valueParser) {
-        this.playerSpacePath = playerSpacePath;
-        this.playerSpaceFolder = new File(playerSpacePath);
+    public GlobalVar(Session session, String name, Function<String, T> valueParser) {
+        playerSpacePath = session.getPlayerSpacePath();
+        playerSpaceFolder = new File(playerSpacePath);
 
-        this.clientName = clientName;
+        clientName = session.getClientPlayer()
+                            .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
-
+        this.varFile =
+                new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
         this.valueParser = valueParser;
 
         varFile.mkdir();
-        setValue(valueParser.apply("0"), "default"); //? TODO: give default value for different types? Current setup -> Numbers become zero, boolean becomes false, string becomes "0"
+        setValue(valueParser.apply("0"), "default");
     }
 
-    public GlobalVar(String playerSpacePath, String clientName, String name, Function<String, T> valueParser, T value) {
-        this.playerSpacePath = playerSpacePath;
-        this.playerSpaceFolder = new File(playerSpacePath);
+    public GlobalVar(Session session, String name, Function<String, T> valueParser, T value) {
+        playerSpacePath = session.getPlayerSpacePath();
+        playerSpaceFolder = new File(playerSpacePath);
 
-        this.clientName = clientName;
+        clientName = session.getClientPlayer()
+                            .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
+        this.varFile =
+                new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
 
         this.valueParser = valueParser;
 
@@ -46,16 +51,18 @@ public class GlobalVar<T> {
         setValue(value);
     }
 
-    //? Returns null if no value is found - is this ok?
+    // ? Returns null if no value is found - is this ok?
     public T getValue() {
-        File[] instances = Stream.of(playerSpaceFolder.listFiles())
+        File[] values = Stream.of(playerSpaceFolder.listFiles())
                                  .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
                                  .map(File::new)
+                                 .map((x) -> x.listFiles()[0])
                                  .toArray(File[]::new);
-        long newestTime = Long.MAX_VALUE;
+        long newestTime = Long.MIN_VALUE;
         T value = null;
-        for(File instance : instances){
-            if(instance.lastModified() < newestTime && instance.exists() && tagOf(instance.getName()).equals("default")){
+        for (File instance : values) {
+            if (instance.lastModified() > newestTime && instance.exists()
+                    && !tagOf(instance.getName()).equals("default")) {
                 newestTime = instance.lastModified();
                 value = valueParser.apply(valueOf(instance.getName()));
             }
@@ -68,7 +75,7 @@ public class GlobalVar<T> {
         setValue(value, "");
     }
 
-    public void setValue(T value, String tag){
+    public void setValue(T value, String tag) {
         deleteContents(varFile);
         File newFile = new File(varFile.getPath() + "\\" + "(" + tag + ")" + value);
         newFile.mkdir();
@@ -78,20 +85,20 @@ public class GlobalVar<T> {
         setValue(getValue());
     }
 
-    private void deleteContents(File file){
-        for(File f : file.listFiles()){
-            if(f.isDirectory()){
+    private void deleteContents(File file) {
+        for (File f : file.listFiles()) {
+            if (f.isDirectory()) {
                 deleteContents(f);
             }
             f.delete();
         }
     }
 
-    private String tagOf(String value){
-        return value.substring(1, value.indexOf(")"));
+    private String tagOf(String value) {
+        return value.substring(0, value.indexOf(")"));
     }
 
-    private String valueOf(String value){
+    private String valueOf(String value) {
         return value.substring(value.indexOf(")") + 1);
     }
 }
