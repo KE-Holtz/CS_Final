@@ -21,32 +21,32 @@ public class GlobalString extends GlobalVar<String>{
     }
     @Override
     public void setValue(String value) {
-        value.replaceAll(ESCAPE, ESCAPE+ESCAPE);
-        value.replaceAll("\\\\", ESCAPE + BACKSLASH);
-        value.replaceAll("/", ESCAPE + SLASH);
-        value.replaceAll(":", ESCAPE + COLON);
-        value.replaceAll("\\*", ESCAPE + ASTERISK);
-        value.replaceAll("\\?", ESCAPE + QUESTION_MARK);
-        value.replaceAll("\"", ESCAPE + QUOTE);
-        value.replaceAll("<", ESCAPE + LESS);
-        value.replaceAll(">", ESCAPE + GREATER);
-        value.replaceAll("\\|", ESCAPE + PIPE);
+        value = value.replaceAll(ESCAPE, ESCAPE+ESCAPE);
+        value = value.replaceAll("\\\\", ESCAPE + BACKSLASH);
+        value = value.replaceAll("/", ESCAPE + SLASH);
+        value = value.replaceAll(":", ESCAPE + COLON);
+        value = value.replaceAll("\\*", ESCAPE + ASTERISK);
+        value = value.replaceAll("\\?", ESCAPE + QUESTION_MARK);
+        value = value.replaceAll("\"", ESCAPE + QUOTE);
+        value = value.replaceAll("<", ESCAPE + LESS);
+        value = value.replaceAll(">", ESCAPE + GREATER);
+        value = value.replaceAll("\\|", ESCAPE + PIPE);
         super.setValue(value);
     }
 
     @Override
     public String getValue() {
         String value = super.getValue();
-        value.replaceAll(ESCAPE+ESCAPE, ESCAPE);
-        value.replaceAll(ESCAPE + BACKSLASH, "\\");
-        value.replaceAll(ESCAPE + SLASH, "/");
-        value.replaceAll(ESCAPE + COLON, ":");
-        value.replaceAll(ESCAPE + ASTERISK, "*");
-        value.replaceAll(ESCAPE + QUESTION_MARK, "?");
-        value.replaceAll(ESCAPE + QUOTE, "\"");
-        value.replaceAll(ESCAPE + LESS, "<");
-        value.replaceAll(ESCAPE + GREATER, ">");
-        value.replaceAll(ESCAPE + PIPE, "|");
+        value = value.replaceAll(ESCAPE+ESCAPE, ESCAPE);
+        value = value.replaceAll(ESCAPE + BACKSLASH, "\\");
+        value = value.replaceAll(ESCAPE + SLASH, "/");
+        value = value.replaceAll(ESCAPE + COLON, ":");
+        value = value.replaceAll(ESCAPE + ASTERISK, "*");
+        value = value.replaceAll(ESCAPE + QUESTION_MARK, "?");
+        value = value.replaceAll(ESCAPE + QUOTE, "\"");
+        value = value.replaceAll(ESCAPE + LESS, "<");
+        value = value.replaceAll(ESCAPE + GREATER, ">");
+        value = value.replaceAll(ESCAPE + PIPE, "|");
         return value;
     }
 
