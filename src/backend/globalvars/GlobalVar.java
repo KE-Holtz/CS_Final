@@ -1,6 +1,9 @@
 package backend.globalvars;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -17,6 +20,16 @@ public class GlobalVar<T> {
     private final File   varFile;
 
     private final Function<String, T> valueParser;
+
+    public enum Tag{
+        DEFAULT("default"),
+        OVERFLOW("overflow");
+
+        private final String tag;
+        Tag(String tag){
+            this.tag = tag;
+        }
+    }
 
     public GlobalVar(Session session, String name, Function<String, T> valueParser) {
         playerSpacePath = session.getPlayerSpacePath();
@@ -60,9 +73,14 @@ public class GlobalVar<T> {
                                  .toArray(File[]::new);
         long newestTime = Long.MIN_VALUE;
         T value = null;
+
+        ArrayList<Tag> tags;
         for (File instance : values) {
-            if (instance.lastModified() > newestTime && instance.exists()
-                    && !tagOf(instance.getName()).equals("default")) {
+            if (instance.lastModified() > newestTime && instance.exists()) {
+                tags = getTags(instance.getName());
+                if (tags.contains(Tag.DEFAULT))
+                    continue;
+                
                 newestTime = instance.lastModified();
                 value = valueParser.apply(valueOf(instance.getName()));
             }
@@ -70,6 +88,16 @@ public class GlobalVar<T> {
 
         return value;
     }
+
+    public ArrayList<Tag> getTags(String str){
+        String tagStr = str.substring(str.indexOf("("), str.indexOf(")"));
+        ArrayList<Tag> tags = new ArrayList<>();
+        for (String s : tagStr.split(",")) {
+            tags.add(Tag.valueOf(tagStr));
+        }
+        return tags;
+    }
+
 
     public void setValue(T value) {
         setValue(value, "");
