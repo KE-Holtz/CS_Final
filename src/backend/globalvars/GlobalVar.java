@@ -21,6 +21,8 @@ public class GlobalVar<T> {
 
     private final Function<String, T> valueParser;
 
+    public static final int MAX_LENGTH = 255;
+
     public enum Tag{
         DEFAULT("default"),
         OVERFLOW("overflow");
@@ -44,7 +46,7 @@ public class GlobalVar<T> {
         this.valueParser = valueParser;
 
         varFile.mkdir();
-        setValue(valueParser.apply("0"), "default");
+        setValue(valueParser.apply("0"), Tag.DEFAULT);
     }
 
     public GlobalVar(Session session, String name, Function<String, T> valueParser, T value) {
@@ -80,13 +82,37 @@ public class GlobalVar<T> {
                 tags = getTags(instance.getName());
                 if (tags.contains(Tag.DEFAULT))
                     continue;
-                
+                if (tags.contains(Tag.OVERFLOW)) {
+                    value = valueParser.apply(valueOf(readOverflow(instance)));
+                } else {
+                    value = valueParser.apply(valueOf(instance.getName()));
+                }
                 newestTime = instance.lastModified();
-                value = valueParser.apply(valueOf(instance.getName()));
             }
         }
-
         return value;
+    }
+
+    public String readOverflow(File file){
+        ArrayList<Tag> tags = getTags(file.getName());
+        if (tags.contains(Tag.OVERFLOW)){
+            return valueOf(file.getName()) + readOverflow(file.listFiles()[0]);
+        } else {
+            return valueOf(file.getName());
+        }
+    }
+
+    public void writeOverflow(File parent, String value){
+        String tag = "()";
+        if (tag.length() + value.toString().length() > MAX_LENGTH){
+            tag = tag.substring(tag.length()-1) + Tag.OVERFLOW + ")";
+        }
+        if (tag.contains(Tag.OVERFLOW.toString())) {
+            File newFile = new File(parent.getPath() + "\\" + tag + value.toString().substring(0,MAX_LENGTH - tag.length()));
+            writeOverflow(newFile, value);
+        } else {
+            File newFile = new File(parent.getPath() + "\\" + tag + value);
+        }
     }
 
     public ArrayList<Tag> getTags(String str){
@@ -98,15 +124,30 @@ public class GlobalVar<T> {
         return tags;
     }
 
-
     public void setValue(T value) {
-        setValue(value, "");
+        setValue(value, null);
     }
 
-    public void setValue(T value, String tag) {
+    public void setValue(T value, Tag... tags) {
         deleteContents(varFile);
-        File newFile = new File(varFile.getPath() + "\\" + "(" + tag + ")" + value);
-        newFile.mkdir();
+        String tag = "(";
+        for (Tag t : tags) {
+            tag += t + ",";
+        }
+        tag += ")";
+
+        if (tag.length() + value.toString().length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())){
+            tag = tag.substring(tag.length()-1) + Tag.OVERFLOW + ")";
+        }
+
+        if(tag.contains(Tag.OVERFLOW.toString())){
+            File newFile = new File(varFile.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
+            writeOverflow(newFile, value.toString().substring(MAX_LENGTH-tag.length()));
+            newFile.mkdir();
+        } else{
+            File newFile = new File(varFile.getPath() + "\\" + tag + value);
+            newFile.mkdir();
+        }
     }
 
     public void synchronize() {
@@ -120,10 +161,6 @@ public class GlobalVar<T> {
             }
             f.delete();
         }
-    }
-
-    private String tagOf(String value) {
-        return value.substring(0, value.indexOf(")"));
     }
 
     private String valueOf(String value) {
