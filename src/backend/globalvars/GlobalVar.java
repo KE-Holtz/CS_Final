@@ -103,14 +103,14 @@ public class GlobalVar<T> {
 
     public void writeOverflow(File parent, String value) {
         String tag = "(";
-        if (tag.length() + value.toString().length() > MAX_LENGTH) {
-            tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ")";
+        if (tag.length() + value.toString().length() + 1 > MAX_LENGTH) {
+            tag += Tag.OVERFLOW + ")";
         } else {
             tag +=")";
         }
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
-                    parent.getPath() + "\\" + tag + value.substring(0, MAX_LENGTH - tag.length()));
+                    parent.getAbsolutePath() + "\\" + tag + value.substring(0, MAX_LENGTH - tag.length()));
             newFile.mkdir();
             writeOverflow(newFile, value.substring(MAX_LENGTH - tag.length()));
         } else {
