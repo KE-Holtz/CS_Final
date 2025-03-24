@@ -120,7 +120,8 @@ public class GlobalVar<T> {
     }
 
     public ArrayList<Tag> getTags(String str) {
-        String tagStr = str.substring(str.indexOf("("), str.indexOf(")"));
+        System.out.println(str);
+        String tagStr = str.substring(str.indexOf("(") +1, str.indexOf(")"));
         ArrayList<Tag> tags = new ArrayList<>();
         for (String s : tagStr.split(",")) {
             tags.add(Tag.valueOf(tagStr));
@@ -140,14 +141,11 @@ public class GlobalVar<T> {
                 tag += t + ",";
             }
         }
-        tag += ")";
-
         if (tag.length() + value.toString().length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString()))
-
         {
-            tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ")";
+            tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ",";
         }
-
+        tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
                     varFile.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
