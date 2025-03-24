@@ -24,8 +24,8 @@ public class GlobalVar<T> {
     public static final int MAX_LENGTH = 255;
 
     public enum Tag {
-        DEFAULT("default"),
-        OVERFLOW("overflow");
+        DEFAULT("DEFAULT"),
+        OVERFLOW("OVERFLOW");
 
         private final String tag;
 
@@ -106,7 +106,7 @@ public class GlobalVar<T> {
         if (tag.length() + value.toString().length() + 1 > MAX_LENGTH) {
             tag += Tag.OVERFLOW + ")";
         } else {
-            tag +=")";
+            tag += ")";
         }
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
@@ -121,10 +121,13 @@ public class GlobalVar<T> {
 
     public ArrayList<Tag> getTags(String str) {
         System.out.println(str);
-        String tagStr = str.substring(str.indexOf("(") +1, str.indexOf(")"));
+        String tagStr = str.substring(str.indexOf("(") + 1, str.indexOf(")"));
         ArrayList<Tag> tags = new ArrayList<>();
         for (String s : tagStr.split(",")) {
-            tags.add(Tag.valueOf(tagStr));
+            System.out.println(s);
+            if (!s.isEmpty()) {
+                tags.add(Tag.valueOf(tagStr));
+            }
         }
         return tags;
     }
@@ -141,8 +144,7 @@ public class GlobalVar<T> {
                 tag += t + ",";
             }
         }
-        if (tag.length() + value.toString().length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString()))
-        {
+        if (tag.length() + value.toString().length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())) {
             tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ",";
         }
         tag += ")";
