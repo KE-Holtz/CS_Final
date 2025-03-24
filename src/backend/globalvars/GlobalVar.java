@@ -126,7 +126,7 @@ public class GlobalVar<T> {
         for (String s : tagStr.split(",")) {
             System.out.println(s);
             if (!s.isEmpty()) {
-                tags.add(Tag.valueOf(tagStr));
+                tags.add(Tag.valueOf(s));
             }
         }
         return tags;
