@@ -102,9 +102,11 @@ public class GlobalVar<T> {
     }
 
     public void writeOverflow(File parent, String value) {
-        String tag = "()";
+        String tag = "(";
         if (tag.length() + value.toString().length() > MAX_LENGTH) {
             tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ")";
+        } else {
+            tag +=")";
         }
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
