@@ -108,10 +108,12 @@ public class GlobalVar<T> {
         }
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
-                    parent.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
-            writeOverflow(newFile, value);
+                    parent.getPath() + "\\" + tag + value.substring(0, MAX_LENGTH - tag.length()));
+            newFile.mkdir();
+            writeOverflow(newFile, value.substring(MAX_LENGTH - tag.length()));
         } else {
             File newFile = new File(parent.getPath() + "\\" + tag + value);
+            newFile.mkdir();
         }
     }
 
