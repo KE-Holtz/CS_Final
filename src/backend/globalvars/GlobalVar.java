@@ -21,7 +21,7 @@ public class GlobalVar<T> {
 
     private final Function<String, T> valueParser;
 
-    public static final int MAX_LENGTH = 255;
+    public static final int MAX_LENGTH = 160;
 
     public enum Tag {
         DEFAULT("DEFAULT"),
