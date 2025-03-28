@@ -46,15 +46,15 @@ public class Session {
         File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
         File playerSpaceFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
         if (sessionFolder.mkdir()) {
-            System.out.println("Session folder created");
+            System.out.println("[DEBUG] Session folder created");
         } else {
-            System.out.println("Session folder failed to create at "
+            System.out.println("[DEBUG] Session folder failed to create at "
                     + sessionFolder.getAbsolutePath());
         }
         if (playerSpaceFolder.mkdir()) {
-            System.out.println("Player space folder created");
+            System.out.println("[DEBUG] Player space folder created");
         } else {
-            System.out.println("Player space folder failed to create at "
+            System.out.println("[DEBUG] Player space folder failed to create at "
                     + playerSpaceFolder.getAbsolutePath());
         }
 

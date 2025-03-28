@@ -120,11 +120,9 @@ public class GlobalVar<T> {
     }
 
     public ArrayList<Tag> getTags(String str) {
-        System.out.println(str);
         String tagStr = str.substring(str.indexOf("(") + 1, str.indexOf(")"));
         ArrayList<Tag> tags = new ArrayList<>();
         for (String s : tagStr.split(",")) {
-            System.out.println(s);
             if (!s.isEmpty()) {
                 tags.add(Tag.valueOf(s));
             }
