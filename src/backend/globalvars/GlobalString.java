@@ -38,7 +38,7 @@ public class GlobalString extends GlobalVar<String>{
     public String getValue() {
         String value = super.getValue();
         value = value.replaceAll(ESCAPE+ESCAPE, ESCAPE);
-        value = value.replaceAll(ESCAPE + BACKSLASH, "\\");
+        value = value.replaceAll(ESCAPE + BACKSLASH, "\\\\");
         value = value.replaceAll(ESCAPE + SLASH, "/");
         value = value.replaceAll(ESCAPE + COLON, ":");
         value = value.replaceAll(ESCAPE + ASTERISK, "*");

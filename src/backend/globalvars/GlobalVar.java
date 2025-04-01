@@ -102,20 +102,29 @@ public class GlobalVar<T> {
     }
 
     public void writeOverflow(File parent, String value) {
-        String tag = "(";
-        if (tag.length() + value.toString().length() + 1 > MAX_LENGTH) {
-            tag += Tag.OVERFLOW + ")";
-        } else {
-            tag += ")";
-        }
-        if (tag.contains(Tag.OVERFLOW.toString())) {
-            File newFile = new File(
-                    parent.getAbsolutePath() + "\\" + tag + value.substring(0, MAX_LENGTH - tag.length()));
-            newFile.mkdir();
-            writeOverflow(newFile, value.substring(MAX_LENGTH - tag.length()));
-        } else {
-            File newFile = new File(parent.getPath() + "\\" + tag + value);
-            newFile.mkdir();
+        File currentParent = parent;
+        String currentValue = value;
+        while (currentValue.length() > 0) {
+            String tag = "(";
+            if(tag.length() + currentValue.toString().length() + 1 > MAX_LENGTH){
+                tag += Tag.OVERFLOW + ")";
+            } else {
+                tag += ")";
+            }
+
+            File nextFile;
+            if(tag.contains(Tag.OVERFLOW.toString())){
+                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue.substring(0, MAX_LENGTH - tag.length()));
+                currentParent = nextFile;
+                currentValue = currentValue.substring(MAX_LENGTH - tag.length());
+                System.out.println(nextFile.getName());
+                System.out.println(nextFile.mkdir());
+            } else {
+                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue);
+                System.out.println(nextFile.getName());
+                currentValue = "";
+                System.out.println(nextFile.mkdir());
+            }
         }
     }
 
@@ -149,8 +158,8 @@ public class GlobalVar<T> {
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
                     varFile.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
-            writeOverflow(newFile, value.toString().substring(MAX_LENGTH - tag.length()));
             newFile.mkdir();
+            writeOverflow(newFile, value.toString().substring(MAX_LENGTH - tag.length()));
         } else {
             File newFile = new File(varFile.getPath() + "\\" + tag + value);
             newFile.mkdir();
