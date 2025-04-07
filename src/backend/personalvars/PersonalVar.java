@@ -66,20 +66,10 @@ public class PersonalVar<T> {
     }
 
     // ? Returns null if no value is found - is this ok?
-    public ClientVar[] getValue() {
-        ArrayList<ClientVar> clientVars = new ArrayList<>();
-        File[] players = playerSpaceFolder.listFiles();
-        for(File player : players){
-            if(player.isDirectory()) {
-                clientVars.add(new ClientVar(player.getName(), getValue(player.getName()), valueParser));
-            }
-        }
-        return clientVars.toArray(new ClientVar[0]);
-    }
 
-    public T getValue(String name) {
+    public T getValue() {
         File[] values = Stream.of(playerSpaceFolder.listFiles())
-                .filter(file -> file.getName().contains(name))
+                .filter(file -> file.getName().contains(clientName))
                 .toArray(File[]::new);
         if (values.length == 0) {
             return null;

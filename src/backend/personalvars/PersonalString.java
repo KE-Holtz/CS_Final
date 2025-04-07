@@ -35,21 +35,18 @@ public class PersonalString extends PersonalVar<String>{
     }
 
     @Override
-    public ClientVar[] getValue() {
-        ClientVar<String>[] value = super.getValue();
-        for(ClientVar<String> var : value){
-            String varValue = var.getValue();
-            varValue = varValue.replaceAll(ESCAPE+ESCAPE, ESCAPE);
-            varValue = varValue.replaceAll(ESCAPE + BACKSLASH, "\\\\");
-            varValue = varValue.replaceAll(ESCAPE + SLASH, "/");
-            varValue = varValue.replaceAll(ESCAPE + COLON, ":");
-            varValue = varValue.replaceAll(ESCAPE + ASTERISK, "*");
-            varValue = varValue.replaceAll(ESCAPE + QUESTION_MARK, "?");
-            varValue = varValue.replaceAll(ESCAPE + QUOTE, "\"");
-            varValue = varValue.replaceAll(ESCAPE + LESS, "<");
-            varValue = varValue.replaceAll(ESCAPE + GREATER, ">");
-            varValue = varValue.replaceAll(ESCAPE + PIPE, "|");
-        }
+    public String getValue() {
+        String value = super.getValue();
+        value = value.replaceAll(ESCAPE+ESCAPE, ESCAPE);
+        value = value.replaceAll(ESCAPE + BACKSLASH, "\\\\");
+        value = value.replaceAll(ESCAPE + SLASH, "/");
+        value = value.replaceAll(ESCAPE + COLON, ":");
+        value = value.replaceAll(ESCAPE + ASTERISK, "*");
+        value = value.replaceAll(ESCAPE + QUESTION_MARK, "?");
+        value = value.replaceAll(ESCAPE + QUOTE, "\"");
+        value = value.replaceAll(ESCAPE + LESS, "<");
+        value = value.replaceAll(ESCAPE + GREATER, ">");
+        value = value.replaceAll(ESCAPE + PIPE, "|");
         return value;
     }
 
