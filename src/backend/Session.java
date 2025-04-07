@@ -46,15 +46,15 @@ public class Session {
         File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
         File playerSpaceFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
         if (sessionFolder.mkdir()) {
-            System.out.println("Session folder created");
+            System.out.println("[DEBUG] Session folder created");
         } else {
-            System.out.println("Session folder failed to create at "
+            System.out.println("[DEBUG] Session folder failed to create at "
                     + sessionFolder.getAbsolutePath());
         }
         if (playerSpaceFolder.mkdir()) {
-            System.out.println("Player space folder created");
+            System.out.println("[DEBUG] Player space folder created");
         } else {
-            System.out.println("Player space folder failed to create at "
+            System.out.println("[DEBUG] Player space folder failed to create at "
                     + playerSpaceFolder.getAbsolutePath());
         }
 
@@ -121,7 +121,7 @@ public class Session {
         }
         System.out.print("Enter the name of the session you would like to join: ");
         String sessionName = console.nextLine();
-        while (!new File(sessionSpacePath + "\\" + sessionName).exists()) {
+        while (!new File(sessionSpacePath + "\\" + sessionName).exists() && !sessionName.isEmpty()) {
             System.out.println("Session does not exist. Please enter a valid session name: ");
             sessionName = console.nextLine();
         }

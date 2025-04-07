@@ -12,7 +12,7 @@ public class Lobby {
     private final Player            clientPlayer;
 
     public Lobby(Session session) {
-        playerSpacePath = session.getPlayerSpacePath(); 
+        playerSpacePath = session.getPlayerSpacePath();
         clientPlayer = session.getClientPlayer();
         clientIsHost = session.clientIsHost();
         players = new ArrayList<Player>();
@@ -32,9 +32,9 @@ public class Lobby {
     public void makeClientFiles(){
         for (File file : clientPlayer.files()) {
             if(file.mkdir()){
-                System.out.println("Directory created: " + file.getName());
+                System.out.println("[DEBUG] Directory created: " + file.getName());
             } else {
-                System.out.println("Failed to create directory: " + file.getName());
+                System.out.println("[DEBUG] Failed to create directory: " + file.getName());
             }
         }
     }
