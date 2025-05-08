@@ -1,9 +1,12 @@
 package gameplay.games;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
+import backend.Lobby;
 import backend.Session;
 import backend.globalvars.GlobalString;
+import gameplay.Player;
 
 enum State {
     READ_ONCE,
@@ -14,15 +17,24 @@ enum State {
 }
 
 public class ReadWriteGame extends Game {
-    private static final String name = "ReadWrite";
 
     private State state;
     private final Scanner scanner = new Scanner(System.in);
 
+    private Lobby lobby;
+    Player self;
+    ArrayList<Player> partners;
+
     private GlobalString globalString;
+    public ReadWriteGame(){
+        setName("ReadWrite");
+    }
 
     @Override
-    public void initializeVars(Session session) {
+    public void initialize(Session session) {
+        lobby = session.getLobby();
+        self = lobby.getClientPlayer();
+        partners = lobby.getPlayers();
         globalString = new GlobalString(getSession(), "globalString");
     }
 

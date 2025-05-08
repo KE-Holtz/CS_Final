@@ -131,7 +131,7 @@ public class Session {
     // TODO: temporary
     public void runGame(String gameName) {
         Game game = games.get(gameName);
-        game.initializeVars(this);
+        game.initialize(this);
         game.startGame();
         while (game.periodic());
         game.endGame();
@@ -160,5 +160,9 @@ public class Session {
 
     public boolean clientIsHost() {
         return isHost;
+    }
+
+    public Lobby getLobby(){
+        return lobby;
     }
 }

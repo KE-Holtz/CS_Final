@@ -16,11 +16,14 @@ public abstract class Game {
     private String name;
     private Session session;
 
-    public abstract void initializeVars(Session session);
+    public abstract void initialize(Session session);
     public abstract void startGame();
     public abstract boolean periodic(); //Return false on game end
     public abstract void endGame();
 
+    protected void setName(String name){
+        this.name = name;
+    }
     public String getName(){
         return name;
     }

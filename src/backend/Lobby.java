@@ -56,4 +56,12 @@ public class Lobby {
         }
         return true;
     }
+
+    public Player getClientPlayer() {
+        return clientPlayer;
+    }
+
+    public ArrayList<Player> getPlayers(){
+        return (ArrayList<Player>) players.clone();
+    }
 }
