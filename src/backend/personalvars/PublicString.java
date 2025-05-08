@@ -2,7 +2,7 @@ package backend.personalvars;
 
 import backend.Session;
 
-public class PersonalString extends PersonalVar<String>{
+public class PublicString extends PublicVar<String>{
     private static final String BACKSLASH = "1";
     private static final String SLASH = "2";
     private static final String COLON = "3";
@@ -13,10 +13,10 @@ public class PersonalString extends PersonalVar<String>{
     private static final String GREATER = "8";
     private static final String PIPE = "9";
     private static final String ESCAPE = "#";
-    public PersonalString(Session session, String name){
+    public PublicString(Session session, String name){
         super(session, name, String::valueOf);
     }
-    public PersonalString(Session session, String clientName, String name, String value){
+    public PublicString(Session session, String clientName, String name, String value){
         super(session,name, String::valueOf, value);
     }
     @Override

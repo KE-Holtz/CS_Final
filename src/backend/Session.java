@@ -131,7 +131,7 @@ public class Session {
     // TODO: temporary
     public void runGame(String gameName) {
         Game game = games.get(gameName);
-        game.initialize(this);
+        game.initializeVars(this);
         game.startGame();
         while (game.periodic());
         game.endGame();

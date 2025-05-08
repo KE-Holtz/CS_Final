@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import backend.Session;
 
-public class PersonalVar<T> {
+public class PublicVar<T> {
 
     private final String playerSpacePath;
     private final File playerSpaceFolder;
@@ -34,7 +34,7 @@ public class PersonalVar<T> {
         }
     }
 
-    public PersonalVar(Session session, String name, Function<String, T> valueParser) {
+    public PublicVar(Session session, String name, Function<String, T> valueParser) {
         playerSpacePath = session.getPlayerSpacePath();
         playerSpaceFolder = new File(playerSpacePath);
 
@@ -49,7 +49,7 @@ public class PersonalVar<T> {
         setValue(valueParser.apply("0"), Tag.DEFAULT);
     }
 
-    public PersonalVar(Session session, String name, Function<String, T> valueParser, T value) {
+    public PublicVar(Session session, String name, Function<String, T> valueParser, T value) {
         playerSpacePath = session.getPlayerSpacePath();
         playerSpaceFolder = new File(playerSpacePath);
 

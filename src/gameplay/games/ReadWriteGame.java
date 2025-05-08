@@ -21,13 +21,9 @@ public class ReadWriteGame extends Game {
 
     private GlobalString globalString;
 
-    public ReadWriteGame() {
-        setName(name);
-    }
-
     @Override
-    public void initialize(Session session) {
-        globalString = new GlobalString(session, "globalString");
+    public void initializeVars(Session session) {
+        globalString = new GlobalString(getSession(), "globalString");
     }
 
     @Override

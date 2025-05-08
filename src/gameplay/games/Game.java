@@ -12,22 +12,20 @@ import backend.Session;
  * It also gives a format for different types of games when creating a new game.
  */
 public abstract class Game {
+
     private String name;
     private Session session;
 
-    public abstract void initialize(Session session);
+    public abstract void initializeVars(Session session);
     public abstract void startGame();
-
-    //The "game loop"
-    public abstract boolean periodic();
-
+    public abstract boolean periodic(); //Return false on game end
     public abstract void endGame();
 
     public String getName(){
         return name;
     }
 
-    protected void setName(String name){
-        this.name = name;
+    public Session getSession(){
+        return session;
     }
 }
