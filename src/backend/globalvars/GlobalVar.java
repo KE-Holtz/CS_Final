@@ -45,7 +45,9 @@ public class GlobalVar<T> {
         this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
         this.valueParser = valueParser;
 
-        varFile.mkdir();
+        if (!varFile.mkdir()) {
+            System.out.println("[DEBUG] " + name + " Failed");
+        }
         setValue(valueParser.apply("0"), Tag.DEFAULT);
     }
 
@@ -61,7 +63,10 @@ public class GlobalVar<T> {
 
         this.valueParser = valueParser;
 
-        varFile.mkdir();
+
+        if (!varFile.mkdir()) {
+            System.out.println("[DEBUG] " + name + " Failed");
+        }
         setValue(value);
     }
 

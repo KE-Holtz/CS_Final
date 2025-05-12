@@ -14,7 +14,6 @@ import backend.Session;
 public abstract class Game {
 
     private String name;
-    private Session session;
 
     public abstract void initialize(Session session);
     public abstract void startGame();
@@ -26,9 +25,5 @@ public abstract class Game {
     }
     public String getName(){
         return name;
-    }
-
-    public Session getSession(){
-        return session;
     }
 }

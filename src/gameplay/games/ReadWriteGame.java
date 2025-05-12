@@ -42,13 +42,13 @@ public class ReadWriteGame extends Game {
         lobby = session.getLobby();
         self = lobby.getClientPlayer();
         partners = lobby.getPlayers();
-        globalString = new GlobalString(getSession(), "globalString");
+        globalString = new GlobalString(session, "globalString");
     }
 
     @Override
     public void startGame() {
         System.out.println("Starting ReadWrite game");
-        bio = new PublicString(session, "bio");
+        bio = new PublicString(session, "bio", "default value");
         while (setState());
     }
 

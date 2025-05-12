@@ -12,12 +12,12 @@ import backend.Session;
 public class PublicVar<T> {
 
     private final String playerSpacePath;
-    private final File playerSpaceFolder;
+    private final File   playerSpaceFolder;
 
     private final String clientName;
 
     private final String name;
-    private final File varFile;
+    private final File   varFile;
 
     private final Function<String, T> valueParser;
 
@@ -39,13 +39,16 @@ public class PublicVar<T> {
         playerSpaceFolder = new File(playerSpacePath);
 
         clientName = session.getClientPlayer()
-                .getName();
+                            .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "publicVars" + "\\" + name);
+        this.varFile =
+                new File(playerSpacePath + "\\" + clientName + "\\" + "publicVars" + "\\" + name);
         this.valueParser = valueParser;
 
-        varFile.mkdir();
+        if (!varFile.mkdir()) {
+            System.out.println("[DEBUG] " + name + " Failed");
+        }
         setValue(valueParser.apply("0"), Tag.DEFAULT);
     }
 
@@ -54,33 +57,30 @@ public class PublicVar<T> {
         playerSpaceFolder = new File(playerSpacePath);
 
         clientName = session.getClientPlayer()
-                .getName();
+                            .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "publicVars" + "\\" + name);
+        this.varFile =
+                new File(playerSpacePath + "\\" + clientName + "\\" + "publicVars" + "\\" + name);
 
         this.valueParser = valueParser;
 
-        varFile.mkdir();
+        if (!varFile.mkdir()) {
+            System.out.println("[DEBUG] " + name + " Failed");
+        }
         setValue(value);
     }
 
     // ? Returns null if no value is found - is this ok?
 
     public T getValue() {
-        File[] values = Stream.of(playerSpaceFolder.listFiles())
-                .filter(file -> file.getName().contains(clientName))
-                .toArray(File[]::new);
-        if (values.length == 0) {
-            return null;
+        String value = varFile.list()[0];
+        System.out.println(value);
+        ArrayList<Tag> tags = getTags(value);
+        if (tags.contains(Tag.OVERFLOW)) {
+            return valueParser.apply(readOverflow(varFile));
         } else {
-            String value = values[0].getName();
-            ArrayList<Tag> tags = getTags(value);
-            if (tags.contains(Tag.OVERFLOW)) {
-                return valueParser.apply(readOverflow(values[0]));
-            } else {
-                return valueParser.apply(valueOf(value));
-            }
+            return valueParser.apply(valueOf(value));
         }
     }
 
@@ -98,15 +98,18 @@ public class PublicVar<T> {
         String currentValue = value;
         while (currentValue.length() > 0) {
             String tag = "(";
-            if(tag.length() + currentValue.toString().length() + 1 > MAX_LENGTH){
+            if (tag.length() + currentValue.toString()
+                                           .length()
+                    + 1 > MAX_LENGTH) {
                 tag += Tag.OVERFLOW + ")";
             } else {
                 tag += ")";
             }
 
             File nextFile;
-            if(tag.contains(Tag.OVERFLOW.toString())){
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue.substring(0, MAX_LENGTH - tag.length()));
+            if (tag.contains(Tag.OVERFLOW.toString())) {
+                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag
+                        + currentValue.substring(0, MAX_LENGTH - tag.length()));
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
                 System.out.println(nextFile.getName());
@@ -137,21 +140,27 @@ public class PublicVar<T> {
 
     public void setValue(T value, Tag... tags) {
         deleteContents(varFile);
+
         String tag = "(";
         if (tags != null) {
             for (Tag t : tags) {
                 tag += t + ",";
             }
         }
-        if (tag.length() + value.toString().length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())) {
+        if (tag.length() + value.toString()
+                                .length()
+                > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())) {
             tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ",";
         }
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
-                    varFile.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
+                                    varFile.getPath() + "\\" + tag + value.toString()
+                                                                          .substring(0, MAX_LENGTH
+                                                                                  - tag.length()));
             newFile.mkdir();
-            writeOverflow(newFile, value.toString().substring(MAX_LENGTH - tag.length()));
+            writeOverflow(newFile, value.toString()
+                                        .substring(MAX_LENGTH - tag.length()));
         } else {
             File newFile = new File(varFile.getPath() + "\\" + tag + value);
             newFile.mkdir();

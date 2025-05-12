@@ -16,7 +16,7 @@ public class PublicString extends PublicVar<String>{
     public PublicString(Session session, String name){
         super(session, name, String::valueOf);
     }
-    public PublicString(Session session, String clientName, String name, String value){
+    public PublicString(Session session, String name, String value){
         super(session,name, String::valueOf, value);
     }
     @Override

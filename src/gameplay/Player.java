@@ -13,7 +13,8 @@ public class Player {
 
     private ArrayList<File> playerFiles;// TODO: Tree? This could have some limitations.
     private File playerFolder;
-    private File globalVars;
+    private File globalVarsDir;
+    private File publicVarsDir;
 
     private HashMap<String, PublicVar> publicVars;
 
@@ -33,8 +34,11 @@ public class Player {
         playerFolder = new File(playerSpacePath + "\\" + name);
         playerFiles.add(playerFolder);
 
-        globalVars = new File(playerFolder.getAbsolutePath() + "\\" + "globalVars");
-        playerFiles.add(globalVars);
+        globalVarsDir = new File(playerFolder.getAbsolutePath() + "\\" + "globalVars");
+        playerFiles.add(globalVarsDir);
+
+        publicVarsDir = new File(playerFolder.getAbsolutePath() + "\\" + "publicVars");
+        playerFiles.add(publicVarsDir);
     }
 
     public static Player fromFile(File playerFile){

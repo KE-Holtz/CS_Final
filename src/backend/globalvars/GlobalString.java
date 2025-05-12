@@ -16,7 +16,7 @@ public class GlobalString extends GlobalVar<String>{
     public GlobalString(Session session, String name){
         super(session, name, String::valueOf);
     }
-    public GlobalString(Session session, String clientName, String name, String value){
+    public GlobalString(Session session, String name, String value){
         super(session,name, String::valueOf, value);
     }
     @Override
