@@ -1,4 +1,4 @@
-package backend.personalvars;
+package backend.publicVars;
 import backend.Session;
 
 public class PublicInt extends PublicVar<Integer> {

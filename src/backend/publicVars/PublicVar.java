@@ -1,4 +1,4 @@
-package backend.personalvars;
+package backend.publicVars;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -42,7 +42,7 @@ public class PublicVar<T> {
                 .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "personalVars" + "\\" + name);
+        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "publicVars" + "\\" + name);
         this.valueParser = valueParser;
 
         varFile.mkdir();
@@ -57,7 +57,7 @@ public class PublicVar<T> {
                 .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "personalVars" + "\\" + name);
+        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "publicVars" + "\\" + name);
 
         this.valueParser = valueParser;
 
@@ -169,5 +169,9 @@ public class PublicVar<T> {
 
     private String valueOf(String value) {
         return value.substring(value.indexOf(")") + 1);
+    }
+
+    public String getName() {
+        return name;
     }
 }

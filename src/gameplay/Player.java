@@ -2,13 +2,11 @@
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Optional;
 
-/*TODO: Implement the player class
--Name
--Player ID/number
--Wins/score?
--...?
-*/
+import backend.publicVars.PublicVar;
+
 public class Player {
     private String name;
     private final String playerSpacePath;
@@ -17,6 +15,7 @@ public class Player {
     private File playerFolder;
     private File globalVars;
 
+    private HashMap<String, PublicVar> publicVars;
 
     // Using this files must either be added in a valid order without fail or the
     // session must validate the arraylist
@@ -53,5 +52,13 @@ public class Player {
 
     public File getPlayerFolder() {
         return playerFolder;
+    }
+
+    public void addVariable(PublicVar var) {
+        publicVars.put(var.getName(), var);
+    }
+
+    public Optional<PublicVar> getVariable(String name) {
+        return Optional.ofNullable(publicVars.get(name));
     }
 }

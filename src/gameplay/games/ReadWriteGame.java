@@ -6,9 +6,12 @@ import java.util.Scanner;
 import backend.Lobby;
 import backend.Session;
 import backend.globalvars.GlobalString;
+import backend.publicVars.PublicString;
 import gameplay.Player;
 
 enum State {
+    READ_BIO,
+    WRITE_BIO,
     READ_ONCE,
     WRITE_ONCE,
     READ_CONTINUOUS,
@@ -21,9 +24,12 @@ public class ReadWriteGame extends Game {
     private State state;
     private final Scanner scanner = new Scanner(System.in);
 
+    private Session session;
+
     private Lobby lobby;
     Player self;
     ArrayList<Player> partners;
+    private PublicString bio;
 
     private GlobalString globalString;
     public ReadWriteGame(){
@@ -32,6 +38,7 @@ public class ReadWriteGame extends Game {
 
     @Override
     public void initialize(Session session) {
+        this.session = session;
         lobby = session.getLobby();
         self = lobby.getClientPlayer();
         partners = lobby.getPlayers();
@@ -41,12 +48,23 @@ public class ReadWriteGame extends Game {
     @Override
     public void startGame() {
         System.out.println("Starting ReadWrite game");
+        bio = new PublicString(session, "bio");
         while (setState());
     }
 
     @Override
     public boolean periodic() {
         switch (state) {
+            case READ_BIO:
+                System.out.println("Your bio is : " + bio.getValue());
+                setState();
+                break;
+            case WRITE_BIO:
+                System.out.println("Enter your new bio");
+                String newBio = scanner.nextLine();
+                bio.setValue(newBio);
+                setState();
+                break;
             case READ_ONCE:
                 System.out.println("Reading once: " + globalString.getValue());
                 setState();
@@ -85,13 +103,21 @@ public class ReadWriteGame extends Game {
     // True == failed
     public boolean setState() {
         System.out.println("Select a state: ");
-        System.out.println("1. READ_ONCE -> ro");
-        System.out.println("2. WRITE_ONCE -> wo");
-        System.out.println("3. READ_CONTINUOUS -> rc");
-        System.out.println("4. WRITE_CONTINUOUS -> wc");
-        System.out.println("5. EXITING -> exit");
+        System.out.println("1. Read_BIO -> rb");
+        System.out.println("2. WRITE_BIO -> wb");
+        System.out.println("3. READ_ONCE -> ro");
+        System.out.println("4. WRITE_ONCE -> wo");
+        System.out.println("5. READ_CONTINUOUS -> rc");
+        System.out.println("6. WRITE_CONTINUOUS -> wc");
+        System.out.println("7. EXITING -> exit");
         String input = scanner.nextLine();
         switch (input) {
+            case "rb":
+                state = State.READ_BIO;
+                break;
+            case "wb":
+                state = State.WRITE_BIO;
+                break;
             case "ro":
                 state = State.READ_ONCE;
                 break;
