@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
+import javax.print.attribute.standard.MediaSize.Other;
+
 import backend.publicVars.PublicVar;
 
 public class Player {
@@ -63,6 +65,18 @@ public class Player {
     }
 
     public Optional<PublicVar> getVariable(String name) {
+        if (publicVars.get(name) == null){
+            if(new File(publicVarsDir.getName() + "\\" + name).exists()){
+                return Optional.empty();
+            } else {
+                publicVars.put(name, new PublicVar<Integer>(this, name, (x) -> 0));
+            }
+        }
         return Optional.ofNullable(publicVars.get(name));
+    }
+
+    @Override
+    public boolean equals(Object other){
+        return ((Player)other).getName().equals(name);
     }
 }

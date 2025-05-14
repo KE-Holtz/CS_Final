@@ -48,7 +48,7 @@ public class ReadWriteGame extends Game {
     @Override
     public void startGame() {
         System.out.println("Starting ReadWrite game");
-        bio = new PublicString(session, "bio", "default value");
+        bio = new PublicString(self, "bio", "default value");
         while (setState());
     }
 
@@ -56,7 +56,14 @@ public class ReadWriteGame extends Game {
     public boolean periodic() {
         switch (state) {
             case READ_BIO:
-                System.out.println("Your bio is : " + bio.getValue());
+                System.out.println("Your bio is: " + bio.getValue());
+                for(Player other:partners){
+                    if(other.getVariable("bio").isPresent()){
+                        System.out.println(other.getName()+"'s bio is: " + other.getVariable("bio").get().getValue());
+                    } else{
+                        System.out.println(other.getName() + " has no bio");
+                    }
+                }
                 setState();
                 break;
             case WRITE_BIO:

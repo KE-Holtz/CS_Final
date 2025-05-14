@@ -1,12 +1,12 @@
 package backend.publicVars;
 
-import backend.Session;
+import gameplay.Player;
 
 public class PublicDouble extends PublicVar<Double>{
-    public PublicDouble(Session session, String name){
-        super(session, name, Double::parseDouble);
+    public PublicDouble(Player player, String name){
+        super(player, name, Double::parseDouble);
     }
-    public PublicDouble(Session session, String name, Double value){
-        super(session, name, Double::parseDouble, value);
+    public PublicDouble(Player player, String name, Double value){
+        super(player, name, Double::parseDouble, value);
     }
 }

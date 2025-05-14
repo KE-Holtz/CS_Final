@@ -74,16 +74,6 @@ public class Session {
         return map;
     }
 
-    public void synchronize() {
-        // TODO: implement
-        /*
-         * Synchronizing makes me think that we are going to need more custom
-         * data structures - A custom tree structure for files - A 'Lobby'
-         * Structure that can store players in a way that is easy to
-         * synchronize
-         */
-    }
-
     public boolean clean() {
         if (isHost) {
             File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
@@ -133,7 +123,9 @@ public class Session {
         Game game = games.get(gameName);
         game.initialize(this);
         game.startGame();
-        while (game.periodic());
+        while (game.periodic()){
+            lobby.synchronize();
+        }
         game.endGame();
         System.out.println("Game ended");
     }

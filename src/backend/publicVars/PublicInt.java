@@ -1,12 +1,12 @@
 package backend.publicVars;
-import backend.Session;
+import gameplay.Player;
 
 public class PublicInt extends PublicVar<Integer> {
-    public PublicInt(Session session, String name) {
-        super(session, name, Integer::parseInt);
+    public PublicInt(Player player, String name) {
+        super(player, name, Integer::parseInt);
     }
 
-    public PublicInt(Session session, String name, Integer value) {
-        super(session, name, Integer::parseInt, value);
+    public PublicInt(Player player, String name, Integer value) {
+        super(player, name, Integer::parseInt, value);
     }
 }

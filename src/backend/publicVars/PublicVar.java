@@ -8,13 +8,11 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import backend.Session;
+import gameplay.Player;
 
 public class PublicVar<T> {
 
-    private final String playerSpacePath;
-    private final File   playerSpaceFolder;
-
-    private final String clientName;
+    private final String playerName;
 
     private final String name;
     private final File   varFile;
@@ -34,37 +32,24 @@ public class PublicVar<T> {
         }
     }
 
-    public PublicVar(Session session, String name, Function<String, T> valueParser) {
-        playerSpacePath = session.getPlayerSpacePath();
-        playerSpaceFolder = new File(playerSpacePath);
-
-        clientName = session.getClientPlayer()
-                            .getName();
-
+    public PublicVar(Player player, String name, Function<String, T> valueParser) {
+        playerName = player.getName();
         this.name = name;
         this.varFile =
-                new File(playerSpacePath + "\\" + clientName + "\\" + "publicVars" + "\\" + name);
+                new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
         this.valueParser = valueParser;
-
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
         }
         setValue(valueParser.apply("0"), Tag.DEFAULT);
     }
 
-    public PublicVar(Session session, String name, Function<String, T> valueParser, T value) {
-        playerSpacePath = session.getPlayerSpacePath();
-        playerSpaceFolder = new File(playerSpacePath);
-
-        clientName = session.getClientPlayer()
-                            .getName();
-
+    public PublicVar(Player player, String name, Function<String, T> valueParser, T value) {
+        playerName = player.getName();
         this.name = name;
         this.varFile =
-                new File(playerSpacePath + "\\" + clientName + "\\" + "publicVars" + "\\" + name);
-
+                new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
         this.valueParser = valueParser;
-
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
         }

@@ -19,13 +19,12 @@ public class Lobby {
     }
 
     public void synchronize() {
-        players.clear();
-        players.add(clientPlayer);
         for (File playerFile : new File(playerSpacePath).listFiles()) {
             Player player = Player.fromFile(playerFile);
-            if (!player.getName().equals(clientPlayer.getName())) {
+            if(!players.contains(player)){
                 players.add(player);
             }
+            
         }
     }
 
