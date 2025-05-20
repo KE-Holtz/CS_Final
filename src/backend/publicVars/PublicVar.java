@@ -60,7 +60,7 @@ public class PublicVar<T> {
 
     public T getValue() {
         String value = varFile.list()[0];
-        System.out.println(value);
+        // System.out.println(value);
         ArrayList<Tag> tags = getTags(value);
         if (tags.contains(Tag.OVERFLOW)) {
             return valueParser.apply(readOverflow(varFile));
@@ -97,13 +97,15 @@ public class PublicVar<T> {
                         + currentValue.substring(0, MAX_LENGTH - tag.length()));
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
-                System.out.println(nextFile.getName());
-                System.out.println(nextFile.mkdir());
+                // System.out.println(nextFile.getName());
+                // System.out.println(nextFile.mkdir());
+                nextFile.mkdir();
             } else {
                 nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue);
-                System.out.println(nextFile.getName());
                 currentValue = "";
-                System.out.println(nextFile.mkdir());
+                // System.out.println(nextFile.getName());
+                // System.out.println(nextFile.mkdir());
+                nextFile.mkdir();
             }
         }
     }

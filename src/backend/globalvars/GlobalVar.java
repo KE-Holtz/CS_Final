@@ -122,13 +122,15 @@ public class GlobalVar<T> {
                 nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue.substring(0, MAX_LENGTH - tag.length()));
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
-                System.out.println(nextFile.getName());
-                System.out.println(nextFile.mkdir());
+                // System.out.println(nextFile.getName());
+                // System.out.println(nextFile.mkdir());
+                nextFile.mkdir();
             } else {
                 nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue);
-                System.out.println(nextFile.getName());
+                // System.out.println(nextFile.getName());
                 currentValue = "";
-                System.out.println(nextFile.mkdir());
+                // System.out.println(nextFile.mkdir());
+                nextFile.mkdir();
             }
         }
     }
