@@ -7,6 +7,7 @@ import backend.Lobby;
 import backend.Session;
 import backend.globalvars.GlobalString;
 import backend.publicVars.PublicString;
+import backend.publicVars.PublicVar;
 import gameplay.Player;
 
 enum State {
@@ -27,8 +28,8 @@ public class ReadWriteGame extends Game {
     private Session session;
 
     private Lobby lobby;
-    Player self;
-    ArrayList<Player> partners;
+    private ArrayList<Player> partners;
+    private Player self;
     private PublicString bio;
 
     private GlobalString globalString;
@@ -41,7 +42,6 @@ public class ReadWriteGame extends Game {
         this.session = session;
         lobby = session.getLobby();
         self = lobby.getClientPlayer();
-        partners = lobby.getPlayers();
         globalString = new GlobalString(session, "globalString");
     }
 
@@ -57,9 +57,11 @@ public class ReadWriteGame extends Game {
         switch (state) {
             case READ_BIO:
                 System.out.println("Your bio is: " + bio.getValue());
+                partners = lobby.getPlayers();
+                partners.remove(self);
                 for(Player other:partners){
                     if(other.getVariable("bio").isPresent()){
-                        System.out.println(other.getName()+"'s bio is: " + other.getVariable("bio").get().getValue());
+                        System.out.println(other.getName()+"'s bio is: " + ((PublicString)(other.getVariable("bio").get())).getValue());
                     } else{
                         System.out.println(other.getName() + " has no bio");
                     }
