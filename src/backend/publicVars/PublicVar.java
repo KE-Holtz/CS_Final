@@ -22,14 +22,8 @@ public class PublicVar<T> {
     public static final int MAX_LENGTH = 160;
 
     public enum Tag {
-        DEFAULT("DEFAULT"),
-        OVERFLOW("OVERFLOW");
-
-        private final String tag;
-
-        Tag(String tag) {
-            this.tag = tag;
-        }
+        DEFAULT,
+        OVERFLOW,
     }
 
     public PublicVar(Player player, String name, Function<String, T> valueParser) {
@@ -169,5 +163,9 @@ public class PublicVar<T> {
 
     public String getName() {
         return name;
+    }
+
+    public String getType() {
+        return this.getClass().getName();
     }
 }

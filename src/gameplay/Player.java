@@ -70,6 +70,7 @@ public class Player {
         if (publicVars.get(name) == null){
             if(new File(publicVarsDir.getName() + "\\" + name).exists()){
                 PublicVar importedVar = new PublicVar<>(this, name, null);
+                System.out.println(importedVar.getName());
                 publicVars.put(name, importedVar);
                 return Optional.of(importedVar);
             } else {

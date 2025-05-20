@@ -25,7 +25,6 @@ public class Lobby {
                 players.add(player);
             }
         }
-
         System.out.println(players);
     }
 
