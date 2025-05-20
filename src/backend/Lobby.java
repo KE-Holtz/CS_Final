@@ -24,8 +24,9 @@ public class Lobby {
             if(!players.contains(player)){
                 players.add(player);
             }
-            
         }
+
+        System.out.println(players);
     }
 
     public void makeClientFiles(){

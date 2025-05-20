@@ -41,6 +41,8 @@ public class Player {
 
         publicVarsDir = new File(playerFolder.getAbsolutePath() + "\\" + "publicVars");
         playerFiles.add(publicVarsDir);
+
+        publicVars = new HashMap<>();
     }
 
     public static Player fromFile(File playerFile){

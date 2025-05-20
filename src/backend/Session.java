@@ -125,6 +125,7 @@ public class Session {
         game.startGame();
         while (game.periodic()){
             lobby.synchronize();
+            System.out.println("[DEBUG] Synchonized");
         }
         game.endGame();
         System.out.println("Game ended");
