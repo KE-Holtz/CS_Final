@@ -11,6 +11,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,8 +24,8 @@ import gameplay.games.Game;
 import gameplay.games.ReadWriteGame;
 
 public class Main {
-    private static JFrame       frame            = new JFrame();
-    private final static String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
+    private static JFrame frame = new JFrame();
+    private final static String sessionSpacePath = "C:\\Users\\natha\\Downloads\\testServer";
 
     public static void main(String[] args) {
         Scanner temp = new Scanner(System.in);
@@ -31,8 +33,10 @@ public class Main {
         boolean valid = false;
         boolean hosting = false;
 
+        JPanel screen = new JPanel();
         JPanel labelPanel = new JPanel();
-        JPanel fieldInputs = new JPanel();
+        JPanel buttons = new JPanel();
+        JPanel input = new JPanel();
 
         Font font = new Font("Arial", Font.PLAIN, 20);
 
@@ -41,19 +45,20 @@ public class Main {
         frame.setLayout(new BorderLayout());
         frame.setVisible(true);
 
-        labelPanel.setLayout(new GridBagLayout());
-        labelPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        fieldInputs.setLayout(new GridBagLayout());
-        fieldInputs.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        screen.setLayout(new GridBagLayout());
+        screen.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        buttons.setLayout(new FlowLayout());
+        buttons.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new java.awt.Insets(10, 10, 10, 10);
-
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.weightx = 1;
         gbc.gridx = 0;
-        gbc.gridy = 1;
-        frame.add(labelPanel);
-        frame.add(fieldInputs);
-        frame.setSize(600, 600);
+        gbc.gridy = 0;
+
+        frame.add(screen);
+        frame.setSize(600, 200);
 
         JLabel label1 = new JLabel();
 
@@ -62,6 +67,10 @@ public class Main {
         JButton yes = new JButton("Yes");
         JButton no = new JButton("No");
         JButton enter = new JButton("Enter");
+
+        label1.setFont(font);
+        label1.setText("Are you hosting?");
+        label1.setVisible(true);
 
         yes.setFocusPainted(false);
         yes.setBackground(Color.WHITE);
@@ -75,24 +84,20 @@ public class Main {
         enter.setBackground(Color.WHITE);
         enter.setFont(font);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        fieldInputs.add(userText, gbc);
-        gbc.gridy = 0;
-        gbc.gridx = 0;
-        fieldInputs.add(yes, gbc);
-        gbc.gridx = 1;
-        fieldInputs.add(no, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = -1;
-        fieldInputs.add(enter, gbc);
-
-        label1.setFont(font);
-        label1.setText("Are you hosting?");
-        label1.setVisible(true);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
         labelPanel.add(label1);
+
+        buttons.add(yes);
+        buttons.add(no);
+
+        input.add(userText);
+        input.add(enter);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        screen.add(labelPanel, gbc);
+        gbc.gridy = 1;
+        screen.add(buttons, gbc);
+        screen.add(input, gbc);
 
         userText.setColumns(20);
         userText.setVisible(false);
@@ -165,28 +170,35 @@ public class Main {
             userText.setVisible(false);
             enter.setVisible(false);
 
-            ArrayList<Button> sessionButtons = new ArrayList<>();
+            ArrayList<JButton> sessionButtons = new ArrayList<>();
             final String[] sessionNameTemp = { "" };
             int numOfFiles = new File(sessionSpacePath).list().length;
             while (sessionNameTemp[0].equals("")) {
                 for (String i : new File(sessionSpacePath).list()) {
                     final String rawSessionName = decodeString(i);
-                    Button sessionButton = new Button(i);
+                    JButton sessionButton = new JButton(i);
+                    sessionButton.setName(i);
                     boolean exists = false;
                     for (int j = 0; j < sessionButtons.size(); j++) {
                         if (sessionButtons.get(j)
-                                          .getLabel()
-                                          .equals(sessionButton.getLabel())) {
+                                .getName()
+                                .equals(sessionButton.getName())) {
                             exists = true;
                         }
                     }
                     if (!exists) {
                         sessionButton.setVisible(true);
+                        sessionButton.setFocusPainted(false);
+                        sessionButton.setBackground(Color.WHITE);
+                        Icon icon = new ImageIcon("src/images/folder.png");
+                        sessionButton.setIcon(icon);
+                        sessionButton.setHorizontalTextPosition(JButton.CENTER);
+                        sessionButton.setVerticalTextPosition(JButton.BOTTOM);
                         sessionButtons.add(sessionButton);
-                        fieldInputs.add(sessionButton, gbc);
+                        buttons.add(sessionButton, gbc);
                         sessionButton.addActionListener(e -> {
                             sessionNameTemp[0] = rawSessionName;
-                            for (Component component : fieldInputs.getComponents()) {
+                            for (Component component : screen.getComponents()) {
                                 if (component instanceof Button) {
                                     component.setVisible(false);
                                 }
@@ -194,8 +206,8 @@ public class Main {
                         });
                     }
                 }
-                fieldInputs.revalidate();
-                fieldInputs.repaint();
+                screen.revalidate();
+                screen.repaint();
                 while (sessionNameTemp[0].equals("")
                         && new File(sessionSpacePath).list().length == numOfFiles) {
                     try {
@@ -208,6 +220,9 @@ public class Main {
             }
             sessionName = sessionNameTemp[0];
         }
+        buttons.removeAll();
+        buttons.revalidate();
+        buttons.repaint();
         label1.setText("Enter your name:");
         userText.setVisible(true);
         enter.setVisible(true);
@@ -239,11 +254,13 @@ public class Main {
         }
         String name = nameTemp[0];
         session = new Session(sessionName, sessionSpacePath, name, games, hosting);
+        frame.dispose();
         temp.next();// DEBUG - Wait to clean up
         temp.nextLine();
         session.runGame("ReadWrite");// TODO: Add games
         while (!session.clean()) {
-            System.out.println("[DEBUG] Failed to clean up session. Enter \"exit\" to force quit or anything else to try again.");
+            System.out.println(
+                    "[DEBUG] Failed to clean up session. Enter \"exit\" to force quit or anything else to try again.");
             if (temp.nextLine()
                     .equalsIgnoreCase("exit")) {
                 break;
