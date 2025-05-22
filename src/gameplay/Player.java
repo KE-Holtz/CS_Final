@@ -82,9 +82,11 @@ public class Player {
                 publicVars.put(name, importedVar);
                 return Optional.of(importedVar);
             } else {
+                System.out.println("DEBUG: File is silly: " +publicVarsDir.getName() + "\\" + name);
                 return Optional.empty();
             }
         }
+        System.out.println("DEBUG: publicVar is in hashmap:" + publicVars.get(name));
         return Optional.ofNullable(publicVars.get(name));
     }
 
