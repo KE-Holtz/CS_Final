@@ -22,12 +22,15 @@ import javax.swing.JTextField;
 import backend.Session;
 import gameplay.games.Game;
 import gameplay.games.ReadWriteGame;
+import frontend.*;
 
 public class Main {
     private static JFrame frame = new JFrame();
-    private final static String sessionSpacePath = "C:\\Users\\natha\\Downloads\\testServer";
+    private final static String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
 
     public static void main(String[] args) {
+        frame.setLayout(new BorderLayout());
+
         Scanner temp = new Scanner(System.in);
         String host = "";
         boolean valid = false;
@@ -39,11 +42,6 @@ public class Main {
         JPanel input = new JPanel();
 
         Font font = new Font("Arial", Font.PLAIN, 20);
-
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setLayout(new BorderLayout());
-        frame.setVisible(true);
 
         screen.setLayout(new GridBagLayout());
         screen.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -58,7 +56,6 @@ public class Main {
         gbc.gridy = 0;
 
         frame.add(screen);
-        frame.setSize(600, 200);
 
         JLabel label = new JLabel();
 
@@ -103,6 +100,12 @@ public class Main {
         userText.setVisible(false);
         userText.setFont(font);
         enter.setVisible(false);
+
+        frame.pack();
+        frame.setSize(600, 200);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
 
         final boolean[] hostingTemp = { false };
         yes.addActionListener(e -> {

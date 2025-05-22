@@ -1,5 +1,6 @@
 package backend;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -161,9 +163,7 @@ public class Session {
 
         JFrame frame = new JFrame("Lobby");
 
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setSize(600, 600);
-        frame.setVisible(true);
+        frame.setLayout(new BorderLayout());
 
         JPanel panel = new JPanel();
         JPanel playerPanel = new JPanel();
@@ -179,15 +179,6 @@ public class Session {
         JButton gameButton = new JButton("Games");
         JButton backButton = new JButton("Back");
 
-        backButton.setBackground(Color.WHITE);
-        backButton.setFocusPainted(false);
-        backButton.setFont(buttonFont);
-        backButton.setVisible(false);
-        backPanel.add(backButton);
-        backButton.setLocation(10, 10);
-        frame.add(backPanel);
-        backPanel.setVisible(true);
-
         JLabel selectedGame = new JLabel("Selected Game: ");
         selectedGame.setFont(playerFont);
         selectedGame.setVisible(true);
@@ -198,9 +189,15 @@ public class Session {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        frame.add(panel);
+        frame.add(panel, BorderLayout.CENTER);
+        frame.add(backPanel, BorderLayout.NORTH);
 
         panel.add(selectedGamePanel, gbc);
+
+        backButton.setBackground(Color.WHITE);
+        backButton.setFocusPainted(false);
+        backButton.setFont(buttonFont);
+        backButton.setVisible(false);
 
         startButton.setBackground(Color.WHITE);
         startButton.setFocusPainted(false);
@@ -218,6 +215,8 @@ public class Session {
         gamePanel.setLayout(new GridBagLayout());
         buttons.setLayout(new GridBagLayout());
         panel.setLayout(new GridBagLayout());
+        backPanel.setLayout(new BorderLayout());
+        backPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         buttons.add(startButton, gbc);
         gbc.gridy++;
@@ -225,6 +224,7 @@ public class Session {
         gbc.gridy++;
         buttons.add(gameButton, gbc);
         gbc.gridy = 1;
+        backPanel.add(backButton, BorderLayout.WEST);
 
         panel.add(buttons, gbc);
 
@@ -241,12 +241,13 @@ public class Session {
         playerPanel.setVisible(false);
         gamePanel.setVisible(false);
         buttons.setVisible(true);
+        backPanel.setVisible(true);
 
-        buttons.revalidate();
-        buttons.repaint();
-
-        panel.revalidate();
-        panel.repaint();
+        frame.pack();
+        frame.setSize(600, 600);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
 
         final boolean[] clicked = { false };
         final int[] currentPanel = { 0 };
@@ -266,8 +267,10 @@ public class Session {
         }
 
         startButton.addActionListener(e -> {
-            clicked[0] = true;
-            currentPanel[0] = 3;
+            if (!selectedGameName[0].equals("")) {
+                clicked[0] = true;
+                currentPanel[0] = 3;
+            }
         });
         playerButton.addActionListener(e -> {
             clicked[0] = true;
@@ -330,6 +333,18 @@ public class Session {
         }
     }
 
+    public JPanel getPlayerPanel(Font playerFont, GridBagConstraints gbc) {
+        Player[] players = lobby.getPlayers();
+        JPanel playerPanel = new JPanel();
+        for (Player p : players) {
+            JLabel label = new JLabel(p.getName());
+            label.setFont(playerFont);
+            playerPanel.add(label, gbc);
+            gbc.gridy++;
+        }
+        return playerPanel;
+    }
+
     public JPanel getGamePanel(Font gameFont, GridBagConstraints gbc) {
         JPanel gamePanel = new JPanel();
         for (String gameName : games.keySet()) {
@@ -343,17 +358,6 @@ public class Session {
         return gamePanel;
     }
 
-    public JPanel getPlayerPanel(Font playerFont, GridBagConstraints gbc) {
-        Player[] players = lobby.getPlayers();
-        JPanel playerPanel = new JPanel();
-        for (Player p : players) {
-            JLabel label = new JLabel(p.getName());
-            label.setFont(playerFont);
-            playerPanel.add(label, gbc);
-            gbc.gridy++;
-        }
-        return playerPanel;
-    }
 
     public void join() {
 
