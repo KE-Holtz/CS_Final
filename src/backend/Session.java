@@ -1,8 +1,18 @@
 package backend;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import gameplay.Player;
 import gameplay.games.Game;
@@ -114,7 +124,8 @@ public class Session {
         Game game = games.get(gameName);
         game.initialize(this);
         game.startGame();
-        while (game.periodic());
+        while (game.periodic())
+            ;
         game.endGame();
         System.out.println("Game ended");
     }
@@ -141,5 +152,210 @@ public class Session {
 
     public boolean clientIsHost() {
         return isHost;
+    }
+
+    public void host() {
+        Font buttonFont = new Font("Arial", Font.PLAIN, 40);
+        Font playerFont = new Font("Arial", Font.PLAIN, 20);
+        Font gameFont = new Font("Arial", Font.PLAIN, 20);
+
+        JFrame frame = new JFrame("Lobby");
+
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setSize(600, 600);
+        frame.setVisible(true);
+
+        JPanel panel = new JPanel();
+        JPanel playerPanel = new JPanel();
+        JPanel gamePanel = new JPanel();
+        JPanel buttons = new JPanel();
+        JPanel backPanel = new JPanel();
+        JPanel selectedGamePanel = new JPanel();
+
+        backPanel.setLocation(10, 10);
+
+        JButton startButton = new JButton("Start Game");
+        JButton playerButton = new JButton("Players");
+        JButton gameButton = new JButton("Games");
+        JButton backButton = new JButton("Back");
+
+        backButton.setBackground(Color.WHITE);
+        backButton.setFocusPainted(false);
+        backButton.setFont(buttonFont);
+        backButton.setVisible(false);
+        backPanel.add(backButton);
+        backButton.setLocation(10, 10);
+        frame.add(backPanel);
+        backPanel.setVisible(true);
+
+        JLabel selectedGame = new JLabel("Selected Game: ");
+        selectedGame.setFont(playerFont);
+        selectedGame.setVisible(true);
+        selectedGamePanel.add(selectedGame);
+        selectedGamePanel.setVisible(true);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        frame.add(panel);
+
+        panel.add(selectedGamePanel, gbc);
+
+        startButton.setBackground(Color.WHITE);
+        startButton.setFocusPainted(false);
+        startButton.setFont(buttonFont);
+
+        playerButton.setBackground(Color.WHITE);
+        playerButton.setFocusPainted(false);
+        playerButton.setFont(buttonFont);
+
+        gameButton.setBackground(Color.WHITE);
+        gameButton.setFocusPainted(false);
+        gameButton.setFont(buttonFont);
+
+        playerPanel.setLayout(new GridBagLayout());
+        gamePanel.setLayout(new GridBagLayout());
+        buttons.setLayout(new GridBagLayout());
+        panel.setLayout(new GridBagLayout());
+
+        buttons.add(startButton, gbc);
+        gbc.gridy++;
+        buttons.add(playerButton, gbc);
+        gbc.gridy++;
+        buttons.add(gameButton, gbc);
+        gbc.gridy = 1;
+
+        panel.add(buttons, gbc);
+
+        gbc.gridy = 0;
+        playerPanel = getPlayerPanel(playerFont, gbc);
+        gbc.gridy++;
+        panel.add(playerPanel, gbc);
+
+        gbc.gridy = 0;
+        gamePanel = getGamePanel(gameFont, gbc);
+        gbc.gridy++;
+        panel.add(gamePanel, gbc);
+
+        playerPanel.setVisible(false);
+        gamePanel.setVisible(false);
+        buttons.setVisible(true);
+
+        buttons.revalidate();
+        buttons.repaint();
+
+        panel.revalidate();
+        panel.repaint();
+
+        final boolean[] clicked = { false };
+        final int[] currentPanel = { 0 };
+        final String[] selectedGameName = { "" };
+
+        for (Component c : gamePanel.getComponents()) {
+            if (c instanceof JButton) {
+                JButton button = (JButton) c;
+                button.addActionListener(e -> {
+                    currentPanel[0] = 3;
+                    selectedGameName[0] = button.getText();
+                    selectedGame.setText("Selected Game: " + selectedGameName[0]);
+                    selectedGamePanel.revalidate();
+                    selectedGamePanel.repaint();
+                });
+            }
+        }
+
+        startButton.addActionListener(e -> {
+            clicked[0] = true;
+            currentPanel[0] = 3;
+        });
+        playerButton.addActionListener(e -> {
+            clicked[0] = true;
+            currentPanel[0] = 1;
+        });
+        gameButton.addActionListener(e -> {
+            clicked[0] = true;
+            currentPanel[0] = 2;
+        });
+        backButton.addActionListener(e -> {
+            clicked[0] = false;
+            currentPanel[0] = 0;
+        });
+
+        while (currentPanel[0] != 3 || clicked[0]) {
+
+            if (currentPanel[0] == 1) {
+                playerPanel = getPlayerPanel(playerFont, gbc);
+                playerPanel.revalidate();
+                playerPanel.repaint();
+                playerPanel.setVisible(true);
+                gamePanel.setVisible(false);
+                buttons.setVisible(false);
+                backButton.setVisible(true);
+                while (clicked[0]) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (currentPanel[0] == 2) {
+                playerPanel.setVisible(false);
+                gamePanel.setVisible(true);
+                buttons.setVisible(false);
+                backButton.setVisible(true);
+                while (clicked[0]) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (currentPanel[0] == 3) {
+                frame.dispose();
+                clicked[0] = false;
+            } else {
+                playerPanel.setVisible(false);
+                gamePanel.setVisible(false);
+                buttons.setVisible(true);
+                backButton.setVisible(false);
+                while (!clicked[0]) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    public JPanel getGamePanel(Font gameFont, GridBagConstraints gbc) {
+        JPanel gamePanel = new JPanel();
+        for (String gameName : games.keySet()) {
+            JButton button = new JButton(gameName);
+            button.setFont(gameFont);
+            button.setBackground(Color.WHITE);
+            button.setFocusPainted(false);
+            gamePanel.add(button, gbc);
+            gbc.gridy++;
+        }
+        return gamePanel;
+    }
+
+    public JPanel getPlayerPanel(Font playerFont, GridBagConstraints gbc) {
+        Player[] players = lobby.getPlayers();
+        JPanel playerPanel = new JPanel();
+        for (Player p : players) {
+            JLabel label = new JLabel(p.getName());
+            label.setFont(playerFont);
+            playerPanel.add(label, gbc);
+            gbc.gridy++;
+        }
+        return playerPanel;
+    }
+
+    public void join() {
+
     }
 }

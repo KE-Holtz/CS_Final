@@ -40,7 +40,7 @@ public class Main {
 
         Font font = new Font("Arial", Font.PLAIN, 20);
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
         frame.setVisible(true);
@@ -60,7 +60,7 @@ public class Main {
         frame.add(screen);
         frame.setSize(600, 200);
 
-        JLabel label1 = new JLabel();
+        JLabel label = new JLabel();
 
         JTextField userText = new JTextField();
 
@@ -68,9 +68,9 @@ public class Main {
         JButton no = new JButton("No");
         JButton enter = new JButton("Enter");
 
-        label1.setFont(font);
-        label1.setText("Are you hosting?");
-        label1.setVisible(true);
+        label.setFont(font);
+        label.setText("Are you hosting?");
+        label.setVisible(true);
 
         yes.setFocusPainted(false);
         yes.setBackground(Color.WHITE);
@@ -84,7 +84,7 @@ public class Main {
         enter.setBackground(Color.WHITE);
         enter.setFont(font);
 
-        labelPanel.add(label1);
+        labelPanel.add(label);
 
         buttons.add(yes);
         buttons.add(no);
@@ -134,7 +134,7 @@ public class Main {
         Session session;
         String sessionName;
         if (hosting) {
-            label1.setText("Enter the session name: ");
+            label.setText("Enter the session name: ");
             userText.setVisible(true);
             enter.setVisible(true);
 
@@ -150,7 +150,7 @@ public class Main {
                 }
             }
             while (new File(sessionSpacePath + "\\" + sessionNameTemp[0]).exists()) {
-                label1.setText("Session already exists. Please enter a valid session name: ");
+                label.setText("Session already exists. Please enter a valid session name: ");
                 sessionNameTemp[0] = "";
                 enter.addActionListener(e -> {
                     sessionNameTemp[0] = userText.getText();
@@ -166,7 +166,7 @@ public class Main {
             sessionName = sessionNameTemp[0];
             sessionName = encodeString(sessionName);
         } else {
-            label1.setText("click on the session you would like to join");
+            label.setText("click on the session you would like to join");
             userText.setVisible(false);
             enter.setVisible(false);
 
@@ -223,7 +223,7 @@ public class Main {
         buttons.removeAll();
         buttons.revalidate();
         buttons.repaint();
-        label1.setText("Enter your name:");
+        label.setText("Enter your name:");
         userText.setVisible(true);
         enter.setVisible(true);
         final String[] nameTemp = { "" };
@@ -239,7 +239,7 @@ public class Main {
         }
         while (new File(sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\"
                 + nameTemp[0]).exists()) {
-            label1.setText("Name already exists. Please enter a valid name: ");
+            label.setText("Name already exists. Please enter a valid name: ");
             nameTemp[0] = "";
             enter.addActionListener(e -> {
                 nameTemp[0] = userText.getText();
@@ -255,6 +255,13 @@ public class Main {
         String name = nameTemp[0];
         session = new Session(sessionName, sessionSpacePath, name, games, hosting);
         frame.dispose();
+        // todo add a lobby screen, different for hosting and joining, game selection,
+        // player list, ect...
+        if (hosting) {
+            session.host();
+        } else {
+            session.join();
+        }
         temp.next();// DEBUG - Wait to clean up
         temp.nextLine();
         session.runGame("ReadWrite");// TODO: Add games
