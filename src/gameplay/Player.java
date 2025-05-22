@@ -69,7 +69,7 @@ public class Player {
     public Optional<PublicVar> getVariable(String name) {
         System.out.println("DEBUG: Getting variable " + name);
         if (publicVars.get(name) == null){
-            if(new File(publicVarsDir.getName() + "\\" + name).exists()){
+            if(new File(publicVarsDir.getPath() + "\\" + name).exists()){
                 System.out.println("DEBUG: Variable " + name + " not found in memory, loading from file");
                 PublicVar importedVar = PublicVar.fromFile(this, new File(publicVarsDir.getPath() + "\\" + name));
                 if (importedVar == null) {
