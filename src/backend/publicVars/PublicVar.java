@@ -11,9 +11,6 @@ import backend.Session;
 import gameplay.Player;
 
 public class PublicVar<T> {
-
-    private final String playerName;
-
     private final String name;
     private final File   varFile;
 
@@ -24,10 +21,13 @@ public class PublicVar<T> {
     public enum Tag {
         DEFAULT,
         OVERFLOW,
+        BOOL,
+        DOUBLE,
+        INT,
+        STRING,
     }
 
     public PublicVar(Player player, String name, Function<String, T> valueParser) {
-        playerName = player.getName();
         this.name = name;
         this.varFile =
                 new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
@@ -39,7 +39,6 @@ public class PublicVar<T> {
     }
 
     public PublicVar(Player player, String name, Function<String, T> valueParser, T value) {
-        playerName = player.getName();
         this.name = name;
         this.varFile =
                 new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
@@ -63,7 +62,7 @@ public class PublicVar<T> {
         }
     }
 
-    public String readOverflow(File file) {
+    public static String readOverflow(File file) {
         ArrayList<Tag> tags = getTags(file.getName());
         if (tags.contains(Tag.OVERFLOW)) {
             return valueOf(file.getName()) + readOverflow(file.listFiles()[0]);
@@ -104,7 +103,7 @@ public class PublicVar<T> {
         }
     }
 
-    public ArrayList<Tag> getTags(String str) {
+    public static ArrayList<Tag> getTags(String str) {
         String tagStr = str.substring(str.indexOf("(") + 1, str.indexOf(")"));
         ArrayList<Tag> tags = new ArrayList<>();
         for (String s : tagStr.split(",")) {
@@ -157,7 +156,7 @@ public class PublicVar<T> {
         }
     }
 
-    private String valueOf(String value) {
+    private static String valueOf(String value) {
         return value.substring(value.indexOf(")") + 1);
     }
 
@@ -165,7 +164,16 @@ public class PublicVar<T> {
         return name;
     }
 
-    public String getType() {
-        return this.getClass().getName();
+    public static PublicVar fromFile(Player player, File file){
+        String val = file.list()[0];
+        if (getTags(val).contains(Tag.BOOL)){
+            return new PublicBoolean(player, file.getName());
+        } else if (getTags(val).contains(Tag.INT)){
+            return new PublicInt(player, file.getName());
+        } else if (getTags(val).contains(Tag.DOUBLE)){
+            return new PublicDouble(player, file.getName());
+        } else{
+            return new PublicString(player, file.getName());
+        }
     }
 }

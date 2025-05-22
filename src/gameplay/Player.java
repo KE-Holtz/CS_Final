@@ -69,7 +69,7 @@ public class Player {
     public Optional<PublicVar> getVariable(String name) {
         if (publicVars.get(name) == null){
             if(new File(publicVarsDir.getName() + "\\" + name).exists()){
-                PublicVar importedVar = new PublicVar<>(this, name, null);
+                PublicVar importedVar = PublicVar.fromFile(this, new File(publicVarsDir.getPath() + "\\" + name));
                 System.out.println(importedVar.getName());
                 publicVars.put(name, importedVar);
                 return Optional.of(importedVar);
