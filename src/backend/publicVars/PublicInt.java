@@ -11,7 +11,7 @@ public class PublicInt extends PublicVar<Integer> {
     }
 @Override
     public void setValue(Integer value, Tag... tags) {
-        Tag[] tags2 = new Tag[tags.length - 1];
+        Tag[] tags2 = new Tag[tags.length + 1];
         for (int i = 0; i < tags.length; i++) {
             tags2[i] = tags[i];
         }
