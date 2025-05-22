@@ -115,7 +115,7 @@ public class PublicVar<T> {
     }
 
     public void setValue(T value) {
-        setValue(value, null);
+        setValue(value, new Tag[0]);
     }
 
     public void setValue(T value, Tag... tags) {
