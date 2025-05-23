@@ -22,18 +22,15 @@ import javax.swing.JTextField;
 import backend.Session;
 import gameplay.games.Game;
 import gameplay.games.ReadWriteGame;
-import frontend.*;
 
 public class Main {
     private static JFrame frame = new JFrame();
-    private final static String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
+    private final static String sessionSpacePath = "C:\\Users\\natha\\Downloads\\testServer";
 
     public static void main(String[] args) {
         frame.setLayout(new BorderLayout());
 
         Scanner temp = new Scanner(System.in);
-        String host = "";
-        boolean valid = false;
         boolean hosting = false;
 
         JPanel screen = new JPanel();
@@ -226,6 +223,7 @@ public class Main {
         buttons.removeAll();
         buttons.revalidate();
         buttons.repaint();
+        userText.setText("");
         label.setText("Enter your name:");
         userText.setVisible(true);
         enter.setVisible(true);
