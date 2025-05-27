@@ -1,11 +1,18 @@
 package gameplay.games;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
+import backend.Lobby;
 import backend.Session;
 import backend.globalvars.GlobalString;
+import backend.publicVars.PublicString;
+import backend.publicVars.PublicVar;
+import gameplay.Player;
 
 enum State {
+    READ_BIO,
+    WRITE_BIO,
     READ_ONCE,
     WRITE_ONCE,
     READ_CONTINUOUS,
@@ -14,33 +21,58 @@ enum State {
 }
 
 public class ReadWriteGame extends Game {
-    private static final String name = "ReadWrite";
 
     private State state;
     private final Scanner scanner = new Scanner(System.in);
 
-    private GlobalString globalString;
+    private Lobby lobby;
+    private ArrayList<Player> partners;
+    private Player self;
+    private PublicString bio;
 
-    public ReadWriteGame() {
-        setName(name);
+    private GlobalString globalString;
+    public ReadWriteGame(){
+        setName("ReadWrite");
     }
 
     @Override
     public void initialize(Session session) {
+        lobby = session.getLobby();
+        self = lobby.getClientPlayer();
         globalString = new GlobalString(session, "globalString");
     }
 
     @Override
     public void startGame() {
         System.out.println("Starting ReadWrite game");
+        bio = new PublicString(self, "bio", "default value");
         while (setState());
     }
 
     @Override
     public boolean periodic() {
         switch (state) {
+            case READ_BIO:
+                System.out.println("Your bio is: " + bio.getValue());
+                partners = lobby.getPlayers();
+                partners.remove(self);
+                for(Player other:partners){
+                    if(other.getVariable("bio").isPresent()){
+                        System.out.println(other.getName()+"'s bio is: " + ((PublicString)(other.getVariable("bio").get())).getValue());
+                    } else{
+                        System.out.println(other.getName() + " has no bio");
+                    }
+                }
+                setState();
+                break;
+            case WRITE_BIO:
+                System.out.println("Enter your new bio");
+                String newBio = scanner.nextLine();
+                bio.setValue(newBio);
+                setState();
+                break;
             case READ_ONCE:
-                System.out.println("Reading once: " + globalString.getValue());
+                System.out.println("Reading once: " + globalString.getValue().orElse("Nothing"));
                 setState();
                 break;
             case WRITE_ONCE:
@@ -50,7 +82,7 @@ public class ReadWriteGame extends Game {
                 break;
             case READ_CONTINUOUS:
                 do {
-                    System.out.println("Reading continuously: " + globalString.getValue());
+                    System.out.println("Reading continuously: " + globalString.getValue().orElse("Nothing"));
                     System.out.println("Enter 'stop' to stop reading, anything else to continue");
                 } while (scanner.next() != "stop");
                 break;
@@ -77,13 +109,21 @@ public class ReadWriteGame extends Game {
     // True == failed
     public boolean setState() {
         System.out.println("Select a state: ");
-        System.out.println("1. READ_ONCE -> ro");
-        System.out.println("2. WRITE_ONCE -> wo");
-        System.out.println("3. READ_CONTINUOUS -> rc");
-        System.out.println("4. WRITE_CONTINUOUS -> wc");
-        System.out.println("5. EXITING -> exit");
+        System.out.println("1. Read_BIO -> rb");
+        System.out.println("2. WRITE_BIO -> wb");
+        System.out.println("3. READ_ONCE -> ro");
+        System.out.println("4. WRITE_ONCE -> wo");
+        System.out.println("5. READ_CONTINUOUS -> rc");
+        System.out.println("6. WRITE_CONTINUOUS -> wc");
+        System.out.println("7. EXITING -> exit");
         String input = scanner.nextLine();
         switch (input) {
+            case "rb":
+                state = State.READ_BIO;
+                break;
+            case "wb":
+                state = State.WRITE_BIO;
+                break;
             case "ro":
                 state = State.READ_ONCE;
                 break;
