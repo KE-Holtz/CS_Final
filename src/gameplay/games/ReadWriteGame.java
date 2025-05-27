@@ -25,8 +25,6 @@ public class ReadWriteGame extends Game {
     private State state;
     private final Scanner scanner = new Scanner(System.in);
 
-    private Session session;
-
     private Lobby lobby;
     private ArrayList<Player> partners;
     private Player self;
@@ -39,7 +37,6 @@ public class ReadWriteGame extends Game {
 
     @Override
     public void initialize(Session session) {
-        this.session = session;
         lobby = session.getLobby();
         self = lobby.getClientPlayer();
         globalString = new GlobalString(session, "globalString");
@@ -75,7 +72,7 @@ public class ReadWriteGame extends Game {
                 setState();
                 break;
             case READ_ONCE:
-                System.out.println("Reading once: " + globalString.getValue());
+                System.out.println("Reading once: " + globalString.getValue().orElse("Nothing"));
                 setState();
                 break;
             case WRITE_ONCE:
@@ -85,7 +82,7 @@ public class ReadWriteGame extends Game {
                 break;
             case READ_CONTINUOUS:
                 do {
-                    System.out.println("Reading continuously: " + globalString.getValue());
+                    System.out.println("Reading continuously: " + globalString.getValue().orElse("Nothing"));
                     System.out.println("Enter 'stop' to stop reading, anything else to continue");
                 } while (scanner.next() != "stop");
                 break;

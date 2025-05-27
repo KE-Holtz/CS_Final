@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -71,7 +72,7 @@ public class GlobalVar<T> {
     }
 
     // ? Returns null if no value is found - is this ok?
-    public T getValue() {
+    public Optional<T> getValue() {
         File[] values = Stream.of(playerSpaceFolder.listFiles())
                 .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
                 .map(File::new)
@@ -94,7 +95,7 @@ public class GlobalVar<T> {
                 newestTime = instance.lastModified();
             }
         }
-        return value;
+        return Optional.ofNullable(value);
     }
 
     public String readOverflow(File file) {
@@ -174,7 +175,7 @@ public class GlobalVar<T> {
     }
 
     public void synchronize() {
-        setValue(getValue());
+        setValue(getValue().orElse(null));
     }
 
     private void deleteContents(File file) {
