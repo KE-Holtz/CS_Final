@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -113,8 +114,8 @@ public class HostLobbyWindow {
         gameButton.setFocusPainted(false);
         gameButton.setFont(buttonFont);
 
-        playerPanel.setLayout(new FlowLayout());
-        gamePanel.setLayout(new FlowLayout());
+        playerPanel.setLayout(new WrappingLayout(7,5, WrappingLayout.CENTER));
+        gamePanel.setLayout(new WrappingLayout(5,5, WrappingLayout.CENTER));
         buttons.setLayout(new GridBagLayout());
         panel.setLayout(new GridBagLayout());
         backPanel.setLayout(new BorderLayout());
@@ -221,7 +222,7 @@ public class HostLobbyWindow {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        while (lobby.getPlayers().length > 1) {
+        while (lobby.getPlayers().length > 1 || new File(session.getSessionSpace()).exists()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -229,7 +230,7 @@ public class HostLobbyWindow {
             }
         }
 
-        while (!session.clean()) {
+        while (!session.clean() || new File(session.getSessionSpace()).exists()) {
             System.out.println(
                     "[DEBUG] Failed to clean up session. trying again...");
             try {

@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -59,6 +60,8 @@ public class PlayerLobbyWindow {
         panel.setLayout(new GridBagLayout());
         JPanel selectedGamePanel = new JPanel();
 
+        playerPanel.setLayout(new WrappingLayout(7, 5, WrappingLayout.CENTER));
+
         selectedGame.setFont(font);
         selectedGame.setVisible(true);
         selectedGamePanel.add(selectedGame);
@@ -69,7 +72,7 @@ public class PlayerLobbyWindow {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        frame.add(panel, BorderLayout.CENTER);
+        frame.add(panel, BorderLayout.NORTH);
 
         panel.add(selectedGamePanel, gbc);
         gbc.gridy++;
@@ -207,9 +210,9 @@ public class PlayerLobbyWindow {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        while (!session.clean()) {
+        while (!session.clean() || new File(session.getSessionSpace()).exists()) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

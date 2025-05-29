@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,17 +26,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import frontend.WrappingLayout;
 import backend.Session;
 import gameplay.games.Game;
 import gameplay.games.ReadWriteGame;
 
 public class Main {
     private static JFrame frame = new JFrame();
-    private final static String sessionSpacePath = "C:\\Users\\natha\\Downloads\\testServer";
+    private final static String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
 
     public static void main(String[] args) {
         frame.setLayout(new BorderLayout());
-        frame.setResizable(false);
+        frame.setResizable(true);
 
         Scanner temp = new Scanner(System.in);
         boolean hosting = false;
@@ -54,8 +56,7 @@ public class Main {
         buttons.setLayout(new FlowLayout());
         buttons.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         buttons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        sessionButtons.setLayout(new FlowLayout());
-        sessionButtons.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        sessionButtons.setLayout(new WrappingLayout(5, 5,WrappingLayout.CENTER));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new java.awt.Insets(10, 10, 10, 10);
@@ -218,11 +219,9 @@ public class Main {
                         });
                     }
                 }
-                JScrollPane scrollPane = new JScrollPane(sessionButtons);
-                scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-                screen.add(scrollPane, BorderLayout.CENTER);
+                gbc.gridx = 0;
+                gbc.gridy = 1;
+                screen.add(sessionButtons, gbc);
                 screen.revalidate();
                 screen.repaint();
                 while (sessionNameTemp[0].equals("")
@@ -237,9 +236,9 @@ public class Main {
             }
             sessionName = sessionNameTemp[0];
         }
-        buttons.removeAll();
-        buttons.revalidate();
-        buttons.repaint();
+        sessionButtons.removeAll();
+        sessionButtons.revalidate();
+        sessionButtons.repaint();
         userText.setText("");
         label.setText("Enter your name:");
         userText.setVisible(true);
