@@ -40,6 +40,8 @@ public class PlayerLobbyWindow {
 
     private GridBagConstraints gbc = new GridBagConstraints();
 
+    private int numOfPlayers = 0;
+
     public PlayerLobbyWindow(Lobby lobby, Session session) {
         this.lobby = lobby;
         this.session = session;
@@ -179,46 +181,13 @@ public class PlayerLobbyWindow {
             }
         }
 
-        if (!session.clean()) {
-            waitingForPlayers();
-        }
-    }
-
-    public void waitingForPlayers() {
-        JFrame frame = new JFrame("Closing");
-        frame.setLayout(new BorderLayout());
-
-        Font font = new Font("Arial", Font.PLAIN, 20);
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        JLabel label = new JLabel("Please wait for all players to leave...");
-
-        label.setFont(font);
-        panel.add(label, gbc);
-
-        frame.add(panel, BorderLayout.CENTER);
-
-        frame.pack();
-        frame.setSize(600, 200);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        while (!session.clean() || new File(session.getSessionSpace()).exists()) {
+        while (!session.clean()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-        frame.dispose();
     }
 
     public void update() {
@@ -250,6 +219,9 @@ public class PlayerLobbyWindow {
     }
 
     public void updatePlayerPanel() {
+        if (lobby.getPlayers().length == numOfPlayers)
+            return;
+        numOfPlayers = lobby.getPlayers().length;
         Player[] players = lobby.getPlayers();
         ArrayList<JLabel> playerLabels = new ArrayList<>();
         for (Component c : playerPanel.getComponents()) {

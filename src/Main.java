@@ -3,28 +3,22 @@ import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 
 import frontend.WrappingLayout;
 import backend.Session;
@@ -33,7 +27,7 @@ import gameplay.games.ReadWriteGame;
 
 public class Main {
     private static JFrame frame = new JFrame();
-    private final static String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
+    private final static String sessionSpacePath = "C:\\Users\\natha\\Downloads\\testServer";
 
     public static void main(String[] args) {
         frame.setLayout(new BorderLayout());
@@ -56,7 +50,7 @@ public class Main {
         buttons.setLayout(new FlowLayout());
         buttons.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         buttons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        sessionButtons.setLayout(new WrappingLayout(5, 5,WrappingLayout.CENTER));
+        sessionButtons.setLayout(new WrappingLayout(5, 5, WrappingLayout.CENTER));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new java.awt.Insets(10, 10, 10, 10);
@@ -222,6 +216,8 @@ public class Main {
                 gbc.gridx = 0;
                 gbc.gridy = 1;
                 screen.add(sessionButtons, gbc);
+                sessionButtons.revalidate();
+                sessionButtons.repaint();
                 screen.revalidate();
                 screen.repaint();
                 while (sessionNameTemp[0].equals("")
@@ -254,9 +250,9 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        while (new File(sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\"
-                + nameTemp[0]).exists()) {
-            label.setText("Name already exists. Please enter a valid name: ");
+        while (isValidName(nameTemp[0], sessionName) != "") {
+            String errorMessage = isValidName(nameTemp[0], sessionName);
+            label.setText(errorMessage);
             nameTemp[0] = "";
             enter.addActionListener(e -> {
                 nameTemp[0] = userText.getText();
@@ -272,13 +268,25 @@ public class Main {
         String name = nameTemp[0];
         session = new Session(sessionName, sessionSpacePath, name, games, hosting);
         frame.dispose();
-        // todo add a lobby screen, different for hosting and joining, game selection,
-        // player list, ect...
         if (hosting) {
             session.host("");
         } else {
             session.join();
         }
+    }
+
+    public static String isValidName(String name, String sessionName) {
+        String invalidChars = "#\\/:*?\"<>|";
+        for (char c : invalidChars.toCharArray()) {
+            if (name.indexOf(c) != -1) {
+                return "Invalid character: " + c;
+            }
+        }
+        if (new File(sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\"
+                + name).exists()) {
+            return "Name already exists.";
+        }
+        return "";
     }
 
     public static String encodeString(String s) {

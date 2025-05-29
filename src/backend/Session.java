@@ -76,11 +76,15 @@ public class Session {
     }
 
     public boolean clean() {
-        File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
-        if (!deleteRecursively(sessionFolder)) {
-            return false;
+        if (isHost) {
+            File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
+            if (!deleteRecursively(sessionFolder)) {
+                return false;
+            }
+            return true;
+        } else {
+            return lobby.deleteClientFiles();
         }
-        return true;
     }
 
     // Delete the folder and all of its contents
@@ -217,9 +221,5 @@ public class Session {
         } else {
             runGame(lw.getSelectedGameName(), false);
         }
-    }
-
-    public void returnToLobby() {
-
     }
 }

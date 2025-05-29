@@ -51,6 +51,8 @@ public class HostLobbyWindow {
     private Font playerFont = new Font("Arial", Font.PLAIN, 20);
     private Font gameFont = new Font("Arial", Font.PLAIN, 20);
 
+    private int numOfPlayers = 0;
+
     private GridBagConstraints gbc = new GridBagConstraints();
 
     public HostLobbyWindow(Lobby lobby, Session session, HashMap<String, Game> games, String gameName) {
@@ -114,8 +116,8 @@ public class HostLobbyWindow {
         gameButton.setFocusPainted(false);
         gameButton.setFont(buttonFont);
 
-        playerPanel.setLayout(new WrappingLayout(7,5, WrappingLayout.CENTER));
-        gamePanel.setLayout(new WrappingLayout(5,5, WrappingLayout.CENTER));
+        playerPanel.setLayout(new WrappingLayout(7, 5, WrappingLayout.CENTER));
+        gamePanel.setLayout(new WrappingLayout(5, 5, WrappingLayout.CENTER));
         buttons.setLayout(new GridBagLayout());
         panel.setLayout(new GridBagLayout());
         backPanel.setLayout(new BorderLayout());
@@ -222,7 +224,7 @@ public class HostLobbyWindow {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        while (lobby.getPlayers().length > 1 || new File(session.getSessionSpace()).exists()) {
+        while (lobby.getPlayers().length > 1) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -230,7 +232,7 @@ public class HostLobbyWindow {
             }
         }
 
-        while (!session.clean() || new File(session.getSessionSpace()).exists()) {
+        while (!session.clean()) {
             System.out.println(
                     "[DEBUG] Failed to clean up session. trying again...");
             try {
@@ -304,6 +306,9 @@ public class HostLobbyWindow {
     }
 
     public void updatePlayerPanel() {
+        if (lobby.getPlayers().length == numOfPlayers)
+            return;
+        numOfPlayers = lobby.getPlayers().length;
         Player[] players = lobby.getPlayers();
         ArrayList<JLabel> playerLabels = new ArrayList<>();
         for (Component c : playerPanel.getComponents()) {
