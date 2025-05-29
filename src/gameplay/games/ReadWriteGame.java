@@ -33,7 +33,8 @@ public class ReadWriteGame extends Game {
     @Override
     public void startGame() {
         System.out.println("Starting ReadWrite game");
-        while (setState());
+        while (setState())
+            ;
     }
 
     @Override

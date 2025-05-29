@@ -3,21 +3,27 @@ import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import backend.Session;
 import gameplay.games.Game;
@@ -29,6 +35,7 @@ public class Main {
 
     public static void main(String[] args) {
         frame.setLayout(new BorderLayout());
+        frame.setResizable(false);
 
         Scanner temp = new Scanner(System.in);
         boolean hosting = false;
@@ -36,14 +43,19 @@ public class Main {
         JPanel screen = new JPanel();
         JPanel labelPanel = new JPanel();
         JPanel buttons = new JPanel();
+        JPanel sessionButtons = new JPanel();
         JPanel input = new JPanel();
 
         Font font = new Font("Arial", Font.PLAIN, 20);
 
         screen.setLayout(new GridBagLayout());
         screen.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        screen.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         buttons.setLayout(new FlowLayout());
         buttons.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        buttons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        sessionButtons.setLayout(new FlowLayout());
+        sessionButtons.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new java.awt.Insets(10, 10, 10, 10);
@@ -170,7 +182,7 @@ public class Main {
             userText.setVisible(false);
             enter.setVisible(false);
 
-            ArrayList<JButton> sessionButtons = new ArrayList<>();
+            ArrayList<JButton> sessionButtonsList = new ArrayList<>();
             final String[] sessionNameTemp = { "" };
             int numOfFiles = new File(sessionSpacePath).list().length;
             while (sessionNameTemp[0].equals("")) {
@@ -179,8 +191,8 @@ public class Main {
                     JButton sessionButton = new JButton(i);
                     sessionButton.setName(i);
                     boolean exists = false;
-                    for (int j = 0; j < sessionButtons.size(); j++) {
-                        if (sessionButtons.get(j)
+                    for (int j = 0; j < sessionButtonsList.size(); j++) {
+                        if (sessionButtonsList.get(j)
                                 .getName()
                                 .equals(sessionButton.getName())) {
                             exists = true;
@@ -194,8 +206,8 @@ public class Main {
                         sessionButton.setIcon(icon);
                         sessionButton.setHorizontalTextPosition(JButton.CENTER);
                         sessionButton.setVerticalTextPosition(JButton.BOTTOM);
+                        sessionButtonsList.add(sessionButton);
                         sessionButtons.add(sessionButton);
-                        buttons.add(sessionButton, gbc);
                         sessionButton.addActionListener(e -> {
                             sessionNameTemp[0] = rawSessionName;
                             for (Component component : screen.getComponents()) {
@@ -206,6 +218,11 @@ public class Main {
                         });
                     }
                 }
+                JScrollPane scrollPane = new JScrollPane(sessionButtons);
+                scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+                screen.add(scrollPane, BorderLayout.CENTER);
                 screen.revalidate();
                 screen.repaint();
                 while (sessionNameTemp[0].equals("")
@@ -259,20 +276,9 @@ public class Main {
         // todo add a lobby screen, different for hosting and joining, game selection,
         // player list, ect...
         if (hosting) {
-            session.host();
+            session.host("");
         } else {
             session.join();
-        }
-        temp.next();// DEBUG - Wait to clean up
-        temp.nextLine();
-        session.runGame("ReadWrite");// TODO: Add games
-        while (!session.clean()) {
-            System.out.println(
-                    "[DEBUG] Failed to clean up session. Enter \"exit\" to force quit or anything else to try again.");
-            if (temp.nextLine()
-                    .equalsIgnoreCase("exit")) {
-                break;
-            }
         }
     }
 

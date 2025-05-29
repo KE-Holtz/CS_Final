@@ -1,22 +1,11 @@
 package backend;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import frontend.LobbyWindow;
+import frontend.HostLobbyWindow;
+import frontend.PlayerLobbyWindow;
 import gameplay.Player;
 import gameplay.games.Game;
 
@@ -86,24 +75,10 @@ public class Session {
         return map;
     }
 
-    public void synchronize() {
-        // TODO: implement
-        /*
-         * Synchronizing makes me think that we are going to need more custom
-         * data structures - A custom tree structure for files - A 'Lobby'
-         * Structure that can store players in a way that is easy to
-         * synchronize
-         */
-    }
-
     public boolean clean() {
-        if (isHost) {
-            File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
-            if (!deleteRecursively(sessionFolder)) {
-                return false;
-            }
-        } else {
-            lobby.deleteClientFiles();
+        File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
+        if (!deleteRecursively(sessionFolder)) {
+            return false;
         }
         return true;
     }
@@ -123,14 +98,19 @@ public class Session {
     }
 
     // TODO: temporary
-    public void runGame(String gameName) {
+    public void runGame(String gameName, boolean isHost) {
         Game game = games.get(gameName);
         game.initialize(this);
         game.startGame();
         while (game.periodic())
             ;
         game.endGame();
-        System.out.println("Game ended");
+        if (isHost) {
+            host(game.getName());
+        } else {
+            join();
+        }
+
     }
 
     public String getSessionSpace() {
@@ -157,14 +137,15 @@ public class Session {
         return isHost;
     }
 
-    public void host() {
-        LobbyWindow lw = new LobbyWindow(lobby, games);
+    public void host(String gameName) {
+        HostLobbyWindow lw = new HostLobbyWindow(lobby, this, games, gameName);
 
-        while (lw.getCurrentPanel() != 3 || lw.isClicked()) {
+        while (!lw.isStarted() && !lw.isClosed()) {
 
             if (lw.getCurrentPanel() == 1) {
                 lw.updateCurrentPanel(1);
                 while (lw.isClicked()) {
+                    lw.updatePlayerPanel();
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -182,6 +163,22 @@ public class Session {
                 }
             } else if (lw.getCurrentPanel() == 3) {
                 lw.updateCurrentPanel(3);
+                while (lw.isClicked()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (lw.getCurrentPanel() == 4) {
+                lw.updateCurrentPanel(4);
+                while (lw.isClicked()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             } else {
                 lw.updateCurrentPanel(0);
                 while (!lw.isClicked()) {
@@ -193,9 +190,36 @@ public class Session {
                 }
             }
         }
+        lw.dispose();
+        if (lw.isClosed()) {
+            lw.closeLobby();
+        } else {
+            lw.setHostConnected(false);
+            runGame(lw.getSelectedGameName(), true);
+        }
     }
 
     public void join() {
+        PlayerLobbyWindow lw = new PlayerLobbyWindow(lobby, this);
+        if (!lw.isHostConnected())
+            lw.hostNotConnected();
+        while (!lw.isStarted() && !lw.isClosed()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            lw.update();
+        }
+        lw.dispose();
+        if (lw.isClosed()) {
+            lw.closeLobby();
+        } else {
+            runGame(lw.getSelectedGameName(), false);
+        }
+    }
+
+    public void returnToLobby() {
 
     }
 }

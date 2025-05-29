@@ -67,11 +67,31 @@ public class GlobalVar<T> {
 
     // ? Returns null if no value is found - is this ok?
     public T getValue() {
-        File[] values = Stream.of(playerSpaceFolder.listFiles())
-                .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
-                .map(File::new)
-                .map((x) -> x.listFiles()[0])
-                .toArray(File[]::new);
+        // File[] values = Stream.of(playerSpaceFolder.listFiles())
+        // .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
+        // .map(File::new)
+        // .map((x) -> x.listFiles()[0])
+        // .toArray(File[]::new);
+        ArrayList<File> values = new ArrayList<>();
+        for (File file : playerSpaceFolder.listFiles()) {
+            File[] globalVars = new File(file.getAbsolutePath() + "\\" + "globalVars").listFiles();
+            if (globalVars == null) {
+                continue;
+            }
+            for (File globalVar : globalVars) {
+                if (globalVar.getName().equals(name)) {
+                    values.add(globalVar);
+                }
+            }
+        }
+        for (int i = 0; i < values.size(); i++) {
+            if (values.get(i).listFiles() != null) {
+                values.set(i, values.get(i).listFiles()[0]);
+            } else {
+                values.remove(i);
+                i--;
+            }
+        }
         long newestTime = Long.MIN_VALUE;
         T value = null;
 
@@ -106,15 +126,16 @@ public class GlobalVar<T> {
         String currentValue = value;
         while (currentValue.length() > 0) {
             String tag = "(";
-            if(tag.length() + currentValue.toString().length() + 1 > MAX_LENGTH){
+            if (tag.length() + currentValue.toString().length() + 1 > MAX_LENGTH) {
                 tag += Tag.OVERFLOW + ")";
             } else {
                 tag += ")";
             }
 
             File nextFile;
-            if(tag.contains(Tag.OVERFLOW.toString())){
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue.substring(0, MAX_LENGTH - tag.length()));
+            if (tag.contains(Tag.OVERFLOW.toString())) {
+                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag
+                        + currentValue.substring(0, MAX_LENGTH - tag.length()));
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
                 System.out.println(nextFile.getName());
