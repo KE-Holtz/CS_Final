@@ -106,8 +106,10 @@ public class Session {
         Game game = games.get(gameName);
         game.initialize(this);
         game.startGame();
-        while (game.periodic())
-            ;
+        while (game.periodic()){
+            lobby.synchronize();
+            System.out.println("[DEBUG] Synchonized");
+        }
         game.endGame();
         if (isHost) {
             host(game.getName());
@@ -221,5 +223,9 @@ public class Session {
         } else {
             runGame(lw.getSelectedGameName(), false);
         }
+    }
+    
+    public Lobby getLobby(){
+        return lobby;
     }
 }

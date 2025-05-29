@@ -20,14 +20,13 @@ public class Lobby {
     }
 
     public void synchronize() {
-        players.clear();
-        players.add(clientPlayer);
         for (File playerFile : new File(playerSpacePath).listFiles()) {
             Player player = Player.fromFile(playerFile);
-            if (!player.getName().equals(clientPlayer.getName())) {
+            if(!players.contains(player)){
                 players.add(player);
             }
         }
+        System.out.println(players);
     }
 
     public void makeClientFiles() {
@@ -62,5 +61,13 @@ public class Lobby {
         synchronize();
         Player[] playerNames = Arrays.stream(players.toArray()).toArray(Player[]::new);
         return playerNames;
+    }
+  
+    public Player getClientPlayer() {
+        return clientPlayer;
+    }
+
+    public ArrayList<Player> getPlayers(){
+        return (ArrayList<Player>) players.clone();
     }
 }
