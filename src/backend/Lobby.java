@@ -2,27 +2,28 @@ package backend;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gameplay.Player;
 
 public class Lobby {
     private final String            playerSpacePath;
     private final boolean           clientIsHost;
-    private final ArrayList<Player> players;
+    private final HashMap<String, Player> players;
     private final Player            clientPlayer;
 
     public Lobby(Session session) {
         playerSpacePath = session.getPlayerSpacePath();
         clientPlayer = session.getClientPlayer();
         clientIsHost = session.clientIsHost();
-        players = new ArrayList<Player>();
+        players = new HashMap<String, Player>();
     }
 
     public void synchronize() {
         for (File playerFile : new File(playerSpacePath).listFiles()) {
             Player player = Player.fromFile(playerFile);
-            if(!players.contains(player)){
-                players.add(player);
+            if(!players.containsValue(player)){
+                players.put(player.getName(), player);
             }
         }
         System.out.println(players);
@@ -61,6 +62,10 @@ public class Lobby {
     }
 
     public ArrayList<Player> getPlayers(){
-        return (ArrayList<Player>) players.clone();
+        return new ArrayList<Player>(players.values());
+    }
+
+    public Player getPlayer(String name){
+        return players.get(name);
     }
 }

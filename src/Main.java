@@ -6,6 +6,7 @@ import java.util.Scanner;
 import backend.Session;
 import gameplay.games.Game;
 import gameplay.games.ReadWriteGame;
+import gameplay.games.hangman.Hangman;
 
 public class Main {
     public static void main(String[] args) {
@@ -29,6 +30,7 @@ public class Main {
 
         ArrayList<Game> games = new ArrayList<Game>();
         games.add(new ReadWriteGame());
+        games.add(new Hangman());
 
         Session session;
         String sessionName;
@@ -47,7 +49,7 @@ public class Main {
         session = new Session(sessionName, sessionSpacePath, name, games, hosting);
         temp.next();// DEBUG - Wait to clean up
         temp.nextLine();
-        session.runGame("ReadWrite");//TODO: Add games
+        session.runGame("Hangman");//TODO: Add games
         while (!session.clean()) {
             System.out.println("Failed to clean up session. Enter \"exit\" to force quit or anything else to try again.");
             if (temp.nextLine()
