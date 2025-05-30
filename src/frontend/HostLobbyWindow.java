@@ -162,7 +162,7 @@ public class HostLobbyWindow {
                 button.addActionListener(e -> {
                     currentPanel[0] = 3;
                     selectedGameName.setValue(button.getText());
-                    selectedGame.setText("Selected Game: " + selectedGameName.getValue());
+                    selectedGame.setText("Selected Game: " + getSelectedGameName());
                     selectedGamePanel.revalidate();
                     selectedGamePanel.repaint();
                 });
@@ -170,7 +170,7 @@ public class HostLobbyWindow {
         }
 
         startButton.addActionListener(e -> {
-            if (!selectedGameName.getValue().equals("")) {
+            if (!getSelectedGameName().equals("")) {
                 currentPanel[0] = 3;
                 clicked[0] = true;
             }
@@ -298,6 +298,7 @@ public class HostLobbyWindow {
     }
 
     public String getSelectedGameName() {
+        System.out.println("[DEBUG] Selected game name: " + selectedGameName.getValue().orElse(""));
         return selectedGameName.getValue().orElse("");
     }
 
