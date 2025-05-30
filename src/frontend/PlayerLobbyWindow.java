@@ -192,7 +192,7 @@ public class PlayerLobbyWindow {
 
     public void update() {
         updatePlayerPanel();
-        selectedGame.setText("Selected game: " + selectedGameName.getValue());
+        selectedGame.setText("Selected game: " + getSelectedGameName());
         startGame.getValue();
         panel.revalidate();
         panel.repaint();

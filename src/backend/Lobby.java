@@ -26,7 +26,11 @@ public class Lobby {
                 players.add(player);
             }
         }
-        System.out.println(players);
+        for (int i = players.size() - 1; i >= 0; i--) {
+            if (!players.get(i).getPlayerFolder().exists()) {
+                players.remove(i);
+            }
+        }
     }
 
     public void makeClientFiles() {
