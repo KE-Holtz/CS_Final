@@ -27,7 +27,7 @@ import gameplay.games.ReadWriteGame;
 
 public class Main {
     private static JFrame frame = new JFrame();
-    private final static String sessionSpacePath = "C:\\Users\\natha\\Downloads\\testServer";
+    private final static String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
 
     public static void main(String[] args) {
         frame.setLayout(new BorderLayout());
