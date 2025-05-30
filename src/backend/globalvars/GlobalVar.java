@@ -112,15 +112,16 @@ public class GlobalVar<T> {
         String currentValue = value;
         while (currentValue.length() > 0) {
             String tag = "(";
-            if(tag.length() + currentValue.toString().length() + 1 > MAX_LENGTH){
+            if (tag.length() + currentValue.toString().length() + 1 > MAX_LENGTH) {
                 tag += Tag.OVERFLOW + ")";
             } else {
                 tag += ")";
             }
 
             File nextFile;
-            if(tag.contains(Tag.OVERFLOW.toString())){
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue.substring(0, MAX_LENGTH - tag.length()));
+            if (tag.contains(Tag.OVERFLOW.toString())) {
+                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag
+                        + currentValue.substring(0, MAX_LENGTH - tag.length()));
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
                 // System.out.println(nextFile.getName());

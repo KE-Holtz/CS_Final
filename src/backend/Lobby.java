@@ -2,14 +2,15 @@ package backend;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import gameplay.Player;
 
 public class Lobby {
-    private final String            playerSpacePath;
-    private final boolean           clientIsHost;
+    private final String playerSpacePath;
+    private final boolean clientIsHost;
     private final ArrayList<Player> players;
-    private final Player            clientPlayer;
+    private final Player clientPlayer;
 
     public Lobby(Session session) {
         playerSpacePath = session.getPlayerSpacePath();
@@ -28,9 +29,9 @@ public class Lobby {
         System.out.println(players);
     }
 
-    public void makeClientFiles(){
+    public void makeClientFiles() {
         for (File file : clientPlayer.files()) {
-            if(file.mkdir()){
+            if (file.mkdir()) {
                 System.out.println("[DEBUG] Directory created: " + file.getName());
             } else {
                 System.out.println("[DEBUG] Failed to create directory: " + file.getName());
@@ -38,7 +39,7 @@ public class Lobby {
         }
     }
 
-    public boolean deleteClientFiles(){
+    public boolean deleteClientFiles() {
         return deleteRecursively(clientPlayer.getPlayerFolder());
     }
 
@@ -49,13 +50,19 @@ public class Lobby {
             deleteRecursively(file);
         }
         if (dir.exists()) {
-            if(!dir.delete()){
+            if (!dir.delete()) {
                 return false;
             }
         }
         return true;
     }
 
+    public Player[] getPlayers() {
+        synchronize();
+        Player[] playerNames = Arrays.stream(players.toArray()).toArray(Player[]::new);
+        return playerNames;
+    }
+  
     public Player getClientPlayer() {
         return clientPlayer;
     }
