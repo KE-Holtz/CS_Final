@@ -118,7 +118,7 @@ public class PlayerLobbyWindow {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        while (!hostConnected.getValue()) {
+        while (!hostConnected.getValue().orElse(false)) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -203,26 +203,26 @@ public class PlayerLobbyWindow {
     }
 
     public boolean isStarted() {
-        return startGame.getValue();
+        return startGame.getValue().orElse(false);
     }
 
     public String getSelectedGameName() {
-        return selectedGameName.getValue();
+        return selectedGameName.getValue().orElse("");
     }
 
     public boolean isClosed() {
-        return closeLobby.getValue();
+        return closeLobby.getValue().orElse(false);
     }
 
     public boolean isHostConnected() {
-        return hostConnected.getValue();
+        return hostConnected.getValue().orElse(true);
     }
 
     public void updatePlayerPanel() {
-        if (lobby.getPlayers().length == numOfPlayers)
+        if (lobby.getPlayersArray().length == numOfPlayers)
             return;
-        numOfPlayers = lobby.getPlayers().length;
-        Player[] players = lobby.getPlayers();
+        numOfPlayers = lobby.getPlayersArray().length;
+        Player[] players = lobby.getPlayersArray();
         ArrayList<JLabel> playerLabels = new ArrayList<>();
         for (Component c : playerPanel.getComponents()) {
             if (c instanceof JLabel) {

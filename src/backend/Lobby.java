@@ -22,7 +22,7 @@ public class Lobby {
     public void synchronize() {
         for (File playerFile : new File(playerSpacePath).listFiles()) {
             Player player = Player.fromFile(playerFile);
-            if(!players.contains(player)){
+            if (!players.contains(player)) {
                 players.add(player);
             }
         }
@@ -57,17 +57,17 @@ public class Lobby {
         return true;
     }
 
-    public Player[] getPlayers() {
+    public Player[] getPlayersArray() {
         synchronize();
         Player[] playerNames = Arrays.stream(players.toArray()).toArray(Player[]::new);
         return playerNames;
     }
-  
+
     public Player getClientPlayer() {
         return clientPlayer;
     }
 
-    public ArrayList<Player> getPlayers(){
+    public ArrayList<Player> getPlayers() {
         return (ArrayList<Player>) players.clone();
     }
 }

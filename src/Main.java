@@ -276,7 +276,10 @@ public class Main {
     }
 
     public static String isValidName(String name, String sessionName) {
-        String invalidChars = "#\\/:*?\"<>|";
+        if (name.length() < 3 || name.length() > 16) {
+            return "Name must be between 3 and 16 characters.";
+        }
+        String invalidChars = "#\\/:*?\"<>|()[]{};=+`~$&%";
         for (char c : invalidChars.toCharArray()) {
             if (name.indexOf(c) != -1) {
                 return "Invalid character: " + c;
