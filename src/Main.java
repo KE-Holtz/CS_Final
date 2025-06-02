@@ -24,6 +24,7 @@ import frontend.WrappingLayout;
 import backend.Session;
 import gameplay.games.Game;
 import gameplay.games.ReadWriteGame;
+import gameplay.games.hangman.Hangman;
 
 public class Main {
     private static JFrame frame = new JFrame();
@@ -137,6 +138,7 @@ public class Main {
         hosting = hostingTemp[0];
         ArrayList<Game> games = new ArrayList<Game>();
         games.add(new ReadWriteGame());
+        games.add(new Hangman());
 
         Session session;
         String sessionName;
