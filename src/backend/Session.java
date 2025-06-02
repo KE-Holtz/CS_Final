@@ -3,8 +3,9 @@ package backend;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
+import frontend.HostLobbyWindow;
+import frontend.PlayerLobbyWindow;
 import gameplay.Player;
 import gameplay.games.Game;
 
@@ -80,10 +81,10 @@ public class Session {
             if (!deleteRecursively(sessionFolder)) {
                 return false;
             }
+            return true;
         } else {
-            lobby.deleteClientFiles();
+            return lobby.deleteClientFiles();
         }
-        return true;
     }
 
     // Delete the folder and all of its contents
@@ -100,26 +101,8 @@ public class Session {
         return true;
     }
 
-    public static String getSessionChoice(String sessionSpacePath, Scanner console) {
-        if (new File(sessionSpacePath).list().length == 0)
-            System.out.println("Waiting for available sessions...");
-        while (new File(sessionSpacePath).list().length == 0)
-            ;
-        System.out.println("Available sessions:");
-        for (String i : new File(sessionSpacePath).list()) {
-            System.out.println(i);
-        }
-        System.out.print("Enter the name of the session you would like to join: ");
-        String sessionName = console.nextLine();
-        while (!new File(sessionSpacePath + "\\" + sessionName).exists() && !sessionName.isEmpty()) {
-            System.out.println("Session does not exist. Please enter a valid session name: ");
-            sessionName = console.nextLine();
-        }
-        return sessionName;
-    }
-
     // TODO: temporary
-    public void runGame(String gameName) {
+    public void runGame(String gameName, boolean isHost) {
         Game game = games.get(gameName);
         game.initialize(this);
         game.startGame();
@@ -128,7 +111,12 @@ public class Session {
             System.out.println("[DEBUG] Synchonized");
         }
         game.endGame();
-        System.out.println("Game ended");
+        if (isHost) {
+            host(game.getName());
+        } else {
+            join();
+        }
+
     }
 
     public String getSessionSpace() {
@@ -155,6 +143,88 @@ public class Session {
         return isHost;
     }
 
+    public void host(String gameName) {
+        HostLobbyWindow lw = new HostLobbyWindow(lobby, this, games, gameName);
+
+        while (!lw.isStarted() && !lw.isClosed()) {
+
+            if (lw.getCurrentPanel() == 1) {
+                lw.updateCurrentPanel(1);
+                while (lw.isClicked()) {
+                    lw.updatePlayerPanel();
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (lw.getCurrentPanel() == 2) {
+                lw.updateCurrentPanel(2);
+                while (lw.isClicked()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (lw.getCurrentPanel() == 3) {
+                lw.updateCurrentPanel(3);
+                while (lw.isClicked()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (lw.getCurrentPanel() == 4) {
+                lw.updateCurrentPanel(4);
+                while (lw.isClicked()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                lw.updateCurrentPanel(0);
+                while (!lw.isClicked()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        lw.dispose();
+        if (lw.isClosed()) {
+            lw.closeLobby();
+        } else {
+            lw.setHostConnected(false);
+            runGame(lw.getSelectedGameName(), true);
+        }
+    }
+
+    public void join() {
+        PlayerLobbyWindow lw = new PlayerLobbyWindow(lobby, this);
+        if (!lw.isHostConnected())
+            lw.hostNotConnected();
+        while (!lw.isStarted() && !lw.isClosed()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            lw.update();
+        }
+        lw.dispose();
+        if (lw.isClosed()) {
+            lw.closeLobby();
+        } else {
+            runGame(lw.getSelectedGameName(), false);
+        }
+    }
+    
     public Lobby getLobby(){
         return lobby;
     }

@@ -2,7 +2,9 @@ package backend;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+
 
 import gameplay.Player;
 
@@ -11,6 +13,7 @@ public class Lobby {
     private final boolean           clientIsHost;
     private final HashMap<String, Player> players;
     private final Player            clientPlayer;
+
 
     public Lobby(Session session) {
         playerSpacePath = session.getPlayerSpacePath();
@@ -26,12 +29,16 @@ public class Lobby {
                 players.put(player.getName(), player);
             }
         }
-        System.out.println(players);
+        for (int i = players.size() - 1; i >= 0; i--) {
+            if (!players.values().toArray(new Player[0])[i].getPlayerFolder().exists()) {
+                players.remove(players.values().toArray(new Player[0])[i].getName());
+            }
+        }
     }
 
-    public void makeClientFiles(){
+    public void makeClientFiles() {
         for (File file : clientPlayer.files()) {
-            if(file.mkdir()){
+            if (file.mkdir()) {
                 System.out.println("[DEBUG] Directory created: " + file.getName());
             } else {
                 System.out.println("[DEBUG] Failed to create directory: " + file.getName());
@@ -39,7 +46,7 @@ public class Lobby {
         }
     }
 
-    public boolean deleteClientFiles(){
+    public boolean deleteClientFiles() {
         return deleteRecursively(clientPlayer.getPlayerFolder());
     }
 
@@ -50,11 +57,17 @@ public class Lobby {
             deleteRecursively(file);
         }
         if (dir.exists()) {
-            if(!dir.delete()){
+            if (!dir.delete()) {
                 return false;
             }
         }
         return true;
+    }
+
+    public Player[] getPlayersArray() {
+        synchronize();
+        Player[] playerNames = Arrays.stream(players.values().toArray(new Player[0])).toArray(Player[]::new);
+        return playerNames;
     }
 
     public Player getClientPlayer() {
