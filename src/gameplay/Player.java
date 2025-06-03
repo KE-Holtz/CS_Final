@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
-import backend.publicVars.PublicVar;
+import backend.publicvars.PublicVar;
 
 public class Player {
     private String name;

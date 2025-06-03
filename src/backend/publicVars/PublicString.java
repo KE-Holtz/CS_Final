@@ -1,4 +1,4 @@
-package backend.publicVars;
+package backend.publicvars;
 
 import gameplay.Player;
 

@@ -44,6 +44,21 @@ public class Card {
         return value;
     }
 
+    public String toString() {
+        return color + "_" + value;
+    }
+
+    public void updateCardFromString(String cardString) {
+        String[] parts = cardString.split("_");
+        if (parts.length == 2) {
+            this.color = parts[0];
+            this.value = Integer.parseInt(parts[1]);
+            findImageFile();
+        } else {
+            throw new IllegalArgumentException("Invalid card string format: " + cardString);
+        }
+    }
+
     public void setColor(String color) {
         this.color = color;
     }

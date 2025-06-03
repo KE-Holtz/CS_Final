@@ -1,4 +1,4 @@
-package backend.publicVars;
+package backend.publicvars;
 
 import java.io.File;
 import java.util.ArrayList;

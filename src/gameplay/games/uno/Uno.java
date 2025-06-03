@@ -1,11 +1,32 @@
 package gameplay.games.uno;
-import backend.Session;
-import gameplay.games.Game;
+import backend.*;
+import gameplay.*;
+import gameplay.games.*;
+import backend.globalvars.*;
+import backend.publicvars.*;
+
 public class Uno extends Game{
+    private Lobby lobby;
+    private Player self;
+    private Card card;
+    private GlobalString cardName;
+
+    public Uno() {
+        setName("Uno");
+    }
 
     @Override
     public void initialize(Session session) {
-
+        lobby = session.getLobby();
+        self = lobby.getClientPlayer();
+        cardName = new GlobalString(session, "cardName");
+        if(cardName.getValue().orElse("null").equals("")) {
+            card = new Card();
+            cardName.setValue(card.toString());
+        } else {
+            card = new Card();
+            card.updateCardFromString(cardName.getValue().orElse(""));
+        }
     }
 
     @Override
