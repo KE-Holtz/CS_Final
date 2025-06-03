@@ -14,12 +14,12 @@ public class Card {
     }
 
     public Card() {
-        String[] colors = {"red", "green", "blue", "yellow"};
+        String[] colors = { "Red", "Green", "Blue", "Yellow" };
         this.color = colors[(int) (Math.random() * colors.length)];
         this.value = (int) (Math.random() * 14);
-        if(value == 13) {
-            color = "wild";
-            if(Math.random() < 0.5) {
+        if (value == 13) {
+            color = "Wild";
+            if (Math.random() < 0.5) {
                 this.value = 13; // Wild
             } else {
                 this.value = 14; // +4
@@ -29,7 +29,7 @@ public class Card {
     }
 
     private void findImageFile() {
-        imageFile = new File ("src\\gameplay\\games\\uno\\assets\\" + "card" + color + value + ".png");
+        imageFile = new File("src\\gameplay\\games\\uno\\assets\\cards\\" + color + value + ".png");
     }
 
     public File getImageFile() {
