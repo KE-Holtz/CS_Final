@@ -5,27 +5,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-
 import gameplay.Player;
 
 public class Lobby {
-    private final String            playerSpacePath;
-    private final boolean           clientIsHost;
+    private final String playerSpacePath;
     private final HashMap<String, Player> players;
-    private final Player            clientPlayer;
-
+    private final Player clientPlayer;
 
     public Lobby(Session session) {
         playerSpacePath = session.getPlayerSpacePath();
         clientPlayer = session.getClientPlayer();
-        clientIsHost = session.clientIsHost();
         players = new HashMap<String, Player>();
     }
 
     public void synchronize() {
         for (File playerFile : new File(playerSpacePath).listFiles()) {
             Player player = Player.fromFile(playerFile);
-            if(!players.containsValue(player)){
+            if (!players.containsValue(player)) {
                 players.put(player.getName(), player);
             }
         }
@@ -74,11 +70,11 @@ public class Lobby {
         return clientPlayer;
     }
 
-    public ArrayList<Player> getPlayers(){
+    public ArrayList<Player> getPlayers() {
         return new ArrayList<Player>(players.values());
     }
 
-    public Player getPlayer(String name){
+    public Player getPlayer(String name) {
         return players.get(name);
     }
 }

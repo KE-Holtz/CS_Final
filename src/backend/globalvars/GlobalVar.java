@@ -1,9 +1,7 @@
 package backend.globalvars;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -63,7 +61,6 @@ public class GlobalVar<T> {
         this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
 
         this.valueParser = valueParser;
-
 
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");

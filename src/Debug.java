@@ -1,9 +1,8 @@
 import java.io.File;
-import java.math.BigDecimal;
 
 public class Debug {
     public static void main(String[] args) {
-        File all =new File("S:\\High School\\WuestC\\Drop Box\\KE_Multi_2");
+        File all = new File("S:\\High School\\WuestC\\Drop Box\\KE_Multi_2");
         deleteContents(all);
     }
 

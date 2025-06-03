@@ -1,11 +1,8 @@
 package backend.publicVars;
 
-import java.lang.management.PlatformLoggingMXBean;
-
-import backend.Session;
 import gameplay.Player;
 
-public class PublicString extends PublicVar<String>{
+public class PublicString extends PublicVar<String> {
     private static final String BACKSLASH = "1";
     private static final String SLASH = "2";
     private static final String COLON = "3";
@@ -16,15 +13,18 @@ public class PublicString extends PublicVar<String>{
     private static final String GREATER = "8";
     private static final String PIPE = "9";
     private static final String ESCAPE = "#";
-    public PublicString(Player player, String name){
+
+    public PublicString(Player player, String name) {
         super(player, name, String::valueOf);
     }
-    public PublicString(Player player, String name, String value){
-        super(player,name, String::valueOf, value);
+
+    public PublicString(Player player, String name, String value) {
+        super(player, name, String::valueOf, value);
     }
+
     @Override
     public void setValue(String value) {
-        value = value.replaceAll(ESCAPE, ESCAPE+ESCAPE);
+        value = value.replaceAll(ESCAPE, ESCAPE + ESCAPE);
         value = value.replaceAll("\\\\", ESCAPE + BACKSLASH);
         value = value.replaceAll("/", ESCAPE + SLASH);
         value = value.replaceAll(":", ESCAPE + COLON);
@@ -40,7 +40,7 @@ public class PublicString extends PublicVar<String>{
     @Override
     public String getValue() {
         String value = super.getValue();
-        value = value.replaceAll(ESCAPE+ESCAPE, ESCAPE);
+        value = value.replaceAll(ESCAPE + ESCAPE, ESCAPE);
         value = value.replaceAll(ESCAPE + BACKSLASH, "\\\\");
         value = value.replaceAll(ESCAPE + SLASH, "/");
         value = value.replaceAll(ESCAPE + COLON, ":");
