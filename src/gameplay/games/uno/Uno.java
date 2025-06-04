@@ -18,12 +18,13 @@ public class Uno extends Game{
     public void initialize(Session session) {
         lobby = session.getLobby();
         self = lobby.getClientPlayer();
-        topCard = new GlobalVar<Card>(session, "card", Card::fromString);
+        topCard = new GlobalVar<Card>(session, "card", Card::fromString, new Card());
     }
 
     @Override
     public void startGame() {
         UnoWindow uwu = new UnoWindow();
+        uwu.updateTopCard(topCard.getValue().orElse(new Card()));
     }
 
     @Override
