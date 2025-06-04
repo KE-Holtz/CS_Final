@@ -1,18 +1,14 @@
 package backend.publicVars;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
-import backend.Session;
 import gameplay.Player;
 
 public class PublicVar<T> {
     private final String name;
-    private final File   varFile;
+    private final File varFile;
 
     private final Function<String, T> valueParser;
 
@@ -29,8 +25,7 @@ public class PublicVar<T> {
 
     public PublicVar(Player player, String name, Function<String, T> valueParser) {
         this.name = name;
-        this.varFile =
-                new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
+        this.varFile = new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
         this.valueParser = valueParser;
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
@@ -40,8 +35,7 @@ public class PublicVar<T> {
 
     public PublicVar(Player player, String name, Function<String, T> valueParser, T value) {
         this.name = name;
-        this.varFile =
-                new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
+        this.varFile = new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
         this.valueParser = valueParser;
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
@@ -77,7 +71,7 @@ public class PublicVar<T> {
         while (currentValue.length() > 0) {
             String tag = "(";
             if (tag.length() + currentValue.toString()
-                                           .length()
+                    .length()
                     + 1 > MAX_LENGTH) {
                 tag += Tag.OVERFLOW + ")";
             } else {
@@ -128,19 +122,18 @@ public class PublicVar<T> {
             }
         }
         if (tag.length() + value.toString()
-                                .length()
-                > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())) {
+                .length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())) {
             tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ",";
         }
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
-                                    varFile.getPath() + "\\" + tag + value.toString()
-                                                                          .substring(0, MAX_LENGTH
-                                                                                  - tag.length()));
+                    varFile.getPath() + "\\" + tag + value.toString()
+                            .substring(0, MAX_LENGTH
+                                    - tag.length()));
             newFile.mkdir();
             writeOverflow(newFile, value.toString()
-                                        .substring(MAX_LENGTH - tag.length()));
+                    .substring(MAX_LENGTH - tag.length()));
         } else {
             File newFile = new File(varFile.getPath() + "\\" + tag + value);
             newFile.mkdir();
@@ -164,15 +157,15 @@ public class PublicVar<T> {
         return name;
     }
 
-    public static PublicVar fromFile(Player player, File file){
+    public static PublicVar fromFile(Player player, File file) {
         String val = file.list()[0];
-        if (getTags(val).contains(Tag.BOOL)){
+        if (getTags(val).contains(Tag.BOOL)) {
             return new PublicBoolean(player, file.getName());
-        } else if (getTags(val).contains(Tag.INT)){
+        } else if (getTags(val).contains(Tag.INT)) {
             return new PublicInt(player, file.getName());
-        } else if (getTags(val).contains(Tag.DOUBLE)){
+        } else if (getTags(val).contains(Tag.DOUBLE)) {
             return new PublicDouble(player, file.getName());
-        } else{
+        } else {
             return new PublicString(player, file.getName());
         }
     }

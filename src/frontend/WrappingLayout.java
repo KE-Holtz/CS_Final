@@ -1,7 +1,6 @@
 package frontend;
 
 import java.awt.*;
-import javax.swing.*;
 
 public class WrappingLayout implements LayoutManager {
     private int hgap;
@@ -13,7 +12,7 @@ public class WrappingLayout implements LayoutManager {
     public static final int RIGHT = 2;
 
     public WrappingLayout(int hgap, int vgap) {
-        this(hgap, vgap, LEFT);  // Default alignment
+        this(hgap, vgap, LEFT); // Default alignment
     }
 
     public WrappingLayout(int hgap, int vgap, int alignment) {
@@ -22,8 +21,13 @@ public class WrappingLayout implements LayoutManager {
         this.alignment = alignment;
     }
 
-    @Override public void addLayoutComponent(String name, Component comp) {}
-    @Override public void removeLayoutComponent(Component comp) {}
+    @Override
+    public void addLayoutComponent(String name, Component comp) {
+    }
+
+    @Override
+    public void removeLayoutComponent(Component comp) {
+    }
 
     @Override
     public Dimension preferredLayoutSize(Container parent) {
@@ -39,7 +43,8 @@ public class WrappingLayout implements LayoutManager {
         synchronized (parent.getTreeLock()) {
             Insets insets = parent.getInsets();
             int width = parent.getParent() != null ? parent.getParent().getWidth() : parent.getWidth();
-            if (width <= 0) width = Integer.MAX_VALUE;
+            if (width <= 0)
+                width = Integer.MAX_VALUE;
 
             int x = insets.left;
             int y = insets.top;
@@ -47,7 +52,8 @@ public class WrappingLayout implements LayoutManager {
             int maxWidth = 0;
 
             for (Component comp : parent.getComponents()) {
-                if (!comp.isVisible()) continue;
+                if (!comp.isVisible())
+                    continue;
                 Dimension d = preferred ? comp.getPreferredSize() : comp.getMinimumSize();
 
                 if (x + d.width > width - insets.right) {
@@ -80,7 +86,8 @@ public class WrappingLayout implements LayoutManager {
             int rowWidth = 0;
 
             for (Component comp : parent.getComponents()) {
-                if (!comp.isVisible()) continue;
+                if (!comp.isVisible())
+                    continue;
                 Dimension d = comp.getPreferredSize();
 
                 if (x + d.width > maxWidth + insets.left) {
@@ -106,9 +113,9 @@ public class WrappingLayout implements LayoutManager {
         }
     }
 
-    private void placeRow(java.util.List<Component> row, int rowWidth, int y, int rowHeight, Insets insets, int maxWidth) {
+    private void placeRow(java.util.List<Component> row, int rowWidth, int y, int rowHeight, Insets insets,
+            int maxWidth) {
         int startX;
-        int totalGap = hgap * (row.size() - 1);
         rowWidth -= hgap; // remove last gap
 
         switch (alignment) {

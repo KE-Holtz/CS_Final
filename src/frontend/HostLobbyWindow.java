@@ -3,11 +3,9 @@ package frontend;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -298,7 +296,6 @@ public class HostLobbyWindow {
     }
 
     public String getSelectedGameName() {
-        System.out.println("[DEBUG] Selected game name: " + selectedGameName.getValue().orElse(""));
         return selectedGameName.getValue().orElse("");
     }
 

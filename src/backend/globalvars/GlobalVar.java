@@ -1,9 +1,7 @@
 package backend.globalvars;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -25,14 +23,8 @@ public class GlobalVar<T> {
     public static final int MAX_LENGTH = 160;
 
     public enum Tag {
-        DEFAULT("DEFAULT"),
-        OVERFLOW("OVERFLOW");
-
-        private final String tag;
-
-        Tag(String tag) {
-            this.tag = tag;
-        }
+        DEFAULT,
+        OVERFLOW,
     }
 
     public GlobalVar(Session session, String name, Function<String, T> valueParser) {
@@ -63,7 +55,6 @@ public class GlobalVar<T> {
         this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
 
         this.valueParser = valueParser;
-
 
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
@@ -149,17 +140,15 @@ public class GlobalVar<T> {
     }
 
     public void setValue(T value) {
-        setValue(value, null);
+        setValue(value, new Tag[0]);
     }
 
     public void setValue(T value, Tag... tags) {
         deleteContents(varFile);
         String tag = "(";
-        if (tags != null) {
             for (Tag t : tags) {
                 tag += t + ",";
             }
-        }
         if (tag.length() + value.toString().length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())) {
             tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ",";
         }

@@ -9,7 +9,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -20,8 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import frontend.WrappingLayout;
 import backend.Session;
+import frontend.WrappingLayout;
 import gameplay.games.Game;
 import gameplay.games.ReadWriteGame;
 
@@ -33,7 +32,6 @@ public class Main {
         frame.setLayout(new BorderLayout());
         frame.setResizable(true);
 
-        Scanner temp = new Scanner(System.in);
         boolean hosting = false;
 
         JPanel screen = new JPanel();

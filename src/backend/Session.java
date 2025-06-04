@@ -46,15 +46,11 @@ public class Session {
         // Create the session folder
         File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
         File playerSpaceFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
-        if (sessionFolder.mkdir()) {
-            System.out.println("[DEBUG] Session folder created");
-        } else {
+        if (!sessionFolder.mkdir()) {
             System.out.println("[DEBUG] Session folder failed to create at "
                     + sessionFolder.getAbsolutePath());
         }
-        if (playerSpaceFolder.mkdir()) {
-            System.out.println("[DEBUG] Player space folder created");
-        } else {
+        if (!playerSpaceFolder.mkdir()) {
             System.out.println("[DEBUG] Player space folder failed to create at "
                     + playerSpaceFolder.getAbsolutePath());
         }
@@ -108,7 +104,6 @@ public class Session {
         game.startGame();
         while (game.periodic()){
             lobby.synchronize();
-            System.out.println("[DEBUG] Synchonized");
         }
         game.endGame();
         if (isHost) {
@@ -224,7 +219,7 @@ public class Session {
             runGame(lw.getSelectedGameName(), false);
         }
     }
-    
+
     public Lobby getLobby(){
         return lobby;
     }
