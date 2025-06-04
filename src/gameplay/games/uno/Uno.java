@@ -18,7 +18,7 @@ public class Uno extends Game{
     public void initialize(Session session) {
         lobby = session.getLobby();
         self = lobby.getClientPlayer();
-        topCard = new GlobalVar<Card>(session, "card", Card::fromString, new Card());
+        topCard = new GlobalVar<Card>(session, "card", Card::fromString);
     }
 
     @Override

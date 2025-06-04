@@ -48,13 +48,19 @@ public class Card {
         return color + "_" + value;
     }
 
-    public static Card fromString(String s){
-        String color = s.substring(0, s.indexOf("_"));
-        int value = Integer.parseInt(s.substring(s.indexOf("_") + 1));
+    public static Card fromString(String s) {
+        String color;
+        int value;
+        try {
+            color = s.substring(0, s.indexOf("_"));
+            value = Integer.parseInt(s.substring(s.indexOf("_") + 1));
+        } catch (Exception e) {
+            return null;
+        }
         return new Card(color, value);
     }
 
-    //Should be irrelavent
+    // Should be irrelavent
     public void updateCardFromString(String cardString) {
         String[] parts = cardString.split("_");
         if (parts.length == 2) {
