@@ -8,8 +8,7 @@ import backend.publicvars.*;
 public class Uno extends Game{
     private Lobby lobby;
     private Player self;
-    private Card card;
-    private GlobalString cardName;
+    private GlobalVar<Card> topCard;
 
     public Uno() {
         setName("Uno");
@@ -19,20 +18,12 @@ public class Uno extends Game{
     public void initialize(Session session) {
         lobby = session.getLobby();
         self = lobby.getClientPlayer();
-        cardName = new GlobalString(session, "cardName");
-        if(cardName.getValue().orElse("null").equals("")) {
-            card = new Card();
-            cardName.setValue(card.toString());
-        } else {
-            card = new Card();
-            card.updateCardFromString(cardName.getValue().orElse(""));
-        }
+        topCard = new GlobalVar<Card>(session, "card", Card::fromString, new Card());
     }
 
     @Override
     public void startGame() {
         UnoWindow uwu = new UnoWindow();
-        
     }
 
     @Override

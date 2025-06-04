@@ -10,7 +10,7 @@ public class Card {
     public Card(String color, int value) {
         this.color = color;
         this.value = value;
-        findImageFile();
+        initImageFile();
     }
 
     public Card() {
@@ -25,10 +25,10 @@ public class Card {
                 this.value = 14; // +4
             }
         }
-        findImageFile();
+        initImageFile();
     }
 
-    private void findImageFile() {
+    private void initImageFile() {
         imageFile = new File("src\\gameplay\\games\\uno\\assets\\cards\\" + color + value + ".png");
     }
 
@@ -48,12 +48,19 @@ public class Card {
         return color + "_" + value;
     }
 
+    public static Card fromString(String s){
+        String color = s.substring(0, s.indexOf("_"));
+        int value = Integer.parseInt(s.substring(s.indexOf("_") + 1));
+        return new Card(color, value);
+    }
+
+    //Should be irrelavent
     public void updateCardFromString(String cardString) {
         String[] parts = cardString.split("_");
         if (parts.length == 2) {
             this.color = parts[0];
             this.value = Integer.parseInt(parts[1]);
-            findImageFile();
+            initImageFile();
         } else {
             throw new IllegalArgumentException("Invalid card string format: " + cardString);
         }
