@@ -34,9 +34,7 @@ public class Lobby {
 
     public void makeClientFiles() {
         for (File file : clientPlayer.files()) {
-            if (file.mkdir()) {
-                System.out.println("[DEBUG] Directory created: " + file.getName());
-            } else {
+            if (!file.mkdir()) {
                 System.out.println("[DEBUG] Failed to create directory: " + file.getName());
             }
         }

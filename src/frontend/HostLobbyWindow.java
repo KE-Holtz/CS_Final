@@ -296,7 +296,6 @@ public class HostLobbyWindow {
     }
 
     public String getSelectedGameName() {
-        System.out.println("[DEBUG] Selected game name: " + selectedGameName.getValue().orElse(""));
         return selectedGameName.getValue().orElse("");
     }
 

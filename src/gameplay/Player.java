@@ -9,7 +9,6 @@ import backend.publicvars.PublicVar;
 
 public class Player {
     private String name;
-    private final String playerSpacePath;
 
     private ArrayList<File> playerFiles;// TODO: Tree? This could have some limitations.
     private File playerFolder;
@@ -28,8 +27,6 @@ public class Player {
         this.name = name;
 
         playerFiles = new ArrayList<File>();
-
-        this.playerSpacePath = playerSpacePath;
 
         playerFolder = new File(playerSpacePath + "\\" + name);
         playerFiles.add(playerFolder);
@@ -65,19 +62,9 @@ public class Player {
     }
 
     public Optional<PublicVar> getVariable(String name) {
-        System.out.println("DEBUG: Getting variable " + name);
         if (publicVars.get(name) == null) {
             if (new File(publicVarsDir.getPath() + "\\" + name).exists()) {
-                System.out.println("DEBUG: Variable " + name + " not found in memory, loading from file");
                 PublicVar importedVar = PublicVar.fromFile(this, new File(publicVarsDir.getPath() + "\\" + name));
-                if (importedVar == null) {
-                    System.out.println("Fuck");
-                } else {
-                    System.out.println("DEBUG: Imported variable " + importedVar.getName());
-                    System.out.println("DEBUG: Imported variable " + importedVar.getValue());
-                    System.out.println("DEBUG:" + importedVar.getClass().getName());
-                    System.out.println(importedVar.getName());
-                }
                 publicVars.put(name, importedVar);
                 return Optional.of(importedVar);
             } else {
@@ -85,7 +72,6 @@ public class Player {
                 return Optional.empty();
             }
         }
-        System.out.println("DEBUG: publicVar is in hashmap:" + publicVars.get(name));
         return Optional.ofNullable(publicVars.get(name));
     }
 
