@@ -149,7 +149,6 @@ public class GlobalVar<T> {
             for (Tag t : tags) {
                 tag += t + ",";
             }
-        }
         if (tag.length() + (value==null?"0":value).toString().length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())) {
             tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ",";
         }
