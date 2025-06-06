@@ -4,8 +4,8 @@ import java.io.File;
 
 public class Card {
     private String color;
-    private int value;
-    private File imageFile;
+    private int    value;
+    private File   imageFile;
 
     public Card(String color, int value) {
         this.color = color;
@@ -13,7 +13,7 @@ public class Card {
         initImageFile();
     }
 
-    public Card() {
+    private Card() {
         String[] colors = { "Red", "Green", "Blue", "Yellow" };
         this.color = colors[(int) (Math.random() * colors.length)];
         this.value = (int) (Math.random() * 14);
@@ -26,6 +26,18 @@ public class Card {
             }
         }
         initImageFile();
+    }
+
+    public static Card random(){
+        return new Card();
+    }
+
+    public static Card randomNonWild(){
+        Card card = new Card();
+        while (card.value > 12) {
+            card = new Card();
+        }
+        return card;
     }
 
     private void initImageFile() {
