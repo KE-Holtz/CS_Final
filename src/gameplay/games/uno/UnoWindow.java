@@ -1,6 +1,7 @@
 package gameplay.games.uno;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -24,16 +25,19 @@ public class UnoWindow {
 
     public void initialize() {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setSize(800, 800);
+        frame.setSize(1600, 900);
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setLayout(new BorderLayout());
         frame.add(mainPanel, BorderLayout.CENTER);
         mainPanel.setLayout(new BorderLayout());
         cardPanel.setLayout(new GridBagLayout());
+        cardPanel.setOpaque(false);
         handPanel.setLayout(new GridBagLayout());
+        handPanel.setOpaque(false);
         mainPanel.add(cardPanel, BorderLayout.CENTER);
         mainPanel.add(handPanel, BorderLayout.SOUTH);
+        mainPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Table.png")));
     }
 
     public void updateTopCard(Card card) {
