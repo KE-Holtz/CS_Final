@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -16,6 +17,7 @@ public class UnoWindow {
     private JPanel cardPanel = new JPanel();
     private JPanel handPanel = new JPanel();
     private Card topCard;
+    private ArrayList<Card> hand = new ArrayList<>();
     private GridBagConstraints gbc = new GridBagConstraints();
 
     public UnoWindow() {
@@ -40,6 +42,22 @@ public class UnoWindow {
         mainPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Table.png")));
     }
 
+    public void updateHand(ArrayList<Card> newHand) {
+        handPanel.removeAll();
+        hand = newHand;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER;
+        for (Card card : hand) {
+            JLabel cardLabel = new JLabel(new ImageIcon(card.getImageFile().getAbsolutePath()));
+            handPanel.add(cardLabel, gbc);
+            gbc.gridx++;
+        }
+        handPanel.revalidate();
+        handPanel.repaint();
+    }
+
     public void updateTopCard(Card card) {
         cardPanel.removeAll();
         topCard = card;
@@ -52,5 +70,10 @@ public class UnoWindow {
         cardPanel.add(cardLabel, gbc);
         cardPanel.revalidate();
         cardPanel.repaint();
+    }
+
+    public void reDraw() {
+        updateTopCard(topCard);
+        updateHand(hand);
     }
 }
