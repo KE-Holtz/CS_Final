@@ -104,6 +104,11 @@ public class UnoWindow {
         cardPanel.repaint();
     }
 
+    public void reDraw() {
+        updateHand(hand);
+        updateTopCard(topCard);
+    }
+
     public ImageIcon scaleImage(ImageIcon icon, int width) {
         return new ImageIcon(icon.getImage().getScaledInstance(width, -1, Image.SCALE_SMOOTH));
     }
