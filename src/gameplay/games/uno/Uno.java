@@ -118,4 +118,12 @@ public class Uno extends Game{
         turnNum.setValue(turnNum.getValue().orElse(0) + 1 % players
         .size());
     }
+
+    public ArrayList<Card> getHand() {
+        return hand;
+    }
+
+    public Card getTopCard() {
+        return topCard.getValue().orElse(Card.randomNonWild());
+    }
 }

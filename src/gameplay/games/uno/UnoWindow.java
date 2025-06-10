@@ -108,8 +108,8 @@ public class UnoWindow {
     }
 
     public void reDraw() {
-        updateHand(hand);
-        updateTopCard(topCard);
+        updateHand(uno.getHand());
+        updateTopCard(uno.getTopCard());
     }
 
     public ImageIcon scaleImage(ImageIcon icon, int width) {
