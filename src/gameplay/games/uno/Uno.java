@@ -20,6 +20,7 @@ public class Uno extends Game{
     private GlobalVar<Card> topCard;
     private PublicInt handSize;
     private ArrayList<Card> hand;
+    private UnoWindow uwu;
 
     private State state;
 
@@ -38,14 +39,15 @@ public class Uno extends Game{
 
     @Override
     public void startGame() {
-        UnoWindow window = new UnoWindow();
-        window.updateTopCard(topCard.getValue().orElse(Card.randomNonWild()));
+        uwu = new UnoWindow();
+        uwu.updateTopCard(topCard.getValue().orElse(Card.randomNonWild()));
         hand = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             hand.add(Card.random());
         }
         handSize.setValue(hand.size());
         lobby.getPlayers().sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+        uwu.updateHand(hand);
     }
 
     @Override
@@ -59,6 +61,7 @@ public class Uno extends Game{
                 break;
         }
         handSize.setValue(hand.size());
+        uwu.reDraw();
         return true;
     }
 
