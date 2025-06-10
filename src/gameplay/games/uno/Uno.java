@@ -79,7 +79,6 @@ public class Uno extends Game{
                 break;
         }
         handSize.setValue(hand.size());
-        uwu.reDraw();
         return true;
     }
 
