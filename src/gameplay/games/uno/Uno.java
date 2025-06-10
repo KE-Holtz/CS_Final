@@ -14,7 +14,7 @@ enum State{
 }
 
 public class Uno extends Game{
-    private UnoWindow uwu;
+    private UnoWindow window;
 
     private Lobby lobby;
     private Player self;
@@ -47,14 +47,14 @@ public class Uno extends Game{
 
     @Override
     public void startGame() {
-        uwu = new UnoWindow();
-        uwu.updateTopCard(topCard.getValue().orElse(Card.randomNonWild()));
+        window = new UnoWindow(this);
+        window.updateTopCard(topCard.getValue().orElse(Card.randomNonWild()));
         hand = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             hand.add(Card.random());
         }
         handSize.setValue(hand.size());
-        uwu.updateHand(hand);
+        window.updateHand(hand);
 
         players = lobby.getPlayers();
         players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
@@ -89,13 +89,21 @@ public class Uno extends Game{
     }
 
     public void playCard(Card card){
+        System.out.println("PLAYYYYY");
         if (topCard.getValue().isEmpty() || state.equals(State.WAITING)) {
+            System.out.println("silly silly");
+            System.out.println("State = " + state);
+            System.out.println("card = " + topCard.getValue().orElse(new Card("Red", 1)));
             return;
         } else if (card.matches(topCard.getValue().get())) {
             hand.remove(card);
+            System.out.println(hand);
             handSize.setValue(hand.size());
             topCard.setValue(card);
+            System.out.println(topCard.getValue().get());
             passTurn();
+        } else{
+            System.out.println("Rong card dipass");
         }
     }
 

@@ -62,7 +62,6 @@ public class GlobalVar<T> {
         setValue(value);
     }
 
-    // ? Returns null if no value is found - is this ok?
     public Optional<T> getValue() {
         File[] values = Stream.of(playerSpaceFolder.listFiles())
                 .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)

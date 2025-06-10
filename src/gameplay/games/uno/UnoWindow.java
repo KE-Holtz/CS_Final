@@ -23,7 +23,10 @@ public class UnoWindow {
     private ArrayList<Card> hand = new ArrayList<>();
     private GridBagConstraints gbc = new GridBagConstraints();
 
-    public UnoWindow() {
+    private Uno uno;
+
+    public UnoWindow(Uno uno) {
+        this.uno = uno;
         frame = new JFrame("Uno Game");
         initialize();
     }
@@ -56,6 +59,7 @@ public class UnoWindow {
         gbc.anchor = GridBagConstraints.CENTER;
         for (Card card : hand) {
             JButton cardButton = new JButton();
+            cardButton.addActionListener(e -> uno.playCard(card));
             cardButton.setIcon(scaleImage(new ImageIcon(card.getImageFile().getAbsolutePath()), 150));
             cardButton.setContentAreaFilled(false);
             cardButton.setFocusPainted(false);
