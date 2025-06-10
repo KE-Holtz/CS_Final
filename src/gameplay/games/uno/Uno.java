@@ -89,4 +89,26 @@ public class Uno extends Game{
         throw new UnsupportedOperationException("Unimplemented method 'endGame'");
     }
 
+    public void playCard(Card card){
+        if (topCard.getValue().isEmpty() || state.equals(State.WAITING)) {
+            return;
+        } else if (card.matches(topCard.getValue().get())) {
+            hand.remove(card);
+            handSize.setValue(hand.size());
+            topCard.setValue(card);
+            passTurn();
+        }
+    }
+
+    public void drawCard(){
+        if(state.equals(State.TURN)){
+            hand.add(Card.random());
+            handSize.setValue(hand.size());
+        }
+    }
+
+    public void passTurn(){
+        turnNum.setValue(turnNum.getValue().orElse(0) + 1 % players
+        .size());
+    }
 }
