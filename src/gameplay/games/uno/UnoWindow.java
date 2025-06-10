@@ -21,7 +21,6 @@ public class UnoWindow {
     private JPanel mainPanel = new JPanel();
     private JPanel cardPanel = new JPanel();
     private JPanel handPanel = new JPanel();
-    //JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
     private JScrollPane scrollPane = new JScrollPane();
     private Card topCard;
     private ArrayList<Card> hand = new ArrayList<>();
@@ -109,8 +108,8 @@ public class UnoWindow {
     }
 
     public void reDraw() {
-        updateHand(hand);
-        updateTopCard(topCard);
+        updateHand(uno.getHand());
+        updateTopCard(uno.getTopCard());
     }
 
     public ImageIcon scaleImage(ImageIcon icon, int width) {
