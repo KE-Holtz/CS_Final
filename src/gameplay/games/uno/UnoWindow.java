@@ -13,12 +13,16 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.Border;
 
 public class UnoWindow {
-    private final JFrame frame;
+    private JFrame frame;
     private JPanel mainPanel = new JPanel();
     private JPanel cardPanel = new JPanel();
     private JPanel handPanel = new JPanel();
+    //JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
+    private JScrollPane scrollPane = new JScrollPane();
     private Card topCard;
     private ArrayList<Card> hand = new ArrayList<>();
     private GridBagConstraints gbc = new GridBagConstraints();
@@ -43,8 +47,17 @@ public class UnoWindow {
         cardPanel.setOpaque(false);
         handPanel.setLayout(new GridBagLayout());
         handPanel.setOpaque(false);
+        scrollPane.setViewportView(handPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(null);
+        scrollPane.setPreferredSize(new Dimension(1600, 230));
+        scrollPane.setMaximumSize(new Dimension(1600, 230));
+        scrollPane.setMinimumSize(new Dimension(1600, 230));
+        mainPanel.add(scrollPane, BorderLayout.SOUTH);
         mainPanel.add(cardPanel, BorderLayout.CENTER);
-        mainPanel.add(handPanel, BorderLayout.SOUTH);
         JLabel background = new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Table.png"));
         background.setBounds(0,0, mainPanel.getSize().width, mainPanel.getSize().height);
         mainPanel.add(background);
@@ -93,6 +106,11 @@ public class UnoWindow {
         cardPanel.add(cardLabel, gbc);
         cardPanel.revalidate();
         cardPanel.repaint();
+    }
+
+    public void reDraw() {
+        updateHand(hand);
+        updateTopCard(topCard);
     }
 
     public ImageIcon scaleImage(ImageIcon icon, int width) {
