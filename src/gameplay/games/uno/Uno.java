@@ -100,11 +100,13 @@ public class Uno extends Game{
             System.out.println(hand);
             handSize.setValue(hand.size());
             topCard.setValue(card);
+            window.updateTopCard(card);
             System.out.println(topCard.getValue().get());
             passTurn();
         } else{
             System.out.println("Rong card dipass");
         }
+        window.reDraw();
     }
 
     public void drawCard(){
@@ -112,6 +114,7 @@ public class Uno extends Game{
             hand.add(Card.random());
             handSize.setValue(hand.size());
         }
+        window.reDraw();
     }
 
     public void passTurn(){
