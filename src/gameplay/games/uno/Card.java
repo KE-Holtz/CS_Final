@@ -87,4 +87,8 @@ public class Card {
     public void setColor(String color) {
         this.color = color;
     }
+
+    public boolean matches(Card other){
+        return getColor().equals(other.getColor()) || getValue() == other.getValue();
+    }
 }
