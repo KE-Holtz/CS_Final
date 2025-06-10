@@ -14,13 +14,17 @@ enum State{
 }
 
 public class Uno extends Game{
+    private UnoWindow uwu;
+
     private Lobby lobby;
     private Player self;
-
+    private ArrayList<Player> players;
     private GlobalVar<Card> topCard;
+
     private PublicInt handSize;
     private ArrayList<Card> hand;
-    private UnoWindow uwu;
+
+    private GlobalInt turnNum;
 
     private State state;
 
@@ -32,9 +36,13 @@ public class Uno extends Game{
     public void initialize(Session session) {
         lobby = session.getLobby();
         self = lobby.getClientPlayer();
+
         topCard = new GlobalVar<Card>(session, "card", Card::fromString, Card.random());
+
         handSize = new PublicInt(self, "handSize");
         self.addVariable(handSize);
+
+        turnNum = new GlobalInt(session, "turnNum", 0);
     }
 
     @Override
@@ -46,17 +54,27 @@ public class Uno extends Game{
             hand.add(Card.random());
         }
         handSize.setValue(hand.size());
-        lobby.getPlayers().sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
         uwu.updateHand(hand);
+
+        players = lobby.getPlayers();
+        players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
     }
 
     @Override
     public boolean periodic() {
+        Player currentPlayer = players.get(turnNum.getValue().orElse(0));
+        if(currentPlayer.equals(self)){
+            state = state.TURN;
+        } else {
+            state = state.WAITING;
+        }
         switch (state) {
             case WAITING:
-
+                //Wait for it to be your turn
                 break;
-
+            case TURN:
+                //Handle turn here
+                break;
             default:
                 break;
         }
