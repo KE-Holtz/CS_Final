@@ -14,7 +14,7 @@ enum State{
 }
 
 public class Uno extends Game{
-    private UnoWindow window;
+    private UnoWindow uwu;
 
     private Lobby lobby;
     private Player self;
@@ -47,14 +47,14 @@ public class Uno extends Game{
 
     @Override
     public void startGame() {
-        window = new UnoWindow(this);
-        window.updateTopCard(topCard.getValue().orElse(Card.randomNonWild()));
+        uwu = new UnoWindow(this);
+        uwu.updateTopCard(topCard.getValue().orElse(Card.randomNonWild()));
         hand = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             hand.add(Card.random());
         }
         handSize.setValue(hand.size());
-        window.updateHand(hand);
+        uwu.updateHand(hand);
 
         players = lobby.getPlayers();
         players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
