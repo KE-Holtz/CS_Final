@@ -36,12 +36,10 @@ public class UnoWindow {
 
     public void initialize() {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setSize(1600, 900);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.setLayout(new BorderLayout());
-        frame.add(mainPanel, BorderLayout.CENTER);
         mainPanel.setLayout(new BorderLayout());
+        mainPanel.setOpaque(false);
         cardPanel.setLayout(new GridBagLayout());
         cardPanel.setOpaque(false);
         handPanel.setLayout(new GridBagLayout());
@@ -57,9 +55,27 @@ public class UnoWindow {
         scrollPane.setMinimumSize(new Dimension(1600, 230));
         mainPanel.add(scrollPane, BorderLayout.SOUTH);
         mainPanel.add(cardPanel, BorderLayout.CENTER);
+        JPanel container = new JPanel();
+        JPanel backgroundPanel = new JPanel();
+        backgroundPanel.setLayout(new BorderLayout());
         JLabel background = new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Table.png"));
-        background.setBounds(0,0, mainPanel.getSize().width, mainPanel.getSize().height);
-        mainPanel.add(background);
+        backgroundPanel.add(background, BorderLayout.CENTER);
+        container.setLayout(null);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        backgroundPanel.setBounds(0, 0, 1600, 900);
+        mainPanel.setBounds(0, 0, 1600, 900);
+        container.add(backgroundPanel);
+        container.add(mainPanel);
+        container.setOpaque(false);
+        container.setComponentZOrder(backgroundPanel, 1);
+        container.setComponentZOrder(mainPanel, 0);
+        Dimension size = new Dimension(1600, 900);
+        container.setPreferredSize(size);
+        container.setMaximumSize(size);
+        container.setMinimumSize(size);
+        frame.setContentPane(container);
+        frame.pack();
     }
 
     public void updateHand(ArrayList<Card> newHand) {
