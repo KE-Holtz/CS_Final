@@ -25,6 +25,7 @@ public class Uno extends Game{
     private ArrayList<Card> hand;
 
     private GlobalInt turnNum;
+    private GlobalInt drawCounter;
 
     private State state;
 
@@ -43,6 +44,7 @@ public class Uno extends Game{
         self.addVariable(handSize);
 
         turnNum = new GlobalInt(session, "turnNum", 0);
+        drawCounter = new GlobalInt(session, "drawCounter", 0);
     }
 
     @Override
@@ -73,7 +75,9 @@ public class Uno extends Game{
                 //Wait for it to be your turn
                 break;
             case TURN:
-                //Handle turn here
+                for(int i = 0; i < drawCounter.getValue().orElse(0); i++){
+                    drawCard();
+                }
                 break;
             default:
                 break;
@@ -100,8 +104,21 @@ public class Uno extends Game{
             System.out.println(hand);
             handSize.setValue(hand.size());
             topCard.setValue(card);
+            uwu.updateTopCard(card);;
+            System.out.println(topCard.getValue().get());
+            passTurn();
+        } else if (card.isWild()) {
+            hand.remove(card);
+            System.out.println(hand);
+            handSize.setValue(hand.size());
+            topCard.setValue(card);
             uwu.updateTopCard(card);
             System.out.println(topCard.getValue().get());
+            topCard.setValue(uwu.pickWildColor());
+            System.out.println("Wild card played");
+            if(card.getValue() == 14) {
+                drawCounter.setValue(drawCounter.getValue().orElse(0) + 4);
+            }
             passTurn();
         } else{
             System.out.println("Rong card dipass");

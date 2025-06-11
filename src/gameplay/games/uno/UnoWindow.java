@@ -6,10 +6,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.LayoutManager;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -38,6 +40,7 @@ public class UnoWindow {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setOpaque(false);
         cardPanel.setLayout(new GridBagLayout());
@@ -114,6 +117,7 @@ public class UnoWindow {
         deck.setPreferredSize(size);
         deck.setMaximumSize(size);
         deck.setMinimumSize(size);
+        deck.addActionListener(e -> uno.drawCard());
         gbc.gridx = 0;
         gbc.gridy = 0;
         cardPanel.add(deck, gbc);
@@ -121,6 +125,47 @@ public class UnoWindow {
         cardPanel.add(cardLabel, gbc);
         cardPanel.revalidate();
         cardPanel.repaint();
+    }
+
+    public Card pickWildColor() {
+        // Use a modal JDialog instead of JFrame and blocking loop
+        JDialog colorDialog = new JDialog(frame, "Pick a Color", true);
+        colorDialog.setLayout(new BorderLayout());
+        colorDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        colorDialog.setSize(600, 200);
+        colorDialog.setLocationRelativeTo(frame);
+        JPanel colorPanel = new JPanel();
+        colorPanel.setLayout(new GridBagLayout());
+        colorDialog.add(colorPanel, BorderLayout.CENTER);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        String[] colors = {"Red", "Green", "Blue", "Yellow"};
+        Color[] colorValues = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW};
+        for (int i = 0; i < 4; i++) {
+            JButton colorButton = new JButton();
+            int index = i;
+            colorButton.addActionListener(e -> {
+                topCard.setColor(colors[index]);
+                colorDialog.dispose();
+            });
+            colorButton.setFocusPainted(false);
+            colorButton.setVisible(true);
+            colorButton.setPreferredSize(new Dimension(100, 50));
+            colorButton.setMaximumSize(new Dimension(100, 50));
+            colorButton.setMinimumSize(new Dimension(100, 50));
+            colorButton.setForeground(colorValues[i]);
+            colorButton.setBackground(colorValues[i].darker());
+            colorButton.setText(colors[i]);
+            gbc.gridx = i;
+            colorPanel.add(colorButton, gbc);
+        }
+
+        colorPanel.revalidate();
+        colorPanel.repaint();
+
+        colorDialog.setVisible(true);
+        return topCard;
     }
 
     public void reDraw() {
