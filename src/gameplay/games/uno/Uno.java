@@ -64,6 +64,7 @@ public class Uno extends Game{
 
         players = lobby.getPlayers();
         players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+        System.out.println(players);
     }
 
     @Override
