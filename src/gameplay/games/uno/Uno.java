@@ -104,11 +104,7 @@ public class Uno extends Game{
             System.out.println(hand);
             handSize.setValue(hand.size());
             topCard.setValue(card);
-<<<<<<< HEAD
             uwu.updateTopCard(card);
-=======
-            uwu.updateTopCard(card);;
->>>>>>> 70b6eab2b37c01e02ab269fd427ac1a34cc0651b
             System.out.println(topCard.getValue().get());
             passTurn();
         } else if (card.isWild()) {
