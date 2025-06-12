@@ -56,6 +56,10 @@ public class Card {
         return value;
     }
 
+    public boolean isWild() {
+        return color.equals("Wild");
+    }
+
     public String toString() {
         return color + "_" + value;
     }
