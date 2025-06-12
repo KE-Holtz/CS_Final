@@ -63,7 +63,9 @@ public class GlobalVar<T> {
     }
 
     public Optional<T> getValue() {
-        File[] values = Stream.of(playerSpaceFolder.listFiles())
+        File[] values;
+        System.out.println(playerSpaceFolder.listFiles());
+        values = Stream.of(playerSpaceFolder.listFiles())
                 .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
                 .map(File::new)
                 .map((x) -> x.listFiles()[0])
