@@ -141,12 +141,15 @@ public class PublicVar<T> {
     }
 
     private void deleteContents(File file) {
-        for (File f : file.listFiles()) {
-            if (f.isDirectory()) {
-                deleteContents(f);
+        if (file.listFiles() != null) {
+            for (File f : file.listFiles()) {
+                if (f.isDirectory()) {
+                    deleteContents(f);
+                }
+                f.delete();
             }
-            f.delete();
         }
+
     }
 
     private static String valueOf(String value) {
