@@ -82,6 +82,7 @@ public class Uno extends Game{
         } else if (drawCounter.getValue().orElse(0) > 0){
             state = State.DRAW;
         } else {
+            System.out.println(currentPlayer + "'s turn, waiting");
             state = State.WAITING;
         }
         switch (state) {
