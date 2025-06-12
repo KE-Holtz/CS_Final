@@ -39,7 +39,7 @@ public class Uno extends Game{
         lobby = session.getLobby();
         self = lobby.getClientPlayer();
 
-        topCard = new GlobalVar<Card>(session, "card", Card::fromString, Card.random());
+        topCard = new GlobalVar<Card>(session, "card", Card::fromString, Card.randomNonWild());
 
         handSize = new PublicInt(self, "handSize");
         self.addVariable(handSize);
