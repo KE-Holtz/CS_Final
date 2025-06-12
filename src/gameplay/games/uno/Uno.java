@@ -70,6 +70,7 @@ public class Uno extends Game{
     public boolean periodic() {
         if(numTurns.getValue().orElse(-1) > localNumTurns){
             uwu.reDraw();
+            localNumTurns = numTurns.getValue().orElse(localNumTurns);
         }
         Player currentPlayer = players.get(turnIndex.getValue().orElse(0));
         // System.out.println("Current Player = " + currentPlayer.getName());
@@ -156,6 +157,7 @@ public class Uno extends Game{
         int nextTurnNum = (turnIndex.getValue().orElse(0) + 1) % players
         .size();
         System.out.println("Passing turn, turnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(-1));
+        numTurns.setValue(numTurns.getValue().orElse(-1) + 1);
         turnIndex.setValue(nextTurnNum);
     }
 
