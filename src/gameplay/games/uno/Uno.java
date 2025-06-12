@@ -65,8 +65,8 @@ public class Uno extends Game{
     @Override
     public boolean periodic() {
         Player currentPlayer = players.get(turnNum.getValue().orElse(0));
-        System.out.println("Current Player = " + currentPlayer.getName());
-        System.out.println("State = " + state);
+        // System.out.println("Current Player = " + currentPlayer.getName());
+        // System.out.println("State = " + state);
         if(currentPlayer.equals(self)){
             state = state.TURN;
         } else {
@@ -75,13 +75,15 @@ public class Uno extends Game{
         switch (state) {
             case WAITING:
                 //Wait for it to be your turn
-                System.out.println("Waiting");
+                // System.out.println("Waiting");
                 break;
             case TURN:
-                System.out.println("Taking turn");
+                // System.out.println("Taking turn");
                 for(int i = 0; i < drawCounter.getValue().orElse(0); i++){
                     drawCard();
                 }
+                drawCounter.setValue(0);
+                passTurn();
                 break;
             default:
                 break;
