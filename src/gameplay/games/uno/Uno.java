@@ -69,9 +69,10 @@ public class Uno extends Game{
 
     @Override
     public boolean periodic() {
-        if(numTurns.getValue().orElse(-1) > localNumTurns){
+        if(numTurns.getValue().orElse(0) > localNumTurns){
             uwu.reDraw();
             localNumTurns = numTurns.getValue().orElse(localNumTurns);
+            System.out.println("Redrew due to turn diff");
         }
         Player currentPlayer = players.get(turnIndex.getValue().orElse(0));
         // System.out.println("Current Player = " + currentPlayer.getName());
@@ -156,10 +157,10 @@ public class Uno extends Game{
             System.out.println("Passing turn, turnNum is empty");
         } else {
             int nextTurnNum = (turnIndex.getValue().get() + 1) % players.size();
-            System.out.println("Passing turn, nextTurnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(-1) + ", players.size() = " + players.size());
+            System.out.println("Passing turn, nextTurnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size());
             turnIndex.setValue(nextTurnNum);
         }
-        numTurns.setValue(numTurns.getValue().orElse(-1) + 1);
+        numTurns.setValue(numTurns.getValue().orElse(0) + 1);
     }
 
     public ArrayList<Card> getHand() {

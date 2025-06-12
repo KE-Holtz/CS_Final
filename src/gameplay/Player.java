@@ -79,4 +79,9 @@ public class Player {
     public boolean equals(Object other) {
         return ((Player) other).getName().equals(name);
     }
+
+    @Override
+    public String toString(){
+        return getName();
+    }
 }
