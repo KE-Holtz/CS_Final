@@ -153,12 +153,12 @@ public class Uno extends Game{
     public void passTurn(){
         if (turnIndex.getValue().isEmpty()) {
             System.out.println("Passing turn, turnNum is empty");
+        } else {
+            int nextTurnNum = (turnIndex.getValue().get() + 1) % players.size();
+            System.out.println("Passing turn, nextTurnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(-1) + ", players.size() = " + players.size());
+            turnIndex.setValue(nextTurnNum);
         }
-        int nextTurnNum = (turnIndex.getValue().orElse(0) + 1) % players
-        .size();
-        System.out.println("Passing turn, turnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(-1));
         numTurns.setValue(numTurns.getValue().orElse(-1) + 1);
-        turnIndex.setValue(nextTurnNum);
     }
 
     public ArrayList<Card> getHand() {
