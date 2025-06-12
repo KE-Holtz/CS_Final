@@ -65,6 +65,8 @@ public class Uno extends Game{
     @Override
     public boolean periodic() {
         Player currentPlayer = players.get(turnNum.getValue().orElse(0));
+        System.out.println("Current Player = " + currentPlayer.getName());
+        System.out.println("State = " + state);
         if(currentPlayer.equals(self)){
             state = state.TURN;
         } else {
@@ -73,8 +75,10 @@ public class Uno extends Game{
         switch (state) {
             case WAITING:
                 //Wait for it to be your turn
+                System.out.println("Waiting");
                 break;
             case TURN:
+                System.out.println("Taking turn");
                 for(int i = 0; i < drawCounter.getValue().orElse(0); i++){
                     drawCard();
                 }
@@ -93,10 +97,8 @@ public class Uno extends Game{
     }
 
     public void playCard(Card card){
-        System.out.println("PLAYYYYY");
+        System.out.println("Playing card, state = " + state);
         if (topCard.getValue().isEmpty() || state.equals(State.WAITING)) {
-            System.out.println("silly silly");
-            System.out.println("State = " + state);
             System.out.println("card = " + topCard.getValue().orElse(new Card("Red", 1)));
             return;
         } else if (card.matches(topCard.getValue().get())) {
@@ -135,6 +137,12 @@ public class Uno extends Game{
     }
 
     public void passTurn(){
+        if (turnNum.getValue().isEmpty()) {
+            System.out.println("Passing turn, turnNum is empty");
+        }
+        int nextTurnNum = turnNum.getValue().orElse(0) + 1 % players
+        .size();
+        System.out.println("Passing turn, turnNum = " + nextTurnNum);
         turnNum.setValue(turnNum.getValue().orElse(0) + 1 % players
         .size());
     }
