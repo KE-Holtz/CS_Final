@@ -64,7 +64,10 @@ public class GlobalVar<T> {
 
     public Optional<T> getValue() {
         File[] values;
-        System.out.println(playerSpaceFolder.listFiles());
+        if (playerSpaceFolder.listFiles() == null || playerSpaceFolder.listFiles().length == 0) {
+            System.out.println("null or empty");
+        }
+        // System.out.println(playerSpaceFolder.listFiles());
         values = Stream.of(playerSpaceFolder.listFiles())
                 .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
                 .map(File::new)

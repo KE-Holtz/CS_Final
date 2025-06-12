@@ -160,6 +160,7 @@ public class Uno extends Game{
             System.out.println("Passing turn, nextTurnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size());
             turnIndex.setValue(nextTurnNum);
         }
+        localNumTurns++;
         numTurns.setValue(numTurns.getValue().orElse(0) + 1);
     }
 
