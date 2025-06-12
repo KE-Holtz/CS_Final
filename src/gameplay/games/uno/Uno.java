@@ -11,6 +11,7 @@ import backend.publicvars.*;
 enum State{
     WAITING,
     TURN,
+    DRAW,
 }
 
 public class Uno extends Game{
@@ -68,9 +69,11 @@ public class Uno extends Game{
         // System.out.println("Current Player = " + currentPlayer.getName());
         // System.out.println("State = " + state);
         if(currentPlayer.equals(self)){
-            state = state.TURN;
+            state = State.TURN;
+        } else if (drawCounter.getValue().orElse(0) > 0){
+            state = State.DRAW;
         } else {
-            state = state.WAITING;
+            state = State.WAITING;
         }
         switch (state) {
             case WAITING:
@@ -79,6 +82,8 @@ public class Uno extends Game{
                 break;
             case TURN:
                 // System.out.println("Taking turn");
+                break;
+            case DRAW:
                 for(int i = 0; i < drawCounter.getValue().orElse(0); i++){
                     drawCard();
                 }
