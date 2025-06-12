@@ -25,7 +25,9 @@ public class Uno extends Game{
     private PublicInt handSize;
     private ArrayList<Card> hand;
 
-    private GlobalInt turnNum;
+    private GlobalInt turnIndex;
+    private GlobalInt numTurns;
+    private int localNumTurns = 0;
     private GlobalInt drawCounter;
 
     private State state;
@@ -44,7 +46,8 @@ public class Uno extends Game{
         handSize = new PublicInt(self, "handSize");
         self.addVariable(handSize);
 
-        turnNum = new GlobalInt(session, "turnNum", 0);
+        turnIndex = new GlobalInt(session, "turnNum", 0);
+        numTurns = new GlobalInt(session, "numTurns", 0);
         drawCounter = new GlobalInt(session, "drawCounter", 0);
     }
 
@@ -65,7 +68,10 @@ public class Uno extends Game{
 
     @Override
     public boolean periodic() {
-        Player currentPlayer = players.get(turnNum.getValue().orElse(0));
+        if(numTurns.getValue().orElse(-1) > localNumTurns){
+            uwu.reDraw();
+        }
+        Player currentPlayer = players.get(turnIndex.getValue().orElse(0));
         // System.out.println("Current Player = " + currentPlayer.getName());
         // System.out.println("State = " + state);
         if(currentPlayer.equals(self)){
@@ -144,13 +150,13 @@ public class Uno extends Game{
     }
 
     public void passTurn(){
-        if (turnNum.getValue().isEmpty()) {
+        if (turnIndex.getValue().isEmpty()) {
             System.out.println("Passing turn, turnNum is empty");
         }
-        int nextTurnNum = (turnNum.getValue().orElse(0) + 1) % players
+        int nextTurnNum = (turnIndex.getValue().orElse(0) + 1) % players
         .size();
-        System.out.println("Passing turn, turnNum = " + nextTurnNum);
-        turnNum.setValue(nextTurnNum);
+        System.out.println("Passing turn, turnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(-1));
+        turnIndex.setValue(nextTurnNum);
     }
 
     public ArrayList<Card> getHand() {
