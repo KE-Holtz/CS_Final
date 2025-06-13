@@ -142,7 +142,7 @@ public class PublicVar<T> {
 
     private void deleteContents(File file) {
         if (file.listFiles() != null) {
-            for (File f : file.listFiles()) {
+            for (File f : file.listFiles() == null? file.listFiles() : new File[0]) {
                 if (f.isDirectory()) {
                     deleteContents(f);
                 }

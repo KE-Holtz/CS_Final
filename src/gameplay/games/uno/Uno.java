@@ -11,7 +11,7 @@ import backend.publicvars.*;
 enum State{
     WAITING,
     TURN,
-    DRAW,
+    SPECIAL,
 }
 
 public class Uno extends Game{
@@ -33,6 +33,8 @@ public class Uno extends Game{
     private int localNumTurns = 0;
 
     private GlobalInt drawCounter;
+    private GlobalBoolean skip;
+    private GlobalBoolean reverse;
 
     private State state;
 
@@ -52,11 +54,15 @@ public class Uno extends Game{
 
         turnIndex = new GlobalInt(session, "turnNum", 0);
         numTurns = new GlobalInt(session, "numTurns", 0);
+
         drawCounter = new GlobalInt(session, "drawCounter", 0);
+        skip = new GlobalBoolean(session, "skip", false);
+        reverse = new GlobalBoolean(session, "reverse", false);
     }
 
     @Override
     public void startGame() {
+        System.out.println("This player is " + self.getName());
         uwu = new UnoWindow(this);
         uwu.updateTopCard(topCard.getValue().orElse(Card.randomNonWild()));
         hand = new ArrayList<>();
@@ -68,7 +74,7 @@ public class Uno extends Game{
 
         players = lobby.getPlayers();
         players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-        System.out.println(players);
+        // System.out.println(players);
     }
 
     @Override
@@ -77,20 +83,17 @@ public class Uno extends Game{
         if(numTurns.getValue().orElse(0) > localNumTurns){
             uwu.reDraw();
             localNumTurns = numTurns.getValue().orElse(localNumTurns);
-            System.out.println("Redrew due to turn diff");
+            // System.out.println("Redrew due to turn diff");
         }
         Player currentPlayer = players.get(localTurnIndex);
         // System.out.println("Current Player = " + currentPlayer.getName());
         // System.out.println("State = " + state);
-        if(currentPlayer.equals(self)){
-            state = State.TURN;
-        } else if (drawCounter.getValue().orElse(0) > 0){
-            state = State.DRAW;
-        } else {
-            System.out.println(currentPlayer + "'s turn, waiting");
-            System.out.println(players + " = Players");
-            System.out.println(localTurnIndex + " = turnIndex");
+        if(!currentPlayer.equals(self)){
             state = State.WAITING;
+        } else if (drawCounter.getValue().orElse(0) > 0 || skip.getValue().orElse(false)){
+            state = State.SPECIAL;
+        } else {
+            state = State.TURN;
         }
         switch (state) {
             case WAITING:
@@ -100,11 +103,15 @@ public class Uno extends Game{
             case TURN:
                 // System.out.println("Taking turn");
                 break;
-            case DRAW:
+            case SPECIAL:
+                System.out.println("Special case:");
+                System.out.println("  drawCounter = " + drawCounter.getValue().orElse(-1));
+                System.out.println("  skip = " + skip.getValue().orElse(false));
                 for(int i = 0; i < drawCounter.getValue().orElse(0); i++){
                     drawCard();
                 }
                 drawCounter.setValue(0);
+                skip.setValue(false);
                 passTurn();
                 break;
             default:
@@ -124,42 +131,53 @@ public class Uno extends Game{
         if(topCard.getValue().isEmpty()){
             System.out.println("Top card is empty");
         } else {
-            localTopCard = topCard.getValue().get();
+            localTopCard = topCard.getValue().orElse(localTopCard);
         }
 
         if(turnIndex.getValue().isEmpty()){
             System.out.println("Turn index is empty");
         } else {
-            localTurnIndex = turnIndex.getValue().get();
+            localTurnIndex = turnIndex.getValue().orElse(localTurnIndex);
         }
     } 
 
     public void playCard(Card card){
-        System.out.println("Playing card, state = " + state);
+        // System.out.println("Playing card, state = " + state);
         if (state.equals(State.WAITING)) {
-       
             return;
-        } else if (card.matches(localTopCard)){
-            hand.remove(card);
-            handSize.setValue(hand.size());
-            topCard.setValue(card);
-            uwu.updateTopCard(card);
-            System.out.println(topCard.getValue().get());
-            passTurn();
         } else if (card.isWild()) {
             hand.remove(card);
             handSize.setValue(hand.size());
             topCard.setValue(card);
             uwu.updateTopCard(card);
-            System.out.println(topCard.getValue().get());
+            // System.out.println(topCard.getValue().get());
             topCard.setValue(uwu.pickWildColor());
-            System.out.println("Wild card played");
+            // System.out.println("Wild card played");
             if(card.getValue() == 14) {
-                drawCounter.setValue(drawCounter.getValue().orElse(0) + 4);
+                drawCounter.setValue( 4);
             }
             passTurn();
+        } else if (card.matches(localTopCard)){
+            hand.remove(card);
+            handSize.setValue(hand.size());
+            topCard.setValue(card);
+            uwu.updateTopCard(card);
+            switch (card.getValue()) {
+                case 10:
+                    skip.setValue(true);
+                    break;
+                case 11:
+                    reverse.setValue(!reverse.getValue().orElse(false));
+                    break;
+                case 12:
+                    drawCounter.setValue(2);
+                default:
+                    break;
+            }
+            // System.out.println(topCard.getValue().get());
+            passTurn();
         } else{
-            System.out.println("Rong card dipass");
+            // System.out.println("Rong card dipass");
         }
         uwu.reDraw();
     }
@@ -173,7 +191,12 @@ public class Uno extends Game{
     }
 
     public void passTurn(){
-            int nextTurnNum = (localTurnIndex + 1) % players.size();
+            int nextTurnNum;
+            if(reverse.getValue().orElse(false)){
+                nextTurnNum = (localTurnIndex - 1) % players.size();
+            } else {
+                nextTurnNum = (localTurnIndex + 1) % players.size();
+            }
             System.out.println("Passing turn, nextTurnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size());
             turnIndex.setValue(nextTurnNum);
         if (numTurns.getValue().isEmpty()) {
