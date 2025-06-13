@@ -20,14 +20,18 @@ public class Uno extends Game{
     private Lobby lobby;
     private Player self;
     private ArrayList<Player> players;
+
     private GlobalVar<Card> topCard;
+    private Card localTopCard;
 
     private PublicInt handSize;
     private ArrayList<Card> hand;
 
     private GlobalInt turnIndex;
     private GlobalInt numTurns;
+    private int localTurnIndex = 0;
     private int localNumTurns = 0;
+
     private GlobalInt drawCounter;
 
     private State state;
@@ -69,12 +73,13 @@ public class Uno extends Game{
 
     @Override
     public boolean periodic() {
+        syncVars();
         if(numTurns.getValue().orElse(0) > localNumTurns){
             uwu.reDraw();
             localNumTurns = numTurns.getValue().orElse(localNumTurns);
             System.out.println("Redrew due to turn diff");
         }
-        Player currentPlayer = players.get(turnIndex.getValue().orElse(0));
+        Player currentPlayer = players.get(localTurnIndex);
         // System.out.println("Current Player = " + currentPlayer.getName());
         // System.out.println("State = " + state);
         if(currentPlayer.equals(self)){
@@ -84,7 +89,7 @@ public class Uno extends Game{
         } else {
             System.out.println(currentPlayer + "'s turn, waiting");
             System.out.println(players + " = Players");
-            System.out.println(turnIndex.getValue().orElse(-1) + " = turnIndex");
+            System.out.println(localTurnIndex + " = turnIndex");
             state = State.WAITING;
         }
         switch (state) {
@@ -115,14 +120,27 @@ public class Uno extends Game{
         throw new UnsupportedOperationException("Unimplemented method 'endGame'");
     }
 
+    public void syncVars(){
+        if(topCard.getValue().isEmpty()){
+            System.out.println("Top card is empty");
+        } else {
+            localTopCard = topCard.getValue().get();
+        }
+
+        if(turnIndex.getValue().isEmpty()){
+            System.out.println("Turn index is empty");
+        } else {
+            localTurnIndex = turnIndex.getValue().get();
+        }
+    } 
+
     public void playCard(Card card){
         System.out.println("Playing card, state = " + state);
-        if (topCard.getValue().isEmpty() || state.equals(State.WAITING)) {
-            System.out.println("card = " + topCard.getValue().orElse(new Card("Red", 1)));
+        if (state.equals(State.WAITING)) {
+       
             return;
-        } else if (card.matches(topCard.getValue().get())) {
+        } else if (card.matches(localTopCard)){
             hand.remove(card);
-            System.out.println(hand);
             handSize.setValue(hand.size());
             topCard.setValue(card);
             uwu.updateTopCard(card);
@@ -130,7 +148,6 @@ public class Uno extends Game{
             passTurn();
         } else if (card.isWild()) {
             hand.remove(card);
-            System.out.println(hand);
             handSize.setValue(hand.size());
             topCard.setValue(card);
             uwu.updateTopCard(card);
@@ -156,13 +173,9 @@ public class Uno extends Game{
     }
 
     public void passTurn(){
-        if (turnIndex.getValue().isEmpty()) {
-            System.out.println("Passing turn, turnNum is empty");
-        } else {
-            int nextTurnNum = (turnIndex.getValue().get() + 1) % players.size();
+            int nextTurnNum = (localTurnIndex + 1) % players.size();
             System.out.println("Passing turn, nextTurnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size());
             turnIndex.setValue(nextTurnNum);
-        }
         if (numTurns.getValue().isEmpty()) {
             System.out.println("numTurns is empty");
         }
