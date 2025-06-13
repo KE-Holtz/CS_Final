@@ -13,7 +13,7 @@ enum State{
     TURN,
     SPECIAL,
 }
-
+//TODO: 1) fix skip 2) test reverse 3) add other player UI with turns and card count 4) add turn indicator 5) add end message
 public class Uno extends Game{
     private UnoWindow uwu;
 
@@ -37,6 +37,8 @@ public class Uno extends Game{
     private GlobalBoolean reverse;
 
     private State state;
+
+    private int safeTurnNum = -1;
 
     public Uno() {
         setName("Uno");
@@ -90,7 +92,7 @@ public class Uno extends Game{
         // System.out.println("State = " + state);
         if(!currentPlayer.equals(self)){
             state = State.WAITING;
-        } else if (drawCounter.getValue().orElse(0) > 0 || skip.getValue().orElse(false)){
+        } else if ((drawCounter.getValue().orElse(0) > 0 || skip.getValue().orElse(false)) && safeTurnNum < localNumTurns){
             state = State.SPECIAL;
         } else {
             state = State.TURN;
@@ -109,6 +111,7 @@ public class Uno extends Game{
                 System.out.println("  skip = " + skip.getValue().orElse(false));
                 for(int i = 0; i < drawCounter.getValue().orElse(0); i++){
                     drawCard();
+                    System.out.println(self.getName() + ": Drew");
                 }
                 drawCounter.setValue(0);
                 skip.setValue(false);
@@ -154,6 +157,7 @@ public class Uno extends Game{
             topCard.setValue(uwu.pickWildColor());
             // System.out.println("Wild card played");
             if(card.getValue() == 14) {
+                safeTurnNum = localNumTurns;
                 drawCounter.setValue( 4);
             }
             passTurn();
@@ -170,6 +174,7 @@ public class Uno extends Game{
                     reverse.setValue(!reverse.getValue().orElse(false));
                     break;
                 case 12:
+                    safeTurnNum = localNumTurns;
                     drawCounter.setValue(2);
                 default:
                     break;
@@ -183,7 +188,7 @@ public class Uno extends Game{
     }
 
     public void drawCard(){
-        if(state.equals(State.TURN)){
+        if(!state.equals(State.WAITING)){
             hand.add(Card.random());
             handSize.setValue(hand.size());
         }
