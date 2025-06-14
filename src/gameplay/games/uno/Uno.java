@@ -204,7 +204,7 @@ public class Uno extends Game{
             if(reverse.getValue().orElse(false)){
                 nextTurnNum = localTurnIndex - 1;
                 if(nextTurnNum < 0){
-                    nextTurnNum = players.size() - nextTurnNum;
+                    nextTurnNum = players.size() + nextTurnNum;
                 }else {
                     nextTurnNum = nextTurnNum % players.size();
                 }
