@@ -94,8 +94,35 @@ public class UnoWindow {
         frame.setContentPane(container);
         frame.pack();
     }
-    public void winScreen(String winnerName){
 
+    public void winScreen(String winnerName) {
+        JDialog winScreen = new JDialog(frame, winnerName + " wins!!!!", true);
+        winScreen.setLayout(new BorderLayout());
+        winScreen.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        winScreen.setSize(600, 200);
+        winScreen.setLocationRelativeTo(frame);
+        JPanel winPanel = new JPanel();
+        winPanel.setLayout(new BorderLayout());
+        winScreen.add(winPanel, BorderLayout.CENTER);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        JButton returnButton = new JButton("Return to Lobby");
+        returnButton.addActionListener(e -> {
+            winScreen.dispose();
+            frame.dispose();
+            return;
+        });
+        returnButton.setFocusPainted(false);
+        returnButton.setVisible(true);
+        returnButton.setPreferredSize(new Dimension(100, 50));
+        returnButton.setMaximumSize(new Dimension(100, 50));
+        returnButton.setMinimumSize(new Dimension(100, 50));
+        winPanel.add(returnButton, BorderLayout.CENTER);
+        winPanel.revalidate();
+        winPanel.repaint();
+
+        winScreen.setVisible(true);
     }
 
     public void updatePlayers() {
@@ -103,14 +130,15 @@ public class UnoWindow {
         boolean isThisTurn = true;
         ArrayList<Player> players = uno.getPlayers();
         Player self = uno.getSelf();
-        for(int i = players.indexOf(self) + 1; i < players.size(); i++) {
+        for (int i = players.indexOf(self) + 1; i < players.size(); i++) {
             Player p = players.get(i);
             int handSize = ((PublicInt) (p.getVariable("handSize").get())).getValue().orElse(7);
             System.out.println(handSize);
             String playerInfo = p.getName() + "\nCards: " + handSize;
             JLabel playerLabel = new JLabel("", SwingConstants.CENTER);
-            playerLabel.setText("<html>" + playerInfo.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
-            if(i == uno.getTurnIndex()) {
+            playerLabel.setText("<html>"
+                    + playerInfo.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
+            if (i == uno.getTurnIndex()) {
                 playerLabel.setForeground(Color.RED);
                 isThisTurn = false;
             } else {
@@ -119,13 +147,14 @@ public class UnoWindow {
             playerLabel.setFont(new Font("Arial", Font.PLAIN, 40));
             playerPanel.add(playerLabel);
         }
-        for(int i = 0; i < players.indexOf(self); i++) {
+        for (int i = 0; i < players.indexOf(self); i++) {
             Player p = players.get(i);
             int handSize = ((PublicInt) (p.getVariable("handSize").get())).getValue().orElse(7);
             String playerInfo = p.getName() + "\nCards: " + handSize;
             JLabel playerLabel = new JLabel("", SwingConstants.CENTER);
-            playerLabel.setText("<html>" + playerInfo.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
-            if(i == uno.getTurnIndex()) {
+            playerLabel.setText("<html>"
+                    + playerInfo.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
+            if (i == uno.getTurnIndex()) {
                 playerLabel.setForeground(Color.RED);
                 isThisTurn = false;
             } else {
@@ -134,7 +163,7 @@ public class UnoWindow {
             playerLabel.setFont(new Font("Arial", Font.PLAIN, 40));
             playerPanel.add(playerLabel);
         }
-        if(isThisTurn) {
+        if (isThisTurn) {
             cl.last(backgroundPanel);
             backgroundPanel.revalidate();
             backgroundPanel.repaint();
@@ -145,9 +174,6 @@ public class UnoWindow {
         }
         playerPanel.revalidate();
         playerPanel.repaint();
-    }
-
-    public void updateBackground() {
     }
 
     public void updateHand(ArrayList<Card> newHand) {
@@ -208,8 +234,8 @@ public class UnoWindow {
 
         gbc.gridy = 0;
         gbc.gridx = 0;
-        String[] colors = {"Red", "Green", "Blue", "Yellow"};
-        Color[] colorValues = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW};
+        String[] colors = { "Red", "Green", "Blue", "Yellow" };
+        Color[] colorValues = { Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW };
         for (int i = 0; i < 4; i++) {
             JButton colorButton = new JButton();
             int index = i;

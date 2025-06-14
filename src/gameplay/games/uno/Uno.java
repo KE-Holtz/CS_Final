@@ -130,12 +130,11 @@ public class Uno extends Game{
                 passTurn();
                 break;
             case WIN:
-                uwu.winScreen(winner.getValue().get());
+                return false;
             default:
                 break;
         }
-        handSize.setValue(hand.size());
-        if (hand.size() < 0) {
+        if (hand.size() <= 0) {
             winner.setValue(self.getName());
         }
         return true;
@@ -143,8 +142,7 @@ public class Uno extends Game{
 
     @Override
     public void endGame() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'endGame'");
+        uwu.winScreen(winner.getValue().get());
     }
 
     public void syncVars() {
