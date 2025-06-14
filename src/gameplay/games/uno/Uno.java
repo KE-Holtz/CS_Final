@@ -12,7 +12,7 @@ enum State{
     TURN,
     SPECIAL,
 }
-//TODO: 1) fix skip 2) test reverse 3) add other player UI with turns and card count 4) add turn indicator 5) add end message
+//TODO: 1) fix skip 2) add end message
 public class Uno extends Game{
     private UnoWindow uwu;
 
