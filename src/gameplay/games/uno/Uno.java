@@ -1,6 +1,5 @@
 package gameplay.games.uno;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import backend.*;
 import gameplay.*;
@@ -202,11 +201,16 @@ public class Uno extends Game{
     public void passTurn(){
             int nextTurnNum;
             if(reverse.getValue().orElse(false)){
-                nextTurnNum = (localTurnIndex - 1) % players.size();
+                nextTurnNum = localTurnIndex - 1;
+                if(nextTurnNum < 0){
+                    nextTurnNum = players.size() + nextTurnNum;
+                }else {
+                    nextTurnNum = nextTurnNum % players.size();
+                }
             } else {
                 nextTurnNum = (localTurnIndex + 1) % players.size();
             }
-            System.out.println("Passing turn, nextTurnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size());
+            System.out.println("Passing turn, currentTurnNum = " + localTurnIndex + " nextTurnNum = " + nextTurnNum + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size() + "reversing = " + reverse.getValue());
             turnIndex.setValue(nextTurnNum);
         if (numTurns.getValue().isEmpty()) {
             System.out.println("numTurns is empty");

@@ -182,11 +182,15 @@ public class GlobalVar<T> {
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
                     varFile.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
-            newFile.mkdir();
+            if(!newFile.mkdir()){
+                System.out.println("Failed to make folder " +  newFile.getPath());
+            }
             writeOverflow(newFile, value.toString().substring(MAX_LENGTH - tag.length()));
         } else {
             File newFile = new File(varFile.getPath() + "\\" + tag + (value == null ? "0" : value));
-            newFile.mkdir();
+            if(!newFile.mkdir()){
+                System.out.println("Failed to make folder " +  newFile.getPath());
+            }
         }
     }
 

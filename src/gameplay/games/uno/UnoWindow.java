@@ -151,7 +151,7 @@ public class UnoWindow {
 
     public void updateHand(ArrayList<Card> newHand) {
         handPanel.removeAll();
-        hand = newHand;
+        hand = (ArrayList<Card>) newHand.clone();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
