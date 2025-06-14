@@ -74,9 +74,9 @@ public class UnoWindow {
         mainPanel.add(scrollPane, BorderLayout.SOUTH);
         mainPanel.add(cardPanel, BorderLayout.CENTER);
         mainPanel.add(playerPanel, BorderLayout.NORTH);
-        backgroundPanel.setLayout(new CardLayout());
-        backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Green_Table.png")));
-        backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Red_Table.png")));
+        backgroundPanel = new JPanel(cl);
+        backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Green_Table.png")), "Card1");
+        backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Red_Table.png")), "Card2");
         container.setLayout(null);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -132,13 +132,11 @@ public class UnoWindow {
             playerPanel.add(playerLabel);
         }
         if(isThisTurn) {
-            backgroundPanel.removeAll();
-            backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Red_Table.png")), BorderLayout.CENTER);
+            cl.last(backgroundPanel);
             backgroundPanel.revalidate();
             backgroundPanel.repaint();
         } else {
-            backgroundPanel.removeAll();
-            backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Green_Table.png")), BorderLayout.CENTER);
+            cl.first(backgroundPanel);
             backgroundPanel.revalidate();
             backgroundPanel.repaint();
         }
