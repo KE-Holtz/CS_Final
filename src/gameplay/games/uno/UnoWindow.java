@@ -91,6 +91,9 @@ public class UnoWindow {
         frame.setContentPane(container);
         frame.pack();
     }
+    public void winScreen(String winnerName){
+
+    }
 
     public void updatePlayers() {
         ArrayList<Player> players = uno.getPlayers();
