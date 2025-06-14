@@ -2,6 +2,7 @@ package backend.publicvars;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.Function;
 
 import gameplay.Player;
@@ -45,14 +46,16 @@ public class PublicVar<T> {
 
     // ? Returns null if no value is found - is this ok?
 
-    public T getValue() {
+    public Optional<T> getValue() {
         String value = varFile.list()[0];
         // System.out.println(value);
         ArrayList<Tag> tags = getTags(value);
-        if (tags.contains(Tag.OVERFLOW)) {
-            return valueParser.apply(readOverflow(varFile));
+        if (tags.contains(Tag.DEFAULT)) {
+            return Optional.empty();
+        } else if (tags.contains(Tag.OVERFLOW)) {
+            return Optional.ofNullable(valueParser.apply(readOverflow(varFile)));
         } else {
-            return valueParser.apply(valueOf(value));
+            return Optional.ofNullable(valueParser.apply(valueOf(value)));
         }
     }
 
@@ -142,7 +145,7 @@ public class PublicVar<T> {
 
     private void deleteContents(File file) {
         if (file.listFiles() != null) {
-            for (File f : file.listFiles() == null? file.listFiles() : new File[0]) {
+            for (File f : file.listFiles()) {
                 if (f.isDirectory()) {
                     deleteContents(f);
                 }

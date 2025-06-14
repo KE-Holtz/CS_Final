@@ -14,10 +14,15 @@ enum State {
     SPECIAL,
     WIN,
 }
+<<<<<<< HEAD
 
 // TODO: 1) fix skip 2) test reverse 3) add other player UI with turns and card
 // count 4) add turn indicator 5) add end message
 public class Uno extends Game {
+=======
+//TODO: 1) fix skip 2) add end message
+public class Uno extends Game{
+>>>>>>> dda79f5f7dbc3cfa3b1416c187261eaf3fab6112
     private UnoWindow uwu;
 
     private Lobby lobby;
@@ -79,10 +84,10 @@ public class Uno extends Game {
         }
         handSize.setValue(hand.size());
         uwu.updateHand(hand);
-
         players = lobby.getPlayers();
         players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-        // System.out.println(players);
+        uwu.updatePlayers();
+        System.out.println(players);
     }
 
     @Override
@@ -136,10 +141,13 @@ public class Uno extends Game {
             default:
                 break;
         }
+<<<<<<< HEAD
         handSize.setValue(hand.size());
         if (hand.size() < 0) {
             winner.setValue(self.getName());
         }
+=======
+>>>>>>> dda79f5f7dbc3cfa3b1416c187261eaf3fab6112
         return true;
     }
 
@@ -248,5 +256,13 @@ public class Uno extends Game {
 
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public Player getSelf() {
+        return self;
+    }
+
+    public int getTurnIndex() {
+        return localTurnIndex;
     }
 }
