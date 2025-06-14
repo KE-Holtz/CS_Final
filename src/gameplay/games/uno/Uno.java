@@ -14,8 +14,9 @@ enum State {
     SPECIAL,
     WIN,
 }
-//TODO: 1) fix skip 2) add end message
-public class Uno extends Game{
+
+// TODO: 1) fix skip 2) add end message
+public class Uno extends Game {
     private UnoWindow uwu;
 
     private Lobby lobby;
@@ -34,7 +35,7 @@ public class Uno extends Game{
     private int localNumTurns = 0;
 
     private GlobalInt drawCounter;
-    private GlobalBoolean skip;
+    private boolean skip;
     private GlobalBoolean reverse;
 
     private GlobalString winner;
@@ -60,7 +61,6 @@ public class Uno extends Game{
         numTurns = new GlobalInt(session, "numTurns", 0);
 
         drawCounter = new GlobalInt(session, "drawCounter", 0);
-        skip = new GlobalBoolean(session, "skip", false);
         reverse = new GlobalBoolean(session, "reverse", false);
 
         winner = new GlobalString(session, "winner", "");
@@ -98,8 +98,7 @@ public class Uno extends Game{
             state = State.WIN;
         } else if (!currentPlayer.equals(self)) {
             state = State.WAITING;
-        } else if ((drawCounter.getValue().orElse(0) > 0 || skip.getValue().orElse(false))
-                && safeTurnNum < localNumTurns) {
+        } else if (drawCounter.getValue().orElse(0) > 0 && safeTurnNum < localNumTurns) {
             state = State.SPECIAL;
         } else {
             state = State.TURN;
@@ -113,20 +112,13 @@ public class Uno extends Game{
                 // System.out.println("Taking turn");
                 break;
             case SPECIAL:
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 System.out.println("Special case:");
                 System.out.println("  drawCounter = " + drawCounter.getValue().orElse(-1));
-                System.out.println("  skip = " + skip.getValue().orElse(false));
                 for (int i = 0; i < drawCounter.getValue().orElse(0); i++) {
                     drawCard();
                     System.out.println(self.getName() + ": Drew");
                 }
                 drawCounter.setValue(0);
-                skip.setValue(false);
                 passTurn();
                 break;
             case WIN:
@@ -185,7 +177,7 @@ public class Uno extends Game{
             uwu.updateTopCard(card);
             switch (card.getValue()) {
                 case 10:
-                    skip.setValue(true);
+                    skip = true;
                     break;
                 case 11:
                     reverse.setValue(!reverse.getValue().orElse(false));
@@ -196,10 +188,8 @@ public class Uno extends Game{
                 default:
                     break;
             }
-            // System.out.println(topCard.getValue().get());
             passTurn();
         } else {
-            // System.out.println("Rong card dipass");
         }
         uwu.reDraw();
     }
@@ -222,8 +212,9 @@ public class Uno extends Game{
                 nextTurnNum = nextTurnNum % players.size();
             }
         } else {
-            nextTurnNum = (localTurnIndex + 1) % players.size();
+            nextTurnNum = (localTurnIndex + (skip?2:1)) % players.size();
         }
+        skip = false;
         System.out.println("Passing turn, currentTurnNum = " + localTurnIndex + " nextTurnNum = " + nextTurnNum
                 + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size()
                 + "reversing = " + reverse.getValue());
