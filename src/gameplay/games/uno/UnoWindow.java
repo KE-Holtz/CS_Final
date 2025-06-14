@@ -3,6 +3,7 @@ package gameplay.games.uno;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -18,11 +19,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
+import backend.Lobby;
+import frontend.WrappingLayout;
+import gameplay.Player;
+
 public class UnoWindow {
     private JFrame frame;
     private JPanel mainPanel = new JPanel();
     private JPanel cardPanel = new JPanel();
     private JPanel handPanel = new JPanel();
+    private JPanel playerPanel = new JPanel();
     private JScrollPane scrollPane = new JScrollPane();
     private Card topCard;
     private ArrayList<Card> hand = new ArrayList<>();
@@ -47,6 +53,9 @@ public class UnoWindow {
         cardPanel.setOpaque(false);
         handPanel.setLayout(new GridBagLayout());
         handPanel.setOpaque(false);
+        playerPanel.setLayout(new WrappingLayout(10, 5, WrappingLayout.CENTER));
+        playerPanel.setOpaque(false);
+        playerPanel.setFont(new Font("Arial", Font.PLAIN, 20));
         scrollPane.setViewportView(handPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -56,8 +65,10 @@ public class UnoWindow {
         scrollPane.setPreferredSize(new Dimension(1600, 230));
         scrollPane.setMaximumSize(new Dimension(1600, 230));
         scrollPane.setMinimumSize(new Dimension(1600, 230));
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
         mainPanel.add(scrollPane, BorderLayout.SOUTH);
         mainPanel.add(cardPanel, BorderLayout.CENTER);
+        mainPanel.add(playerPanel, BorderLayout.NORTH);
         JPanel container = new JPanel();
         JPanel backgroundPanel = new JPanel();
         backgroundPanel.setLayout(new BorderLayout());
@@ -79,6 +90,13 @@ public class UnoWindow {
         container.setMinimumSize(size);
         frame.setContentPane(container);
         frame.pack();
+    }
+
+    public void updatePlayers() {
+        ArrayList<Player> players = uno.getPlayers();
+        for(Player p : players) {
+            String playerInfo = p.getName() + "\nCards: " + "";
+        }
     }
 
     public void updateHand(ArrayList<Card> newHand) {

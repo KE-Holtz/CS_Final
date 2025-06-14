@@ -106,6 +106,11 @@ public class Uno extends Game{
                 // System.out.println("Taking turn");
                 break;
             case SPECIAL:
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println("Special case:");
                 System.out.println("  drawCounter = " + drawCounter.getValue().orElse(-1));
                 System.out.println("  skip = " + skip.getValue().orElse(false));
@@ -158,7 +163,7 @@ public class Uno extends Game{
             // System.out.println("Wild card played");
             if(card.getValue() == 14) {
                 safeTurnNum = localNumTurns;
-                drawCounter.setValue( 4);
+                drawCounter.setValue(4);
             }
             passTurn();
         } else if (card.matches(localTopCard)){
@@ -220,5 +225,9 @@ public class Uno extends Game{
 
     public Card getTopCard() {
         return topCard.getValue().orElse(Card.randomNonWild());
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 }
