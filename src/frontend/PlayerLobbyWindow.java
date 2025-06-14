@@ -35,7 +35,7 @@ public class PlayerLobbyWindow {
     private JPanel panel = new JPanel();
     private JPanel playerPanel = new JPanel();
 
-    private JLabel selectedGame = new JLabel("Selected Game: ");
+    private JLabel selectedGame = new JLabel("Selected Game: None");
 
     private GridBagConstraints gbc = new GridBagConstraints();
 

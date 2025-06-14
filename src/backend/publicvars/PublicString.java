@@ -1,5 +1,7 @@
 package backend.publicvars;
 
+import java.util.Optional;
+
 import gameplay.Player;
 
 public class PublicString extends PublicVar<String> {
@@ -38,19 +40,25 @@ public class PublicString extends PublicVar<String> {
     }
 
     @Override
-    public String getValue() {
-        String value = super.getValue();
-        value = value.replaceAll(ESCAPE + ESCAPE, ESCAPE);
-        value = value.replaceAll(ESCAPE + BACKSLASH, "\\\\");
-        value = value.replaceAll(ESCAPE + SLASH, "/");
-        value = value.replaceAll(ESCAPE + COLON, ":");
-        value = value.replaceAll(ESCAPE + ASTERISK, "*");
-        value = value.replaceAll(ESCAPE + QUESTION_MARK, "?");
-        value = value.replaceAll(ESCAPE + QUOTE, "\"");
-        value = value.replaceAll(ESCAPE + LESS, "<");
-        value = value.replaceAll(ESCAPE + GREATER, ">");
-        value = value.replaceAll(ESCAPE + PIPE, "|");
-        return value;
+    public Optional<String> getValue() {
+        Optional<String> value = super.getValue();
+
+        if (value.isEmpty()) {
+            return Optional.empty();
+        } else {
+            String str = value.get();
+            str = str.replaceAll(ESCAPE + ESCAPE, ESCAPE);
+            str = str.replaceAll(ESCAPE + BACKSLASH, "\\\\");
+            str = str.replaceAll(ESCAPE + SLASH, "/");
+            str = str.replaceAll(ESCAPE + COLON, ":");
+            str = str.replaceAll(ESCAPE + ASTERISK, "*");
+            str = str.replaceAll(ESCAPE + QUESTION_MARK, "?");
+            str = str.replaceAll(ESCAPE + QUOTE, "\"");
+            str = str.replaceAll(ESCAPE + LESS, "<");
+            str = str.replaceAll(ESCAPE + GREATER, ">");
+            str = str.replaceAll(ESCAPE + PIPE, "|");
+            return Optional.of(str);
+        }
     }
 
     @Override

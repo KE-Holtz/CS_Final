@@ -73,10 +73,10 @@ public class Uno extends Game{
         }
         handSize.setValue(hand.size());
         uwu.updateHand(hand);
-
         players = lobby.getPlayers();
         players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-        // System.out.println(players);
+        uwu.updatePlayers();
+        System.out.println(players);
     }
 
     @Override
@@ -125,7 +125,6 @@ public class Uno extends Game{
             default:
                 break;
         }
-        handSize.setValue(hand.size());
         return true;
     }
 
@@ -229,5 +228,13 @@ public class Uno extends Game{
 
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public Player getSelf() {
+        return self;
+    }
+
+    public int getTurnIndex() {
+        return localTurnIndex;
     }
 }

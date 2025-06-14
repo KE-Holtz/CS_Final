@@ -1,6 +1,7 @@
 package gameplay.games.uno;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -17,9 +18,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 import backend.Lobby;
+import backend.publicvars.PublicInt;
 import frontend.WrappingLayout;
 import gameplay.Player;
 
@@ -29,10 +32,13 @@ public class UnoWindow {
     private JPanel cardPanel = new JPanel();
     private JPanel handPanel = new JPanel();
     private JPanel playerPanel = new JPanel();
+    private JPanel backgroundPanel = new JPanel();
+    private JPanel container = new JPanel();
     private JScrollPane scrollPane = new JScrollPane();
     private Card topCard;
     private ArrayList<Card> hand = new ArrayList<>();
     private GridBagConstraints gbc = new GridBagConstraints();
+    private CardLayout cl = new CardLayout();
 
     private Uno uno;
 
@@ -55,7 +61,6 @@ public class UnoWindow {
         handPanel.setOpaque(false);
         playerPanel.setLayout(new WrappingLayout(10, 5, WrappingLayout.CENTER));
         playerPanel.setOpaque(false);
-        playerPanel.setFont(new Font("Arial", Font.PLAIN, 20));
         scrollPane.setViewportView(handPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -69,11 +74,9 @@ public class UnoWindow {
         mainPanel.add(scrollPane, BorderLayout.SOUTH);
         mainPanel.add(cardPanel, BorderLayout.CENTER);
         mainPanel.add(playerPanel, BorderLayout.NORTH);
-        JPanel container = new JPanel();
-        JPanel backgroundPanel = new JPanel();
-        backgroundPanel.setLayout(new BorderLayout());
-        JLabel background = new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Table.png"));
-        backgroundPanel.add(background, BorderLayout.CENTER);
+        backgroundPanel.setLayout(new CardLayout());
+        backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Green_Table.png")));
+        backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Red_Table.png")));
         container.setLayout(null);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -93,10 +96,57 @@ public class UnoWindow {
     }
 
     public void updatePlayers() {
+        playerPanel.removeAll();
+        boolean isThisTurn = true;
         ArrayList<Player> players = uno.getPlayers();
-        for(Player p : players) {
-            String playerInfo = p.getName() + "\nCards: " + "";
+        Player self = uno.getSelf();
+        for(int i = players.indexOf(self) + 1; i < players.size(); i++) {
+            Player p = players.get(i);
+            int handSize = ((PublicInt) (p.getVariable("handSize").get())).getValue().orElse(7);
+            System.out.println(handSize);
+            String playerInfo = p.getName() + "\nCards: " + handSize;
+            JLabel playerLabel = new JLabel("", SwingConstants.CENTER);
+            playerLabel.setText("<html>" + playerInfo.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
+            if(i == uno.getTurnIndex()) {
+                playerLabel.setForeground(Color.RED);
+                isThisTurn = false;
+            } else {
+                playerLabel.setForeground(Color.WHITE);
+            }
+            playerLabel.setFont(new Font("Arial", Font.PLAIN, 40));
+            playerPanel.add(playerLabel);
         }
+        for(int i = 0; i < players.indexOf(self); i++) {
+            Player p = players.get(i);
+            int handSize = ((PublicInt) (p.getVariable("handSize").get())).getValue().orElse(7);
+            String playerInfo = p.getName() + "\nCards: " + handSize;
+            JLabel playerLabel = new JLabel("", SwingConstants.CENTER);
+            playerLabel.setText("<html>" + playerInfo.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>");
+            if(i == uno.getTurnIndex()) {
+                playerLabel.setForeground(Color.RED);
+                isThisTurn = false;
+            } else {
+                playerLabel.setForeground(Color.WHITE);
+            }
+            playerLabel.setFont(new Font("Arial", Font.PLAIN, 40));
+            playerPanel.add(playerLabel);
+        }
+        if(isThisTurn) {
+            backgroundPanel.removeAll();
+            backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Red_Table.png")), BorderLayout.CENTER);
+            backgroundPanel.revalidate();
+            backgroundPanel.repaint();
+        } else {
+            backgroundPanel.removeAll();
+            backgroundPanel.add(new JLabel(new ImageIcon("src\\gameplay\\games\\uno\\assets\\Green_Table.png")), BorderLayout.CENTER);
+            backgroundPanel.revalidate();
+            backgroundPanel.repaint();
+        }
+        playerPanel.revalidate();
+        playerPanel.repaint();
+    }
+
+    public void updateBackground() {
     }
 
     public void updateHand(ArrayList<Card> newHand) {
@@ -146,7 +196,6 @@ public class UnoWindow {
     }
 
     public Card pickWildColor() {
-        // Use a modal JDialog instead of JFrame and blocking loop
         JDialog colorDialog = new JDialog(frame, "Pick a Color", true);
         colorDialog.setLayout(new BorderLayout());
         colorDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
@@ -187,8 +236,11 @@ public class UnoWindow {
     }
 
     public void reDraw() {
+        updatePlayers();
         updateHand(uno.getHand());
         updateTopCard(uno.getTopCard());
+        container.revalidate();
+        container.repaint();
     }
 
     public ImageIcon scaleImage(ImageIcon icon, int width) {
