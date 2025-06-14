@@ -1,6 +1,10 @@
 package gameplay.games.uno;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.SwingUtilities;
 
 import backend.*;
 import gameplay.*;
@@ -40,6 +44,7 @@ public class Uno extends Game {
 
     private GlobalString winner;
     private State state;
+    private State lastState;
 
     private int safeTurnNum = -1;
 
@@ -87,9 +92,8 @@ public class Uno extends Game {
     public boolean periodic() {
         syncVars();
         if (numTurns.getValue().orElse(0) > localNumTurns) {
-            uwu.reDraw();
             localNumTurns = numTurns.getValue().orElse(localNumTurns);
-            // System.out.println("Redrew due to turn diff");
+            uwu.reDraw();
         }
         Player currentPlayer = players.get(localTurnIndex);
         // System.out.println("Current Player = " + currentPlayer.getName());
@@ -103,6 +107,8 @@ public class Uno extends Game {
         } else {
             state = State.TURN;
         }
+        // if(state != lastState)
+        //     uwu.reDraw();
         switch (state) {
             case WAITING:
                 // Wait for it to be your turn
@@ -117,6 +123,7 @@ public class Uno extends Game {
                 for (int i = 0; i < drawCounter.getValue().orElse(0); i++) {
                     drawCard();
                     System.out.println(self.getName() + ": Drew");
+                    wait(500);
                 }
                 drawCounter.setValue(0);
                 passTurn();
@@ -129,6 +136,7 @@ public class Uno extends Game {
         if (hand.size() <= 0) {
             winner.setValue(self.getName());
         }
+        lastState = state;
         return true;
     }
 
@@ -179,6 +187,8 @@ public class Uno extends Game {
                     break;
                 case 11:
                     reverse.setValue(!reverse.getValue().orElse(false));
+                    if (players.size() == 2)
+                        skip = true;
                     break;
                 case 12:
                     safeTurnNum = localNumTurns;
@@ -189,39 +199,62 @@ public class Uno extends Game {
             passTurn();
         } else {
         }
-        uwu.reDraw();
     }
 
-    public void drawCard() {
+    public void drawFromDeck() {
+        if (state.equals(State.TURN)) {
+            Card card = drawCard();
+            SwingUtilities.invokeLater(() -> {
+                wait(200);
+                if (card.matches(localTopCard) || card.isWild()) {
+                    playCard(card);
+                } else {
+                    passTurn();
+                }
+            });
+        }
+    }
+
+    public Card drawCard() {
+        Card card = Card.random();
         if (!state.equals(State.WAITING)) {
-            hand.add(Card.random());
+            hand.add(card);
             handSize.setValue(hand.size());
         }
         uwu.reDraw();
+        return card;
     }
 
     public void passTurn() {
-        int nextTurnNum;
+        int nextTurnIndex;
         if (reverse.getValue().orElse(false)) {
-            nextTurnNum = localTurnIndex - (skip?2:1);
-            if (nextTurnNum < 0) {
-                nextTurnNum = players.size() + nextTurnNum;
+            nextTurnIndex = localTurnIndex - (skip ? 2 : 1);
+            if (nextTurnIndex < 0) {
+                nextTurnIndex = players.size() + nextTurnIndex;
             } else {
-                nextTurnNum = nextTurnNum % players.size();
+                nextTurnIndex = nextTurnIndex % players.size();
             }
         } else {
-            nextTurnNum = (localTurnIndex + (skip?2:1)) % players.size();
+            nextTurnIndex = (localTurnIndex + (skip ? 2 : 1)) % players.size();
         }
         skip = false;
-        System.out.println("Passing turn, currentTurnNum = " + localTurnIndex + " nextTurnNum = " + nextTurnNum
+        System.out.println("Passing turn, currentTurnNum = " + localTurnIndex + " nextTurnNum = " + nextTurnIndex
                 + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size()
                 + "reversing = " + reverse.getValue());
-        turnIndex.setValue(nextTurnNum);
+        turnIndex.setValue(nextTurnIndex);
+        localTurnIndex = nextTurnIndex;
         if (numTurns.getValue().isEmpty()) {
             System.out.println("numTurns is empty");
         } else {
-            localNumTurns++;
             numTurns.setValue(numTurns.getValue().orElse(0) + 1);
+        }
+    }
+
+    public void wait(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -241,7 +274,11 @@ public class Uno extends Game {
         return self;
     }
 
-    public int getTurnIndex() {
+    public int getLocalTurnIndex() {
         return localTurnIndex;
+    }
+
+    public int getTurnIndex() {
+        return turnIndex.getValue().orElse(localTurnIndex);
     }
 }
