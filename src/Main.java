@@ -3,6 +3,7 @@ import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -17,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import backend.Session;
@@ -40,6 +42,18 @@ public class Main {
         JPanel buttons = new JPanel();
         JPanel sessionButtons = new JPanel();
         JPanel input = new JPanel();
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(sessionButtons);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(null);
+        scrollPane.setPreferredSize(new Dimension(600, 100));
+        scrollPane.setMaximumSize(new Dimension(600, 100));
+        scrollPane.setMinimumSize(new Dimension(600, 100));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
 
         Font font = new Font("Arial", Font.PLAIN, 20);
 
@@ -215,7 +229,7 @@ public class Main {
                 }
                 gbc.gridx = 0;
                 gbc.gridy = 1;
-                screen.add(sessionButtons, gbc);
+                screen.add(scrollPane, gbc);
                 sessionButtons.revalidate();
                 sessionButtons.repaint();
                 screen.revalidate();

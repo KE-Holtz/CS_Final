@@ -96,29 +96,32 @@ public class UnoWindow {
     }
 
     public void winScreen(String winnerName) {
-        JDialog winScreen = new JDialog(frame, winnerName + " wins!!!!", true);
+        JDialog winScreen = new JDialog(frame, true);
         winScreen.setLayout(new BorderLayout());
         winScreen.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         winScreen.setSize(600, 200);
         winScreen.setLocationRelativeTo(frame);
         JPanel winPanel = new JPanel();
-        winPanel.setLayout(new BorderLayout());
+        winPanel.setLayout(new GridBagLayout());
         winScreen.add(winPanel, BorderLayout.CENTER);
 
-        gbc.gridy = 0;
+        JLabel winLabel = new JLabel(winnerName + " wins!!!!");
+        winLabel.setFont(new Font("Arial", Font.BOLD, 40));
         gbc.gridx = 0;
+        gbc.gridy = 0;
+        winPanel.add(winLabel, gbc);
+        gbc.gridy++;
+
         JButton returnButton = new JButton("Return to Lobby");
         returnButton.addActionListener(e -> {
             winScreen.dispose();
             frame.dispose();
             return;
         });
+        returnButton.setBackground(Color.WHITE);
         returnButton.setFocusPainted(false);
         returnButton.setVisible(true);
-        returnButton.setPreferredSize(new Dimension(100, 50));
-        returnButton.setMaximumSize(new Dimension(100, 50));
-        returnButton.setMinimumSize(new Dimension(100, 50));
-        winPanel.add(returnButton, BorderLayout.CENTER);
+        winPanel.add(returnButton, gbc);
         winPanel.revalidate();
         winPanel.repaint();
 
@@ -212,7 +215,7 @@ public class UnoWindow {
         deck.setPreferredSize(size);
         deck.setMaximumSize(size);
         deck.setMinimumSize(size);
-        deck.addActionListener(e -> uno.drawCard());
+        deck.addActionListener(e -> uno.drawFromDeck());
         gbc.gridx = 0;
         gbc.gridy = 0;
         cardPanel.add(deck, gbc);
