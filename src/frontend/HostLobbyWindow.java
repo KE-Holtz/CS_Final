@@ -79,7 +79,7 @@ public class HostLobbyWindow {
         JButton closeLobbyButton = new JButton("Close Lobby");
         JButton backButton = new JButton("Back");
 
-        JLabel selectedGame = new JLabel("Selected Game: ");
+        JLabel selectedGame = new JLabel("Selected Game: None");
         selectedGame.setFont(playerFont);
         selectedGame.setVisible(true);
         selectedGamePanel.add(selectedGame);

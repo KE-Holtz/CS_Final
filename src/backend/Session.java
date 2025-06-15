@@ -3,6 +3,11 @@ package backend;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import frontend.HostLobbyWindow;
 import frontend.PlayerLobbyWindow;
@@ -102,9 +107,13 @@ public class Session {
         Game game = games.get(gameName);
         game.initialize(this);
         game.startGame();
-        while (game.periodic()){
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(() -> {
             lobby.synchronize();
-        }
+            if(!game.periodic())
+                scheduler.shutdown();
+        }, 0, 50, TimeUnit.MILLISECONDS);
+        while(!scheduler.isShutdown());
         game.endGame();
         if (isHost) {
             host(game.getName());
@@ -220,7 +229,7 @@ public class Session {
         }
     }
 
-    public Lobby getLobby(){
+    public Lobby getLobby() {
         return lobby;
     }
 }

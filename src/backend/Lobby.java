@@ -59,9 +59,7 @@ public class Lobby {
     }
 
     public Player[] getPlayersArray() {
-        synchronize();
-        Player[] playerNames = Arrays.stream(players.values().toArray(new Player[0])).toArray(Player[]::new);
-        return playerNames;
+        return getPlayers().toArray(new Player[0]);
     }
 
     public Player getClientPlayer() {
@@ -69,6 +67,7 @@ public class Lobby {
     }
 
     public ArrayList<Player> getPlayers() {
+        synchronize();
         return new ArrayList<Player>(players.values());
     }
 

@@ -6,7 +6,7 @@ import java.util.Scanner;
 import backend.Lobby;
 import backend.Session;
 import backend.globalvars.GlobalString;
-import backend.publicVars.PublicString;
+import backend.publicvars.PublicString;
 import gameplay.Player;
 
 enum State {
