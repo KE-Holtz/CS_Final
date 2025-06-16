@@ -2,7 +2,7 @@ import java.io.File;
 
 public class Debug {
     public static void main(String[] args) {
-        File all = new File("C:\\Users\\natha\\Downloads\\testServers");
+        File all = new File("S:\\High School\\WuestC\\Drop Box\\KE_Multi_2");
         deleteContents(all);
     }
 
