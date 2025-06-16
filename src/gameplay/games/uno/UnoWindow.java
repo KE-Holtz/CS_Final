@@ -99,38 +99,11 @@ public class UnoWindow {
         JDialog winScreen = new JDialog(frame, true);
         winScreen.setLayout(new BorderLayout());
         winScreen.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        winScreen.setSize(1280, 720);
+        winScreen.setSize(600, 200);
         winScreen.setLocationRelativeTo(frame);
         JPanel winPanel = new JPanel();
         winPanel.setLayout(new GridBagLayout());
         winScreen.add(winPanel, BorderLayout.CENTER);
-        JPanel confettiPanel = new JPanel();
-        CardLayout confettiLayout = new CardLayout();
-        confettiPanel.setLayout(confettiLayout);
-        confettiPanel.setOpaque(false);
-        winScreen.add(confettiPanel, BorderLayout.CENTER);
-        // for (int i = 1; i <= 9; i++) {
-        //     JLabel confettiLabel = new JLabel (scaleImage(new ImageIcon("src\\gameplay\\games\\uno\\assets\\final000" + i + ".png"), 1280));
-        //     confettiPanel.add(confettiLabel, "confetti" + i);
-        // }
-        // for (int i = 10; i <= 99; i++) {
-        //     JLabel confettiLabel = new JLabel (scaleImage(new ImageIcon("src\\gameplay\\games\\uno\\assets\\final00" + i + ".png"), 1280));
-        //     confettiPanel.add(confettiLabel, "confetti" + i);
-        // }
-        // for (int i = 100; i <= 877; i++) {
-        //     JLabel confettiLabel = new JLabel (scaleImage(new ImageIcon("src\\gameplay\\games\\uno\\assets\\final0" + i + ".png"), 1280));
-        //     confettiPanel.add(confettiLabel, "confetti" + i);
-        // }
-        // confettiLayout.first(confettiPanel);
-        // for (int i = 1; i <= 877; i++) {
-        //     confettiLayout.next(confettiPanel);
-        //     try {
-        //         Thread.sleep(20);
-        //     } catch (InterruptedException e) {
-        //         e.printStackTrace();
-        //     }
-        // }
-
         JLabel winLabel = new JLabel(winnerName + " wins!!!!");
         winLabel.setFont(new Font("Arial", Font.BOLD, 40));
         gbc.gridx = 0;
