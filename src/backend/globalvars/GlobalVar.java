@@ -62,18 +62,39 @@ public class GlobalVar<T> {
         setValue(value);
     }
 
-    // ? Returns null if no value is found - is this ok?
     public Optional<T> getValue() {
-        File[] values = Stream.of(playerSpaceFolder.listFiles())
-                .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
-                .map(File::new)
-                .map((x) -> x.listFiles()[0])
-                .toArray(File[]::new);
+        File[] playerFolders = playerSpaceFolder.listFiles();
+        Optional<File>[] values = new Optional[playerFolders.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = Optional.of(playerFolders[i]);
+        }
+        if (values == null || values.length == 0) {
+            System.out.println("Step 1: null or empty");
+        }
+        for (int i = 0; i < values.length; i++) {
+            File[] content = new File(values[i].get().getPath() + "\\globalVars\\" + name).listFiles();
+            if (content.length != 1){
+                System.out.println("issue at:" + values[i].get().getPath() + "\\globalVars\\" + name);
+                System.out.println("Possible folders that store the value: " + content.length);
+                values[i] = Optional.empty();
+            }else{
+            values[i] = Optional.of(content[0]);}
+        }
+        // System.out.println(playerSpaceFolder.listFiles());
+        // values = Stream.of(playerSpaceFolder.listFiles())
+        //         .map(x -> x.getPath() + "\\" + "globalVars" + "\\" + name)
+        //         .map(File::new)
+        //         .map((x) -> x.listFiles()[0])
+        //         .toArray(File[]::new);
         long newestTime = Long.MIN_VALUE;
         T value = null;
 
         ArrayList<Tag> tags;
-        for (File instance : values) {
+        for (Optional<File> opt : values) {
+            if(opt.isEmpty()){
+                continue;
+            }
+            File instance = opt.get();
             if (instance.lastModified() > newestTime && instance.exists()) {
                 tags = getTags(instance.getName());
                 if (tags.contains(Tag.DEFAULT))
@@ -129,7 +150,11 @@ public class GlobalVar<T> {
     }
 
     public ArrayList<Tag> getTags(String str) {
-        String tagStr = str.substring(str.indexOf("(") + 1, str.indexOf(")"));
+        String tagStr = "";
+        try{
+        tagStr = str.substring(str.indexOf("(") + 1, str.indexOf(")"));} catch (Exception e) {
+            System.out.println("ERROR W/ TAGS : " + str);
+        }
         ArrayList<Tag> tags = new ArrayList<>();
         for (String s : tagStr.split(",")) {
             if (!s.isEmpty()) {
@@ -146,21 +171,26 @@ public class GlobalVar<T> {
     public void setValue(T value, Tag... tags) {
         deleteContents(varFile);
         String tag = "(";
-            for (Tag t : tags) {
-                tag += t + ",";
-            }
-        if (tag.length() + value.toString().length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())) {
+        for (Tag t : tags) {
+            tag += t + ",";
+        }
+        if (tag.length() + (value == null ? "0" : value).toString().length() > MAX_LENGTH
+                && !tag.contains(Tag.OVERFLOW.toString())) {
             tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ",";
         }
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
                     varFile.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
-            newFile.mkdir();
+            if(!newFile.mkdir()){
+                System.out.println("Failed to make folder " +  newFile.getPath());
+            }
             writeOverflow(newFile, value.toString().substring(MAX_LENGTH - tag.length()));
         } else {
-            File newFile = new File(varFile.getPath() + "\\" + tag + value);
-            newFile.mkdir();
+            File newFile = new File(varFile.getPath() + "\\" + tag + (value == null ? "0" : value));
+            if(!newFile.mkdir()){
+                System.out.println("Failed to make folder " +  newFile.getPath());
+            }
         }
     }
 

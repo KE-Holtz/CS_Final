@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
-import backend.publicVars.PublicVar;
+import backend.publicvars.PublicVar;
 
 public class Player {
     private String name;
@@ -78,5 +78,10 @@ public class Player {
     @Override
     public boolean equals(Object other) {
         return ((Player) other).getName().equals(name);
+    }
+
+    @Override
+    public String toString(){
+        return getName();
     }
 }
