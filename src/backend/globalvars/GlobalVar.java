@@ -69,13 +69,13 @@ public class GlobalVar<T> {
             values[i] = Optional.of(playerFolders[i]);
         }
         if (values == null || values.length == 0) {
-            System.out.println("Step 1: null or empty");
+            // System.out.println("Step 1: null or empty");
         }
         for (int i = 0; i < values.length; i++) {
             File[] content = new File(values[i].get().getPath() + "\\globalVars\\" + name).listFiles();
             if (content.length != 1){
-                System.out.println("issue at:" + values[i].get().getPath() + "\\globalVars\\" + name);
-                System.out.println("Possible folders that store the value: " + content.length);
+                // System.out.println("issue at:" + values[i].get().getPath() + "\\globalVars\\" + name);
+                // System.out.println("Possible folders that store the value: " + content.length);
                 values[i] = Optional.empty();
             }else{
             values[i] = Optional.of(content[0]);}
