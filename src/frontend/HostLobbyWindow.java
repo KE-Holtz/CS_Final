@@ -231,8 +231,8 @@ public class HostLobbyWindow {
         }
 
         while (!session.clean()) {
-            System.out.println(
-                    "[DEBUG] Failed to clean up session. trying again...");
+            // System.out.println(
+                    // "[DEBUG] Failed to clean up session. trying again...");
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

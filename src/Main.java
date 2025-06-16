@@ -246,9 +246,9 @@ public class Main {
             }
             sessionName = sessionNameTemp[0];
         }
-        screen.remove(scrollPane);
-        screen.revalidate();
-        screen.repaint();
+        sessionButtons.removeAll();
+        sessionButtons.revalidate();
+        sessionButtons.repaint();
         userText.setText("");
         label.setText("Enter your name:");
         userText.setVisible(true);

@@ -136,7 +136,7 @@ public class UnoWindow {
         for (int i = players.indexOf(self) + 1; i < players.size(); i++) {
             Player p = players.get(i);
             int handSize = ((PublicInt) (p.getVariable("handSize").get())).getValue().orElse(7);
-            System.out.println(handSize);
+            // System.out.println(handSize);
             String playerInfo = p.getName() + "\nCards: " + handSize;
             JLabel playerLabel = new JLabel("", SwingConstants.CENTER);
             playerLabel.setText("<html>"

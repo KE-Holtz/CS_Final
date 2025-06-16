@@ -73,7 +73,7 @@ public class Uno extends Game {
 
     @Override
     public void startGame() {
-        System.out.println("This player is " + self.getName());
+        // System.out.println("This player is " + self.getName());
         uwu = new UnoWindow(this);
         uwu.updateTopCard(topCard.getValue().orElse(Card.randomNonWild()));
         hand = new ArrayList<>();
@@ -85,7 +85,7 @@ public class Uno extends Game {
         players = lobby.getPlayers();
         players.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
         uwu.updatePlayers();
-        System.out.println(players);
+        // System.out.println(players);
     }
 
     @Override
@@ -118,11 +118,11 @@ public class Uno extends Game {
                 // System.out.println("Taking turn");
                 break;
             case SPECIAL:
-                System.out.println("Special case:");
-                System.out.println("  drawCounter = " + drawCounter.getValue().orElse(-1));
+                // System.out.println("Special case:");
+                // System.out.println("  drawCounter = " + drawCounter.getValue().orElse(-1));
                 for (int i = 0; i < drawCounter.getValue().orElse(0); i++) {
                     drawCard();
-                    System.out.println(self.getName() + ": Drew");
+                    // System.out.println(self.getName() + ": Drew");
                     wait(500);
                 }
                 drawCounter.setValue(0);
@@ -147,13 +147,13 @@ public class Uno extends Game {
 
     public void syncVars() {
         if (topCard.getValue().isEmpty()) {
-            System.out.println("Top card is empty");
+            // System.out.println("Top card is empty");
         } else {
             localTopCard = topCard.getValue().orElse(localTopCard);
         }
 
         if (turnIndex.getValue().isEmpty()) {
-            System.out.println("Turn index is empty");
+            // System.out.println("Turn index is empty");
         } else {
             localTurnIndex = turnIndex.getValue().orElse(localTurnIndex);
         }
@@ -238,13 +238,13 @@ public class Uno extends Game {
             nextTurnIndex = (localTurnIndex + (skip ? 2 : 1)) % players.size();
         }
         skip = false;
-        System.out.println("Passing turn, currentTurnNum = " + localTurnIndex + " nextTurnNum = " + nextTurnIndex
-                + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size()
-                + "reversing = " + reverse.getValue());
+        // System.out.println("Passing turn, currentTurnNum = " + localTurnIndex + " nextTurnNum = " + nextTurnIndex
+                // + ", numTurns = " + numTurns.getValue().orElse(0) + ", players.size() = " + players.size()
+                // + "reversing = " + reverse.getValue());
         turnIndex.setValue(nextTurnIndex);
         localTurnIndex = nextTurnIndex;
         if (numTurns.getValue().isEmpty()) {
-            System.out.println("numTurns is empty");
+            // System.out.println("numTurns is empty");
         } else {
             numTurns.setValue(numTurns.getValue().orElse(0) + 1);
         }
