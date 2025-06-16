@@ -104,7 +104,6 @@ public class UnoWindow {
         JPanel winPanel = new JPanel();
         winPanel.setLayout(new GridBagLayout());
         winScreen.add(winPanel, BorderLayout.CENTER);
-
         JLabel winLabel = new JLabel(winnerName + " wins!!!!");
         winLabel.setFont(new Font("Arial", Font.BOLD, 40));
         gbc.gridx = 0;

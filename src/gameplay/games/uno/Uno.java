@@ -129,6 +129,7 @@ public class Uno extends Game {
                 passTurn();
                 break;
             case WIN:
+                System.out.println("Game over, " + winner.getValue() + " won!");
                 return false;
             default:
                 break;
