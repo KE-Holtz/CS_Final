@@ -3,8 +3,6 @@ package backend;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,17 +22,20 @@ public class Session {
 
     private final Lobby lobby;
 
+    private final String delimiter;
+
     private HashMap<String, Game> games = new HashMap<>();
     // Constructor ONLY FOR HOSTING
     // Host has extra responsibilities - add files for games, etc
 
-    public Session(String sessionName, String sessionSpacePath, String clientName,
-            ArrayList<Game> games, boolean hosting) {
+    public Session(String sessionName, String clientName,
+            ArrayList<Game> games, boolean hosting, HashMap<String, String> opts) {
 
         this.sessionName = sessionName;
-        this.sessionSpacePath = sessionSpacePath;
+        this.sessionSpacePath = opts.get("session_space");
+        delimiter = opts.get("os").equals("windows")? "\\" : "/";
 
-        this.clientPlayer = new Player(clientName, getPlayerSpacePath());
+        this.clientPlayer = new Player(clientName, this);
         isHost = hosting;
 
         this.lobby = new Lobby(this);
@@ -49,8 +50,8 @@ public class Session {
 
     public void hostInitialize() {
         // Create the session folder
-        File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
-        File playerSpaceFolder = new File(sessionFolder.getAbsolutePath() + "\\" + "players");
+        File sessionFolder = new File(sessionSpacePath + delimiter + sessionName);
+        File playerSpaceFolder = new File(sessionFolder.getAbsolutePath() + delimiter + "players");
         if (!sessionFolder.mkdir()) {
             System.out.println("[DEBUG] Session folder failed to create at "
                     + sessionFolder.getAbsolutePath());
@@ -78,7 +79,7 @@ public class Session {
 
     public boolean clean() {
         if (isHost) {
-            File sessionFolder = new File(sessionSpacePath + "\\" + sessionName);
+            File sessionFolder = new File(sessionSpacePath + delimiter + sessionName);
             if (!deleteRecursively(sessionFolder)) {
                 return false;
             }
@@ -132,11 +133,11 @@ public class Session {
     }
 
     public String sessionFolder() {
-        return sessionSpacePath + "\\" + sessionName;
+        return sessionSpacePath + delimiter + sessionName;
     }
 
     public String getPlayerSpacePath() {
-        return sessionFolder() + "\\" + "players";
+        return sessionFolder() + delimiter + "players";
     }
 
     public Player getClientPlayer() {
@@ -231,5 +232,9 @@ public class Session {
 
     public Lobby getLobby() {
         return lobby;
+    }
+
+    public String getDelimiter(){
+        return delimiter;
     }
 }

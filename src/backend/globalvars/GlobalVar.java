@@ -12,6 +12,7 @@ public class GlobalVar<T> {
 
     private final String playerSpacePath;
     private final File playerSpaceFolder;
+    protected final String delimiter;
 
     private final String clientName;
 
@@ -30,12 +31,13 @@ public class GlobalVar<T> {
     public GlobalVar(Session session, String name, Function<String, T> valueParser) {
         playerSpacePath = session.getPlayerSpacePath();
         playerSpaceFolder = new File(playerSpacePath);
-
+        delimiter = session.getDelimiter();
+        
         clientName = session.getClientPlayer()
                 .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
+        this.varFile = new File(playerSpacePath + delimiter + clientName + delimiter + "globalVars" + delimiter + name);
         this.valueParser = valueParser;
 
         if (!varFile.mkdir()) {
@@ -47,12 +49,13 @@ public class GlobalVar<T> {
     public GlobalVar(Session session, String name, Function<String, T> valueParser, T value) {
         playerSpacePath = session.getPlayerSpacePath();
         playerSpaceFolder = new File(playerSpacePath);
+        delimiter = session.getDelimiter();
 
         clientName = session.getClientPlayer()
                 .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
+        this.varFile = new File(playerSpacePath + delimiter + clientName + delimiter + "globalVars" + delimiter + name);
 
         this.valueParser = valueParser;
 
@@ -72,7 +75,7 @@ public class GlobalVar<T> {
             // System.out.println("Step 1: null or empty");
         }
         for (int i = 0; i < values.length; i++) {
-            File[] content = new File(values[i].get().getPath() + "\\globalVars\\" + name).listFiles();
+            File[] content = new File(values[i].get().getPath() + delimiter + "globalVars" + delimiter + name).listFiles();
             if (content.length != 1){
                 // System.out.println("issue at:" + values[i].get().getPath() + "\\globalVars\\" + name);
                 // System.out.println("Possible folders that store the value: " + content.length);
@@ -132,7 +135,7 @@ public class GlobalVar<T> {
 
             File nextFile;
             if (tag.contains(Tag.OVERFLOW.toString())) {
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag
+                nextFile = new File(currentParent.getAbsolutePath() + delimiter + tag
                         + currentValue.substring(0, MAX_LENGTH - tag.length()));
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
@@ -140,7 +143,7 @@ public class GlobalVar<T> {
                 // System.out.println(nextFile.mkdir());
                 nextFile.mkdir();
             } else {
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue);
+                nextFile = new File(currentParent.getAbsolutePath() + delimiter + tag + currentValue);
                 // System.out.println(nextFile.getName());
                 currentValue = "";
                 // System.out.println(nextFile.mkdir());
@@ -181,13 +184,13 @@ public class GlobalVar<T> {
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
-                    varFile.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
+                    varFile.getPath() + delimiter + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
             if(!newFile.mkdir()){
                 System.out.println("Failed to make folder " +  newFile.getPath());
             }
             writeOverflow(newFile, value.toString().substring(MAX_LENGTH - tag.length()));
         } else {
-            File newFile = new File(varFile.getPath() + "\\" + tag + (value == null ? "0" : value));
+            File newFile = new File(varFile.getPath() + delimiter + tag + (value == null ? "0" : value));
             if(!newFile.mkdir()){
                 System.out.println("Failed to make folder " +  newFile.getPath());
             }

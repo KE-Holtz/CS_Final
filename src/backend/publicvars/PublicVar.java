@@ -10,6 +10,7 @@ import gameplay.Player;
 public class PublicVar<T> {
     private final String name;
     private final File varFile;
+    protected final String delimiter;
 
     private final Function<String, T> valueParser;
 
@@ -25,8 +26,9 @@ public class PublicVar<T> {
     }
 
     public PublicVar(Player player, String name, Function<String, T> valueParser) {
+        delimiter = player.getDelimiter();
         this.name = name;
-        this.varFile = new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
+        this.varFile = new File(player.getPlayerFolder() + delimiter + "publicVars" + delimiter + name);
         this.valueParser = valueParser;
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
@@ -35,8 +37,9 @@ public class PublicVar<T> {
     }
 
     public PublicVar(Player player, String name, Function<String, T> valueParser, T value) {
+        delimiter = player.getDelimiter();
         this.name = name;
-        this.varFile = new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
+        this.varFile = new File(player.getPlayerFolder() + delimiter + "publicVars" + delimiter + name);
         this.valueParser = valueParser;
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
@@ -83,7 +86,7 @@ public class PublicVar<T> {
 
             File nextFile;
             if (tag.contains(Tag.OVERFLOW.toString())) {
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag
+                nextFile = new File(currentParent.getAbsolutePath() + delimiter + tag
                         + currentValue.substring(0, MAX_LENGTH - tag.length()));
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
@@ -91,7 +94,7 @@ public class PublicVar<T> {
                 // System.out.println(nextFile.mkdir());
                 nextFile.mkdir();
             } else {
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue);
+                nextFile = new File(currentParent.getAbsolutePath() + delimiter + tag + currentValue);
                 currentValue = "";
                 // System.out.println(nextFile.getName());
                 // System.out.println(nextFile.mkdir());
@@ -131,14 +134,14 @@ public class PublicVar<T> {
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
-                    varFile.getPath() + "\\" + tag + value.toString()
+                    varFile.getPath() + delimiter + tag + value.toString()
                             .substring(0, MAX_LENGTH
                                     - tag.length()));
             newFile.mkdir();
             writeOverflow(newFile, value.toString()
                     .substring(MAX_LENGTH - tag.length()));
         } else {
-            File newFile = new File(varFile.getPath() + "\\" + tag + value);
+            File newFile = new File(varFile.getPath() + delimiter + tag + value);
             newFile.mkdir();
         }
     }

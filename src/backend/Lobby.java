@@ -11,8 +11,10 @@ public class Lobby {
     private final String playerSpacePath;
     private final HashMap<String, Player> players;
     private final Player clientPlayer;
+    private final Session session;
 
     public Lobby(Session session) {
+        this.session = session;
         playerSpacePath = session.getPlayerSpacePath();
         clientPlayer = session.getClientPlayer();
         players = new HashMap<String, Player>();
@@ -20,7 +22,7 @@ public class Lobby {
 
     public void synchronize() {
         for (File playerFile : new File(playerSpacePath).listFiles()) {
-            Player player = Player.fromFile(playerFile);
+            Player player = Player.fromFile(playerFile, session);
             if (!players.containsValue(player)) {
                 players.put(player.getName(), player);
             }

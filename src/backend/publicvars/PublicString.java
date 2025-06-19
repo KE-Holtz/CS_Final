@@ -26,8 +26,12 @@ public class PublicString extends PublicVar<String> {
 
     @Override
     public void setValue(String value) {
+        String delimiter = this.delimiter;
+        if(delimiter.equals("\\")){
+            delimiter = "\\\\";
+        }
         value = value.replaceAll(ESCAPE, ESCAPE + ESCAPE);
-        value = value.replaceAll("\\\\", ESCAPE + BACKSLASH);
+        value = value.replaceAll(delimiter, ESCAPE + BACKSLASH);
         value = value.replaceAll("/", ESCAPE + SLASH);
         value = value.replaceAll(":", ESCAPE + COLON);
         value = value.replaceAll("\\*", ESCAPE + ASTERISK);
@@ -47,8 +51,12 @@ public class PublicString extends PublicVar<String> {
             return Optional.empty();
         } else {
             String str = value.get();
+            String delimiter = this.delimiter;
+            if(delimiter.equals("\\")){
+            delimiter = "\\\\";
+            }
             str = str.replaceAll(ESCAPE + ESCAPE, ESCAPE);
-            str = str.replaceAll(ESCAPE + BACKSLASH, "\\\\");
+            str = str.replaceAll(ESCAPE + BACKSLASH, delimiter);
             str = str.replaceAll(ESCAPE + SLASH, "/");
             str = str.replaceAll(ESCAPE + COLON, ":");
             str = str.replaceAll(ESCAPE + ASTERISK, "*");

@@ -9,7 +9,10 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -29,9 +32,41 @@ import gameplay.games.uno.Uno;
 
 public class Main {
     private static JFrame frame = new JFrame();
-    private final static String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
-
     public static void main(String[] args) {
+        File config = new File("config.toml");
+        System.out.println(config.getPath());
+        System.out.println(config.exists());
+        String os;
+        String sessionSpacePath;
+        String delimiter;
+
+        HashMap<String, String> opts = new HashMap<>();
+        
+        if (config.exists()) {
+            //We could find or make a proper toml parser but we don't really need it
+            Scanner configScanner;
+            try {
+                System.out.print("scanning");
+                configScanner = new Scanner(config);
+                while (configScanner.hasNextLine()) {
+                    String line = configScanner.nextLine();
+                    System.out.println("parsing line:" + line);
+                    String[] keyValuePair = line.split("=");
+                    opts.put(keyValuePair[0].trim(), keyValuePair[1].trim().replace("\"", ""));
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        opts.putIfAbsent("os", "windows");
+        opts.putIfAbsent("session_space", "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2");
+
+        os = opts.get("os");
+        sessionSpacePath = opts.get("session_space");
+        delimiter = os.equals("windows")?"\\":"/";
+        System.out.println("delimiter is: " + delimiter);
+
+
         frame.setLayout(new BorderLayout());
         frame.setResizable(true);
 
@@ -170,7 +205,7 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-            while (new File(sessionSpacePath + "\\" + sessionNameTemp[0]).exists()) {
+            while (new File(sessionSpacePath + delimiter + sessionNameTemp[0]).exists()) {
                 label.setText("Session already exists. Please enter a valid session name: ");
                 sessionNameTemp[0] = "";
                 enter.addActionListener(e -> {
@@ -185,7 +220,7 @@ public class Main {
                 }
             }
             sessionName = sessionNameTemp[0];
-            sessionName = encodeString(sessionName);
+            sessionName = encodeString(sessionName, delimiter);
         } else {
             label.setText("click on the session you would like to join");
             userText.setVisible(false);
@@ -196,7 +231,7 @@ public class Main {
             int numOfFiles = new File(sessionSpacePath).list().length;
             while (sessionNameTemp[0].equals("")) {
                 for (String i : new File(sessionSpacePath).list()) {
-                    final String rawSessionName = decodeString(i);
+                    final String rawSessionName = decodeString(i, delimiter);
                     JButton sessionButton = new JButton(i);
                     sessionButton.setName(i);
                     boolean exists = false;
@@ -264,8 +299,8 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        while (isValidName(nameTemp[0], sessionName) != "") {
-            String errorMessage = isValidName(nameTemp[0], sessionName);
+        while (isValidName(nameTemp[0], sessionName, sessionSpacePath, delimiter) != "") {
+            String errorMessage = isValidName(nameTemp[0], sessionName, sessionSpacePath, delimiter);
             label.setText(errorMessage);
             nameTemp[0] = "";
             enter.addActionListener(e -> {
@@ -280,7 +315,7 @@ public class Main {
             }
         }
         String name = nameTemp[0];
-        session = new Session(sessionName, sessionSpacePath, name, games, hosting);
+        session = new Session(sessionName, name, games, hosting, opts);
         frame.dispose();
         if (hosting) {
             session.host("");
@@ -289,7 +324,7 @@ public class Main {
         }
     }
 
-    public static String isValidName(String name, String sessionName) {
+    public static String isValidName(String name, String sessionName, String sessionSpacePath, String delimiter) {
         if (name.length() < 3 || name.length() > 16) {
             return "Name must be between 3 and 16 characters.";
         }
@@ -299,16 +334,19 @@ public class Main {
                 return "Invalid character: " + c;
             }
         }
-        if (new File(sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\"
+        if (new File(sessionSpacePath + delimiter + sessionName + delimiter + "players" + delimiter
                 + name).exists()) {
             return "Name already exists.";
         }
         return "";
     }
 
-    public static String encodeString(String s) {
+    public static String encodeString(String s, String delimiter) {
+        if(delimiter.equals("\\")){
+            delimiter = "\\\\";
+        }
         s = s.replaceAll("#", "#" + "#");
-        s = s.replaceAll("\\\\", "#" + "1");
+        s = s.replaceAll(delimiter, "#" + "1");
         s = s.replaceAll("/", "#" + "2");
         s = s.replaceAll(":", "#" + "3");
         s = s.replaceAll("\\*", "#" + "4");
@@ -320,9 +358,12 @@ public class Main {
         return s;
     }
 
-    public static String decodeString(String s) {
+    public static String decodeString(String s, String delimiter) {
+        if(delimiter.equals("\\")){
+            delimiter = "\\\\";
+        }
         s = s.replaceAll("#" + "#", "#");
-        s = s.replaceAll("#" + "1", "\\\\");
+        s = s.replaceAll("#" + "1", delimiter);
         s = s.replaceAll("#" + "2", "/");
         s = s.replaceAll("#" + "3", ":");
         s = s.replaceAll("#" + "4", "*");
