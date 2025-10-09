@@ -10,6 +10,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -33,15 +34,17 @@ import gameplay.games.uno.Uno;
 public class Main {
     private static JFrame frame = new JFrame();
     public static void main(String[] args) {
+        Path sessionSpacePath;
+
         File config = new File("config.toml");
         System.out.println(config.getPath());
         System.out.println(config.exists());
         String os;
-        String sessionSpacePath;
+        String session_space;
         String delimiter;
 
         HashMap<String, String> opts = new HashMap<>();
-        
+
         if (config.exists()) {
             //We could find or make a proper toml parser but we don't really need it
             Scanner configScanner;
@@ -62,10 +65,11 @@ public class Main {
         opts.putIfAbsent("session_space", "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2");
 
         os = opts.get("os");
-        sessionSpacePath = opts.get("session_space");
+        session_space = opts.get("session_space");
         delimiter = os.equals("windows")?"\\":"/";
         System.out.println("delimiter is: " + delimiter);
 
+        sessionSpacePath = Path.of(session_space);
 
         frame.setLayout(new BorderLayout());
         frame.setResizable(true);
@@ -205,7 +209,7 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-            while (new File(sessionSpacePath + delimiter + sessionNameTemp[0]).exists()) {
+            while (sessionSpacePath.resolve(sessionNameTemp[0]).toFile().exists()) {
                 label.setText("Session already exists. Please enter a valid session name: ");
                 sessionNameTemp[0] = "";
                 enter.addActionListener(e -> {
@@ -228,9 +232,9 @@ public class Main {
 
             ArrayList<JButton> sessionButtonsList = new ArrayList<>();
             final String[] sessionNameTemp = { "" };
-            int numOfFiles = new File(sessionSpacePath).list().length;
+            int numOfFiles = sessionSpacePath.toFile().list().length;
             while (sessionNameTemp[0].equals("")) {
-                for (String i : new File(sessionSpacePath).list()) {
+                for (String i : sessionSpacePath.toFile().list()) {
                     final String rawSessionName = decodeString(i, delimiter);
                     JButton sessionButton = new JButton(i);
                     sessionButton.setName(i);
@@ -270,14 +274,14 @@ public class Main {
                 screen.revalidate();
                 screen.repaint();
                 while (sessionNameTemp[0].equals("")
-                        && new File(sessionSpacePath).list().length == numOfFiles) {
+                        && sessionSpacePath.toFile().list().length == numOfFiles) {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                numOfFiles = new File(sessionSpacePath).list().length;
+                numOfFiles = sessionSpacePath.toFile().list().length;
             }
             sessionName = sessionNameTemp[0];
         }
@@ -299,8 +303,8 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        while (isValidName(nameTemp[0], sessionName, sessionSpacePath, delimiter) != "") {
-            String errorMessage = isValidName(nameTemp[0], sessionName, sessionSpacePath, delimiter);
+        while (isValidName(nameTemp[0], sessionName, sessionSpacePath) != "") {
+            String errorMessage = isValidName(nameTemp[0], sessionName, sessionSpacePath);
             label.setText(errorMessage);
             nameTemp[0] = "";
             enter.addActionListener(e -> {
@@ -324,7 +328,7 @@ public class Main {
         }
     }
 
-    public static String isValidName(String name, String sessionName, String sessionSpacePath, String delimiter) {
+    public static String isValidName(String name, String sessionName, Path sessionSpacePath) {
         if (name.length() < 3 || name.length() > 16) {
             return "Name must be between 3 and 16 characters.";
         }
@@ -334,8 +338,7 @@ public class Main {
                 return "Invalid character: " + c;
             }
         }
-        if (new File(sessionSpacePath + delimiter + sessionName + delimiter + "players" + delimiter
-                + name).exists()) {
+        if (sessionSpacePath.resolve(sessionName, "players").toFile().exists()) {
             return "Name already exists.";
         }
         return "";

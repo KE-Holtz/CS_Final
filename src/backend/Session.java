@@ -1,6 +1,7 @@
 package backend;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -14,7 +15,7 @@ import gameplay.games.Game;
 
 public class Session {
     private final String sessionName;
-    private final String sessionSpacePath; // Path to the folder where the
+    private final Path sessionSpacePath; // Path to the folder where the
                                            // session is stored.
 
     private final boolean isHost;
@@ -32,7 +33,7 @@ public class Session {
             ArrayList<Game> games, boolean hosting, HashMap<String, String> opts) {
 
         this.sessionName = sessionName;
-        this.sessionSpacePath = opts.get("session_space");
+        this.sessionSpacePath = Path.of(opts.get("session_space"));
         delimiter = opts.get("os").equals("windows")? "\\" : "/";
 
         this.clientPlayer = new Player(clientName, this);
@@ -50,8 +51,8 @@ public class Session {
 
     public void hostInitialize() {
         // Create the session folder
-        File sessionFolder = new File(sessionSpacePath + delimiter + sessionName);
-        File playerSpaceFolder = new File(sessionFolder.getAbsolutePath() + delimiter + "players");
+        File sessionFolder = sessionSpacePath.resolve(sessionName).toFile();
+        File playerSpaceFolder = Path.of(sessionFolder.getAbsolutePath()).resolve("players").toFile();
         if (!sessionFolder.mkdir()) {
             System.out.println("[DEBUG] Session folder failed to create at "
                     + sessionFolder.getAbsolutePath());
@@ -79,7 +80,7 @@ public class Session {
 
     public boolean clean() {
         if (isHost) {
-            File sessionFolder = new File(sessionSpacePath + delimiter + sessionName);
+            File sessionFolder = sessionSpacePath.resolve(sessionName).toFile();
             if (!deleteRecursively(sessionFolder)) {
                 return false;
             }
@@ -124,7 +125,7 @@ public class Session {
 
     }
 
-    public String getSessionSpace() {
+    public Path getSessionSpace() {
         return sessionSpacePath;
     }
 
@@ -132,12 +133,12 @@ public class Session {
         return sessionName;
     }
 
-    public String sessionFolder() {
-        return sessionSpacePath + delimiter + sessionName;
+    public Path sessionFolder() {
+        return sessionSpacePath.resolve(sessionName);
     }
 
-    public String getPlayerSpacePath() {
-        return sessionFolder() + delimiter + "players";
+    public Path getPlayerSpacePath() {
+        return sessionFolder().resolve("players");
     }
 
     public Player getClientPlayer() {
