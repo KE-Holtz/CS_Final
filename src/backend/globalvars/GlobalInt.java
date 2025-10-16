@@ -3,10 +3,10 @@ import backend.Session;
 
 public class GlobalInt extends GlobalVar<Integer> {
     public GlobalInt(Session session, String name) {
-        super(session, name, Integer::parseInt);
+        super(session, name, Integer::parseInt,(x) -> x.toString());
     }
 
     public GlobalInt(Session session, String name, Integer value) {
-        super(session, name, Integer::parseInt, value);
+        super(session, name, Integer::parseInt,(x) -> x.toString(), value);
     }
 }

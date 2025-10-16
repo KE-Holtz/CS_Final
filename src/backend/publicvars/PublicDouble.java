@@ -4,10 +4,10 @@ import gameplay.Player;
 
 public class PublicDouble extends PublicVar<Double>{
     public PublicDouble(Player player, String name){
-        super(player, name, Double::parseDouble);
+        super(player, name, Double::parseDouble,(x) -> x.toString());
     }
     public PublicDouble(Player player, String name, Double value){
-        super(player, name, Double::parseDouble, value);
+        super(player, name, Double::parseDouble,(x) -> x.toString(), value);
     }
 
     @Override

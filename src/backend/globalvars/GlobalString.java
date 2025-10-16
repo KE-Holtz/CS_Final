@@ -17,11 +17,11 @@ public class GlobalString extends GlobalVar<String> {
     private static final String ESCAPE        = "#";
 
     public GlobalString(Session session, String name) {
-        super(session, name, String::valueOf);
+        super(session, name, String::valueOf, (x) -> x.toString());
     }
 
     public GlobalString(Session session, String name, String value) {
-        super(session, name, String::valueOf, value);
+        super(session, name, String::valueOf,(x) -> x.toString(), value);
     }
 
     @Override

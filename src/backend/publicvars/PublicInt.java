@@ -3,11 +3,11 @@ import gameplay.Player;
 
 public class PublicInt extends PublicVar<Integer> {
     public PublicInt(Player player, String name) {
-        super(player, name, Integer::parseInt);
+        super(player, name, Integer::parseInt, (x) -> x.toString());
     }
 
     public PublicInt(Player player, String name, Integer value) {
-        super(player, name, Integer::parseInt, value);
+        super(player, name, Integer::parseInt,(x) -> x.toString(), value);
     }
 @Override
     public void setValue(Integer value, Tag... tags) {

@@ -12,7 +12,7 @@ public class PublicVar<T> {
     private final File varFile;
 
     private final Function<String, T> valueParser;
-
+    private final Function<T, String> valueEncoder;
     public static final int MAX_LENGTH = 160;
 
     public enum Tag {
@@ -24,20 +24,25 @@ public class PublicVar<T> {
         STRING,
     }
 
-    public PublicVar(Player player, String name, Function<String, T> valueParser) {
+    public PublicVar(Player player, String name, Function<String, T> valueParser, Function<T, String> valueEncoder) {
         this.name = name;
         this.varFile = new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
         this.valueParser = valueParser;
+        this.valueEncoder = valueEncoder;
+
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
         }
         setValue(valueParser.apply("0"), Tag.DEFAULT);
     }
 
-    public PublicVar(Player player, String name, Function<String, T> valueParser, T value) {
+    public PublicVar(Player player, String name, Function<String, T> valueParser, Function<T, String> valueEncoder,
+            T value) {
         this.name = name;
         this.varFile = new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
         this.valueParser = valueParser;
+        this.valueEncoder = valueEncoder;
+
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
         }
@@ -73,7 +78,7 @@ public class PublicVar<T> {
         String currentValue = value;
         while (currentValue.length() > 0) {
             String tag = "(";
-            if (tag.length() + currentValue.toString()
+            if (tag.length() + currentValue
                     .length()
                     + 1 > MAX_LENGTH) {
                 tag += Tag.OVERFLOW + ")";
@@ -117,6 +122,7 @@ public class PublicVar<T> {
 
     public void setValue(T value, Tag... tags) {
         deleteContents(varFile);
+        String encodedValue = valueEncoder.apply(value);
 
         String tag = "(";
         if (tags != null) {
@@ -124,18 +130,18 @@ public class PublicVar<T> {
                 tag += t + ",";
             }
         }
-        if (tag.length() + value.toString()
+        if (tag.length() + encodedValue
                 .length() > MAX_LENGTH && !tag.contains(Tag.OVERFLOW.toString())) {
             tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ",";
         }
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
-                    varFile.getPath() + "\\" + tag + value.toString()
+                    varFile.getPath() + "\\" + tag + encodedValue
                             .substring(0, MAX_LENGTH
                                     - tag.length()));
             newFile.mkdir();
-            writeOverflow(newFile, value.toString()
+            writeOverflow(newFile, encodedValue
                     .substring(MAX_LENGTH - tag.length()));
         } else {
             File newFile = new File(varFile.getPath() + "\\" + tag + value);

@@ -4,10 +4,10 @@ import gameplay.Player;
 
 public class PublicBoolean extends PublicVar<Boolean>{
     public PublicBoolean(Player player, String name){
-        super(player, name, Boolean::parseBoolean);
+        super(player, name, Boolean::parseBoolean,(x) -> x.toString());
     }
     public PublicBoolean(Player player, String name, Boolean value){
-        super(player, name, Boolean::parseBoolean, value);
+        super(player, name, Boolean::parseBoolean,(x) -> x.toString(), value);
     }
 
     @Override

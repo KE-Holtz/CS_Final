@@ -19,6 +19,7 @@ public class GlobalVar<T> {
     private final File varFile;
 
     private final Function<String, T> valueParser;
+    private final Function<T, String> valueEncoder;
 
     public static final int MAX_LENGTH = 160;
 
@@ -27,7 +28,7 @@ public class GlobalVar<T> {
         OVERFLOW,
     }
 
-    public GlobalVar(Session session, String name, Function<String, T> valueParser) {
+    public GlobalVar(Session session, String name, Function<String, T> valueParser, Function<T,String> valueEncoder) {
         playerSpacePath = session.getPlayerSpacePath();
         playerSpaceFolder = new File(playerSpacePath);
 
@@ -37,6 +38,7 @@ public class GlobalVar<T> {
         this.name = name;
         this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
         this.valueParser = valueParser;
+        this.valueEncoder = valueEncoder;
 
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
@@ -44,7 +46,7 @@ public class GlobalVar<T> {
         setValue(valueParser.apply("0"), Tag.DEFAULT);
     }
 
-    public GlobalVar(Session session, String name, Function<String, T> valueParser, T value) {
+    public GlobalVar(Session session, String name, Function<String, T> valueParser,Function<T,String> valueEncoder, T value) {
         playerSpacePath = session.getPlayerSpacePath();
         playerSpaceFolder = new File(playerSpacePath);
 
@@ -55,6 +57,7 @@ public class GlobalVar<T> {
         this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
 
         this.valueParser = valueParser;
+        this.valueEncoder = valueEncoder;
 
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
@@ -124,7 +127,7 @@ public class GlobalVar<T> {
         String currentValue = value;
         while (currentValue.length() > 0) {
             String tag = "(";
-            if (tag.length() + currentValue.toString().length() + 1 > MAX_LENGTH) {
+            if (tag.length() + currentValue.length() + 1 > MAX_LENGTH) {
                 tag += Tag.OVERFLOW + ")";
             } else {
                 tag += ")";
@@ -169,23 +172,24 @@ public class GlobalVar<T> {
     }
 
     public void setValue(T value, Tag... tags) {
+        String encodedValue = valueEncoder.apply(value);
         deleteContents(varFile);
         String tag = "(";
         for (Tag t : tags) {
             tag += t + ",";
         }
-        if (tag.length() + (value == null ? "0" : value).toString().length() > MAX_LENGTH
+        if (tag.length() + encodedValue.length() > MAX_LENGTH
                 && !tag.contains(Tag.OVERFLOW.toString())) {
             tag = tag.substring(tag.length() - 1) + Tag.OVERFLOW + ",";
         }
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
             File newFile = new File(
-                    varFile.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
+                    varFile.getPath() + "\\" + tag + encodedValue.substring(0, MAX_LENGTH - tag.length()));
             if(!newFile.mkdir()){
                 System.out.println("Failed to make folder " +  newFile.getPath());
             }
-            writeOverflow(newFile, value.toString().substring(MAX_LENGTH - tag.length()));
+            writeOverflow(newFile, encodedValue.substring(MAX_LENGTH - tag.length()));
         } else {
             File newFile = new File(varFile.getPath() + "\\" + tag + (value == null ? "0" : value));
             if(!newFile.mkdir()){

@@ -17,11 +17,11 @@ public class PublicString extends PublicVar<String> {
     private static final String ESCAPE = "#";
 
     public PublicString(Player player, String name) {
-        super(player, name, String::valueOf);
+        super(player, name, String::valueOf, String::toString);
     }
 
     public PublicString(Player player, String name, String value) {
-        super(player, name, String::valueOf, value);
+        super(player, name, String::valueOf, String::toString, value);
     }
 
     @Override
