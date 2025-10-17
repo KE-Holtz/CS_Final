@@ -9,7 +9,11 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -21,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import backend.Config;
 import backend.Session;
 import frontend.WrappingLayout;
 import gameplay.games.Game;
@@ -29,9 +34,11 @@ import gameplay.games.uno.Uno;
 
 public class Main {
     private static JFrame frame = new JFrame();
-    private final static String sessionSpacePath = "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2";
-
     public static void main(String[] args) {
+        Config.init();
+
+        Path sessionSpacePath = Path.of(Config.getSessionSpace());
+
         frame.setLayout(new BorderLayout());
         frame.setResizable(true);
 
@@ -170,7 +177,7 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-            while (new File(sessionSpacePath + "\\" + sessionNameTemp[0]).exists()) {
+            while (sessionSpacePath.resolve(sessionNameTemp[0]).toFile().exists()) {
                 label.setText("Session already exists. Please enter a valid session name: ");
                 sessionNameTemp[0] = "";
                 enter.addActionListener(e -> {
@@ -193,9 +200,9 @@ public class Main {
 
             ArrayList<JButton> sessionButtonsList = new ArrayList<>();
             final String[] sessionNameTemp = { "" };
-            int numOfFiles = new File(sessionSpacePath).list().length;
+            int numOfFiles = sessionSpacePath.toFile().list().length;
             while (sessionNameTemp[0].equals("")) {
-                for (String i : new File(sessionSpacePath).list()) {
+                for (String i : sessionSpacePath.toFile().list()) {
                     final String rawSessionName = decodeString(i);
                     JButton sessionButton = new JButton(i);
                     sessionButton.setName(i);
@@ -235,14 +242,14 @@ public class Main {
                 screen.revalidate();
                 screen.repaint();
                 while (sessionNameTemp[0].equals("")
-                        && new File(sessionSpacePath).list().length == numOfFiles) {
+                        && sessionSpacePath.toFile().list().length == numOfFiles) {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                numOfFiles = new File(sessionSpacePath).list().length;
+                numOfFiles = sessionSpacePath.toFile().list().length;
             }
             sessionName = sessionNameTemp[0];
         }
@@ -264,8 +271,8 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        while (isValidName(nameTemp[0], sessionName) != "") {
-            String errorMessage = isValidName(nameTemp[0], sessionName);
+        while (isValidName(nameTemp[0], sessionName, sessionSpacePath) != "") {
+            String errorMessage = isValidName(nameTemp[0], sessionName, sessionSpacePath);
             label.setText(errorMessage);
             nameTemp[0] = "";
             enter.addActionListener(e -> {
@@ -280,7 +287,7 @@ public class Main {
             }
         }
         String name = nameTemp[0];
-        session = new Session(sessionName, sessionSpacePath, name, games, hosting);
+        session = new Session(sessionName, name, games, hosting);
         frame.dispose();
         if (hosting) {
             session.host("");
@@ -289,7 +296,7 @@ public class Main {
         }
     }
 
-    public static String isValidName(String name, String sessionName) {
+    public static String isValidName(String name, String sessionName, Path sessionSpacePath) {
         if (name.length() < 3 || name.length() > 16) {
             return "Name must be between 3 and 16 characters.";
         }
@@ -299,16 +306,19 @@ public class Main {
                 return "Invalid character: " + c;
             }
         }
-        if (new File(sessionSpacePath + "\\" + sessionName + "\\" + "players" + "\\"
-                + name).exists()) {
+        if (sessionSpacePath.resolve(sessionName).resolve("players").resolve(name).toFile().exists()) {
             return "Name already exists.";
         }
         return "";
     }
 
     public static String encodeString(String s) {
+        String delimiter = Config.getDelimiter();
+        if(delimiter.equals("\\")){
+            delimiter = "\\\\";
+        }
         s = s.replaceAll("#", "#" + "#");
-        s = s.replaceAll("\\\\", "#" + "1");
+        s = s.replaceAll(delimiter, "#" + "1");
         s = s.replaceAll("/", "#" + "2");
         s = s.replaceAll(":", "#" + "3");
         s = s.replaceAll("\\*", "#" + "4");
@@ -321,8 +331,12 @@ public class Main {
     }
 
     public static String decodeString(String s) {
+        String delimiter = Config.getDelimiter();
+        if(delimiter.equals("\\")){
+            delimiter = "\\\\";
+        }
         s = s.replaceAll("#" + "#", "#");
-        s = s.replaceAll("#" + "1", "\\\\");
+        s = s.replaceAll("#" + "1", delimiter);
         s = s.replaceAll("#" + "2", "/");
         s = s.replaceAll("#" + "3", ":");
         s = s.replaceAll("#" + "4", "*");

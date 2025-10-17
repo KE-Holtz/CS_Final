@@ -1,6 +1,7 @@
 package backend;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,19 +9,21 @@ import java.util.HashMap;
 import gameplay.Player;
 
 public class Lobby {
-    private final String playerSpacePath;
+    private final Path playerSpacePath;
     private final HashMap<String, Player> players;
     private final Player clientPlayer;
+    private final Session session;
 
     public Lobby(Session session) {
+        this.session = session;
         playerSpacePath = session.getPlayerSpacePath();
         clientPlayer = session.getClientPlayer();
         players = new HashMap<String, Player>();
     }
 
     public void synchronize() {
-        for (File playerFile : new File(playerSpacePath).listFiles()) {
-            Player player = Player.fromFile(playerFile);
+        for (File playerFile : playerSpacePath.toFile().listFiles()) {
+            Player player = Player.fromFile(playerFile, session);
             if (!players.containsValue(player)) {
                 players.put(player.getName(), player);
             }

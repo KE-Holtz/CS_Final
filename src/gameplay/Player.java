@@ -1,48 +1,47 @@
 package gameplay;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
+import backend.Session;
 import backend.publicvars.PublicVar;
 
 public class Player {
-    private String name;
+    private final Session session;
 
-    private ArrayList<File> playerFiles;// TODO: Tree? This could have some limitations.
-    private File playerFolder;
-    private File globalVarsDir;
-    private File publicVarsDir;
+    private final String name;
 
-    private HashMap<String, PublicVar> publicVars;
+    private final ArrayList<File> playerFiles;// TODO: Tree? This could have some limitations.
+    private final File playerFolder;
+    private final File globalVarsDir;
+    private final File publicVarsDir;
 
-    // Using this files must either be added in a valid order without fail or the
-    // session must validate the arraylist
-    // Could be validated by iterating over the arraylist and going back if there
-    // are any extra files that have not been created
-    // TODO: Create a validator method here or in the session class
+    private final HashMap<String, PublicVar> publicVars;
 
-    public Player(String name, String playerSpacePath) {
+    public Player(String name, Session session) {
         this.name = name;
+        this.session = session;
 
         playerFiles = new ArrayList<File>();
 
-        playerFolder = new File(playerSpacePath + "\\" + name);
+        playerFolder = session.getPlayerSpacePath().resolve(name).toFile();
         playerFiles.add(playerFolder);
 
-        globalVarsDir = new File(playerFolder.getAbsolutePath() + "\\" + "globalVars");
+        globalVarsDir = Path.of(playerFolder.getAbsolutePath()).resolve("globalVars").toFile();
         playerFiles.add(globalVarsDir);
 
-        publicVarsDir = new File(playerFolder.getAbsolutePath() + "\\" + "publicVars");
+        publicVarsDir = Path.of(playerFolder.getAbsolutePath()).resolve("publicVars").toFile();
         playerFiles.add(publicVarsDir);
 
         publicVars = new HashMap<>();
     }
 
-    public static Player fromFile(File playerFile) {
+    public static Player fromFile(File playerFile, Session session) {
         // Add more functionality when theres more than a name
-        return new Player(playerFile.getName(), playerFile.getParentFile().getPath());
+        return new Player(playerFile.getName(), session);
     }
 
     public File[] files() {
@@ -63,12 +62,12 @@ public class Player {
 
     public Optional<PublicVar> getVariable(String name) {
         if (publicVars.get(name) == null) {
-            if (new File(publicVarsDir.getPath() + "\\" + name).exists()) {
-                PublicVar importedVar = PublicVar.fromFile(this, new File(publicVarsDir.getPath() + "\\" + name));
+            if (Path.of(publicVarsDir.getPath()).resolve(name).toFile().exists()) {
+                PublicVar importedVar = PublicVar.fromFile(this, Path.of(publicVarsDir.getPath()).resolve(name).toFile());
                 publicVars.put(name, importedVar);
                 return Optional.of(importedVar);
             } else {
-                System.out.println("DEBUG: File is silly: " + publicVarsDir.getName() + "\\" + name);
+                System.out.println("DEBUG: File is silly: " + Path.of(publicVarsDir.getAbsolutePath()).resolve(name).toString());
                 return Optional.empty();
             }
         }

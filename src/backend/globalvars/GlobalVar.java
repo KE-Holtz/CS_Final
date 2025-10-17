@@ -1,6 +1,7 @@
 package backend.globalvars;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Function;
@@ -10,7 +11,7 @@ import backend.Session;
 
 public class GlobalVar<T> {
 
-    private final String playerSpacePath;
+    private final Path playerSpacePath;
     private final File playerSpaceFolder;
 
     private final String clientName;
@@ -29,13 +30,13 @@ public class GlobalVar<T> {
 
     public GlobalVar(Session session, String name, Function<String, T> valueParser) {
         playerSpacePath = session.getPlayerSpacePath();
-        playerSpaceFolder = new File(playerSpacePath);
+        playerSpaceFolder = playerSpacePath.toFile();
 
         clientName = session.getClientPlayer()
                 .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
+        this.varFile = playerSpacePath.resolve(clientName).resolve("globalVars").resolve(name).toFile();
         this.valueParser = valueParser;
 
         if (!varFile.mkdir()) {
@@ -46,14 +47,13 @@ public class GlobalVar<T> {
 
     public GlobalVar(Session session, String name, Function<String, T> valueParser, T value) {
         playerSpacePath = session.getPlayerSpacePath();
-        playerSpaceFolder = new File(playerSpacePath);
+        playerSpaceFolder = playerSpacePath.toFile();
 
         clientName = session.getClientPlayer()
                 .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + "\\" + clientName + "\\" + "globalVars" + "\\" + name);
-
+        this.varFile = playerSpacePath.resolve(clientName).resolve("globalvars").resolve(name).toFile();
         this.valueParser = valueParser;
 
         if (!varFile.mkdir()) {
@@ -72,7 +72,7 @@ public class GlobalVar<T> {
             // System.out.println("Step 1: null or empty");
         }
         for (int i = 0; i < values.length; i++) {
-            File[] content = new File(values[i].get().getPath() + "\\globalVars\\" + name).listFiles();
+            File[] content = Path.of(values[i].get().getPath()).resolve("globalvars").resolve(name).toFile().listFiles();
             if (content.length != 1){
                 // System.out.println("issue at:" + values[i].get().getPath() + "\\globalVars\\" + name);
                 // System.out.println("Possible folders that store the value: " + content.length);
@@ -132,15 +132,14 @@ public class GlobalVar<T> {
 
             File nextFile;
             if (tag.contains(Tag.OVERFLOW.toString())) {
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag
-                        + currentValue.substring(0, MAX_LENGTH - tag.length()));
+                nextFile = Path.of(currentParent.getAbsolutePath()).resolve(tag + currentValue.substring(0, MAX_LENGTH - tag.length())).toFile();
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
                 // System.out.println(nextFile.getName());
                 // System.out.println(nextFile.mkdir());
                 nextFile.mkdir();
             } else {
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue);
+                nextFile = Path.of(currentParent.getAbsolutePath()).resolve(tag+currentValue).toFile();
                 // System.out.println(nextFile.getName());
                 currentValue = "";
                 // System.out.println(nextFile.mkdir());
@@ -180,14 +179,13 @@ public class GlobalVar<T> {
         }
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
-            File newFile = new File(
-                    varFile.getPath() + "\\" + tag + value.toString().substring(0, MAX_LENGTH - tag.length()));
+            File newFile = Path.of(varFile.getPath()).resolve(tag + value.toString().substring(0, MAX_LENGTH - tag.length())).toFile();
             if(!newFile.mkdir()){
                 System.out.println("Failed to make folder " +  newFile.getPath());
             }
             writeOverflow(newFile, value.toString().substring(MAX_LENGTH - tag.length()));
         } else {
-            File newFile = new File(varFile.getPath() + "\\" + tag + (value == null ? "0" : value));
+            File newFile = Path.of(varFile.getPath()).resolve(tag + (value == null ? "0" : value)).toFile();
             if(!newFile.mkdir()){
                 System.out.println("Failed to make folder " +  newFile.getPath());
             }

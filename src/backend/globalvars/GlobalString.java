@@ -2,6 +2,7 @@ package backend.globalvars;
 
 import java.util.Optional;
 
+import backend.Config;
 import backend.Session;
 
 public class GlobalString extends GlobalVar<String> {
@@ -26,8 +27,12 @@ public class GlobalString extends GlobalVar<String> {
 
     @Override
     public void setValue(String value) {
+        String delimiter = Config.getDelimiter();
+        if(delimiter.equals("\\")){
+            delimiter = "\\\\";
+        }
         value = value.replaceAll(ESCAPE, ESCAPE + ESCAPE);
-        value = value.replaceAll("\\\\", ESCAPE + BACKSLASH);
+        value = value.replaceAll(delimiter, ESCAPE + BACKSLASH);
         value = value.replaceAll("/", ESCAPE + SLASH);
         value = value.replaceAll(":", ESCAPE + COLON);
         value = value.replaceAll("\\*", ESCAPE + ASTERISK);
@@ -47,8 +52,12 @@ public class GlobalString extends GlobalVar<String> {
             return Optional.empty();
         } else {
             String str = value.get();
+            String delimiter = Config.getDelimiter();
+            if(delimiter.equals("\\")){
+            delimiter = "\\\\";
+            }
             str = str.replaceAll(ESCAPE + ESCAPE, ESCAPE);
-            str = str.replaceAll(ESCAPE + BACKSLASH, "\\\\");
+            str = str.replaceAll(ESCAPE + BACKSLASH,delimiter);
             str = str.replaceAll(ESCAPE + SLASH, "/");
             str = str.replaceAll(ESCAPE + COLON, ":");
             str = str.replaceAll(ESCAPE + ASTERISK, "*");
