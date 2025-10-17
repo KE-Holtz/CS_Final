@@ -306,7 +306,7 @@ public class Main {
                 return "Invalid character: " + c;
             }
         }
-        if (sessionSpacePath.resolve(sessionName).resolve("players").toFile().exists()) {
+        if (sessionSpacePath.resolve(sessionName).resolve("players").resolve(name).toFile().exists()) {
             return "Name already exists.";
         }
         return "";
