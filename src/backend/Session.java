@@ -23,18 +23,15 @@ public class Session {
 
     private final Lobby lobby;
 
-    private final String delimiter;
-
     private HashMap<String, Game> games = new HashMap<>();
     // Constructor ONLY FOR HOSTING
     // Host has extra responsibilities - add files for games, etc
 
     public Session(String sessionName, String clientName,
-            ArrayList<Game> games, boolean hosting, HashMap<String, String> opts) {
+            ArrayList<Game> games, boolean hosting) {
 
         this.sessionName = sessionName;
-        this.sessionSpacePath = Path.of(opts.get("session_space"));
-        delimiter = opts.get("os").equals("windows")? "\\" : "/";
+        this.sessionSpacePath = Path.of(Config.getSessionSpace());
 
         this.clientPlayer = new Player(clientName, this);
         isHost = hosting;
@@ -233,9 +230,5 @@ public class Session {
 
     public Lobby getLobby() {
         return lobby;
-    }
-
-    public String getDelimiter(){
-        return delimiter;
     }
 }

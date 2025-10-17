@@ -2,6 +2,7 @@ package backend.globalvars;
 
 import java.util.Optional;
 
+import backend.Config;
 import backend.Session;
 
 public class GlobalString extends GlobalVar<String> {
@@ -26,7 +27,7 @@ public class GlobalString extends GlobalVar<String> {
 
     @Override
     public void setValue(String value) {
-        String delimiter = this.delimiter;
+        String delimiter = Config.getDelimiter();
         if(delimiter.equals("\\")){
             delimiter = "\\\\";
         }
@@ -51,7 +52,7 @@ public class GlobalString extends GlobalVar<String> {
             return Optional.empty();
         } else {
             String str = value.get();
-            String delimiter = this.delimiter;
+            String delimiter = Config.getDelimiter();
             if(delimiter.equals("\\")){
             delimiter = "\\\\";
             }

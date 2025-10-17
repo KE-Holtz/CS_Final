@@ -2,6 +2,7 @@ package backend.publicvars;
 
 import java.util.Optional;
 
+import backend.Config;
 import gameplay.Player;
 
 public class PublicString extends PublicVar<String> {
@@ -26,7 +27,7 @@ public class PublicString extends PublicVar<String> {
 
     @Override
     public void setValue(String value) {
-        String delimiter = this.delimiter;
+        String delimiter = Config.getDelimiter();
         if(delimiter.equals("\\")){
             delimiter = "\\\\";
         }
@@ -51,7 +52,7 @@ public class PublicString extends PublicVar<String> {
             return Optional.empty();
         } else {
             String str = value.get();
-            String delimiter = this.delimiter;
+            String delimiter = Config.getDelimiter();
             if(delimiter.equals("\\")){
             delimiter = "\\\\";
             }

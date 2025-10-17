@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import backend.Config;
 import backend.Session;
 import frontend.WrappingLayout;
 import gameplay.games.Game;
@@ -34,42 +35,9 @@ import gameplay.games.uno.Uno;
 public class Main {
     private static JFrame frame = new JFrame();
     public static void main(String[] args) {
-        Path sessionSpacePath;
+        Config.init();
 
-        File config = new File("config.toml");
-        System.out.println(config.getPath());
-        System.out.println(config.exists());
-        String os;
-        String session_space;
-        String delimiter;
-
-        HashMap<String, String> opts = new HashMap<>();
-
-        if (config.exists()) {
-            //We could find or make a proper toml parser but we don't really need it
-            Scanner configScanner;
-            try {
-                System.out.print("scanning");
-                configScanner = new Scanner(config);
-                while (configScanner.hasNextLine()) {
-                    String line = configScanner.nextLine();
-                    System.out.println("parsing line:" + line);
-                    String[] keyValuePair = line.split("=");
-                    opts.put(keyValuePair[0].trim(), keyValuePair[1].trim().replace("\"", ""));
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        opts.putIfAbsent("os", "windows");
-        opts.putIfAbsent("session_space", "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2");
-
-        os = opts.get("os");
-        session_space = opts.get("session_space");
-        delimiter = os.equals("windows")?"\\":"/";
-        System.out.println("delimiter is: " + delimiter);
-
-        sessionSpacePath = Path.of(session_space);
+        Path sessionSpacePath = Path.of(Config.getSessionSpace());
 
         frame.setLayout(new BorderLayout());
         frame.setResizable(true);
@@ -224,7 +192,7 @@ public class Main {
                 }
             }
             sessionName = sessionNameTemp[0];
-            sessionName = encodeString(sessionName, delimiter);
+            sessionName = encodeString(sessionName);
         } else {
             label.setText("click on the session you would like to join");
             userText.setVisible(false);
@@ -235,7 +203,7 @@ public class Main {
             int numOfFiles = sessionSpacePath.toFile().list().length;
             while (sessionNameTemp[0].equals("")) {
                 for (String i : sessionSpacePath.toFile().list()) {
-                    final String rawSessionName = decodeString(i, delimiter);
+                    final String rawSessionName = decodeString(i);
                     JButton sessionButton = new JButton(i);
                     sessionButton.setName(i);
                     boolean exists = false;
@@ -319,7 +287,7 @@ public class Main {
             }
         }
         String name = nameTemp[0];
-        session = new Session(sessionName, name, games, hosting, opts);
+        session = new Session(sessionName, name, games, hosting);
         frame.dispose();
         if (hosting) {
             session.host("");
@@ -344,7 +312,8 @@ public class Main {
         return "";
     }
 
-    public static String encodeString(String s, String delimiter) {
+    public static String encodeString(String s) {
+        String delimiter = Config.getDelimiter();
         if(delimiter.equals("\\")){
             delimiter = "\\\\";
         }
@@ -361,7 +330,8 @@ public class Main {
         return s;
     }
 
-    public static String decodeString(String s, String delimiter) {
+    public static String decodeString(String s) {
+        String delimiter = Config.getDelimiter();
         if(delimiter.equals("\\")){
             delimiter = "\\\\";
         }

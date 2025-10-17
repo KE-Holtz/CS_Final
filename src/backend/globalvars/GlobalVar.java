@@ -13,7 +13,6 @@ public class GlobalVar<T> {
 
     private final Path playerSpacePath;
     private final File playerSpaceFolder;
-    protected final String delimiter;
 
     private final String clientName;
 
@@ -32,13 +31,12 @@ public class GlobalVar<T> {
     public GlobalVar(Session session, String name, Function<String, T> valueParser) {
         playerSpacePath = session.getPlayerSpacePath();
         playerSpaceFolder = playerSpacePath.toFile();
-        delimiter = session.getDelimiter();
 
         clientName = session.getClientPlayer()
                 .getName();
 
         this.name = name;
-        this.varFile = new File(playerSpacePath + delimiter + clientName + delimiter + "globalVars" + delimiter + name);
+        this.varFile = playerSpacePath.resolve(clientName, "globalVars", name).toFile();
         this.valueParser = valueParser;
 
         if (!varFile.mkdir()) {
@@ -50,7 +48,6 @@ public class GlobalVar<T> {
     public GlobalVar(Session session, String name, Function<String, T> valueParser, T value) {
         playerSpacePath = session.getPlayerSpacePath();
         playerSpaceFolder = playerSpacePath.toFile();
-        delimiter = session.getDelimiter();
 
         clientName = session.getClientPlayer()
                 .getName();
