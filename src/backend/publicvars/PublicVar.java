@@ -1,6 +1,7 @@
 package backend.publicvars;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Function;
@@ -26,7 +27,7 @@ public class PublicVar<T> {
 
     public PublicVar(Player player, String name, Function<String, T> valueParser, Function<T, String> valueEncoder) {
         this.name = name;
-        this.varFile = new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
+        this.varFile = Path.of(player.getPlayerFolder().getAbsolutePath()).resolve("publicVars").resolve(name).toFile();
         this.valueParser = valueParser;
         this.valueEncoder = valueEncoder;
 
@@ -39,7 +40,7 @@ public class PublicVar<T> {
     public PublicVar(Player player, String name, Function<String, T> valueParser, Function<T, String> valueEncoder,
             T value) {
         this.name = name;
-        this.varFile = new File(player.getPlayerFolder() + "\\" + "publicVars" + "\\" + name);
+        this.varFile = Path.of(player.getPlayerFolder().getAbsolutePath()).resolve("publicVars").resolve(name).toFile();
         this.valueParser = valueParser;
         this.valueEncoder = valueEncoder;
 
@@ -88,15 +89,14 @@ public class PublicVar<T> {
 
             File nextFile;
             if (tag.contains(Tag.OVERFLOW.toString())) {
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag
-                        + currentValue.substring(0, MAX_LENGTH - tag.length()));
+                nextFile = Path.of(currentParent.getAbsolutePath()).resolve(tag + currentValue.substring(0, MAX_LENGTH - tag.length())).toFile();
                 currentParent = nextFile;
                 currentValue = currentValue.substring(MAX_LENGTH - tag.length());
                 // System.out.println(nextFile.getName());
                 // System.out.println(nextFile.mkdir());
                 nextFile.mkdir();
             } else {
-                nextFile = new File(currentParent.getAbsolutePath() + "\\" + tag + currentValue);
+                nextFile = Path.of(currentParent.getAbsolutePath()).resolve(tag + currentValue).toFile();
                 currentValue = "";
                 // System.out.println(nextFile.getName());
                 // System.out.println(nextFile.mkdir());
@@ -136,15 +136,12 @@ public class PublicVar<T> {
         }
         tag += ")";
         if (tag.contains(Tag.OVERFLOW.toString())) {
-            File newFile = new File(
-                    varFile.getPath() + "\\" + tag + encodedValue
-                            .substring(0, MAX_LENGTH
-                                    - tag.length()));
+            File newFile = Path.of(varFile.getPath()).resolve(tag + value.toString().substring(0, MAX_LENGTH - tag.length())).toFile();
             newFile.mkdir();
             writeOverflow(newFile, encodedValue
                     .substring(MAX_LENGTH - tag.length()));
         } else {
-            File newFile = new File(varFile.getPath() + "\\" + tag + value);
+            File newFile = Path.of(varFile.getPath()).resolve(tag + value).toFile();
             newFile.mkdir();
         }
     }
