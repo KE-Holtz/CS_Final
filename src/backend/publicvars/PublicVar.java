@@ -27,7 +27,7 @@ public class PublicVar<T> {
 
     public PublicVar(Player player, String name, Function<String, T> valueParser) {
         this.name = name;
-        this.varFile = Path.of(player.getPlayerFolder().getAbsolutePath()).resolve("publicVars", name).toFile();
+        this.varFile = Path.of(player.getPlayerFolder().getAbsolutePath()).resolve("publicVars").resolve(name).toFile();
         this.valueParser = valueParser;
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
@@ -37,7 +37,7 @@ public class PublicVar<T> {
 
     public PublicVar(Player player, String name, Function<String, T> valueParser, T value) {
         this.name = name;
-        this.varFile = Path.of(player.getPlayerFolder().getAbsolutePath()).resolve("publicVars", name).toFile();
+        this.varFile = Path.of(player.getPlayerFolder().getAbsolutePath()).resolve("publicVars").resolve(name).toFile();
         this.valueParser = valueParser;
         if (!varFile.mkdir()) {
             System.out.println("[DEBUG] " + name + " Failed");
