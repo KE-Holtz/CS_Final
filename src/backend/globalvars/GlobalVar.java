@@ -53,7 +53,7 @@ public class GlobalVar<T> {
                 .getName();
 
         this.name = name;
-        this.varFile = playerSpacePath.resolve(clientName,"globalvars",name).toFile();
+        this.varFile = playerSpacePath.resolve(clientName).resolve("globalvars").resolve(name).toFile();
         this.valueParser = valueParser;
 
         if (!varFile.mkdir()) {
@@ -72,7 +72,7 @@ public class GlobalVar<T> {
             // System.out.println("Step 1: null or empty");
         }
         for (int i = 0; i < values.length; i++) {
-            File[] content = Path.of(values[i].get().getPath()).resolve("globalvars",name).toFile().listFiles();
+            File[] content = Path.of(values[i].get().getPath()).resolve("globalvars").resolve(name).toFile().listFiles();
             if (content.length != 1){
                 // System.out.println("issue at:" + values[i].get().getPath() + "\\globalVars\\" + name);
                 // System.out.println("Possible folders that store the value: " + content.length);
