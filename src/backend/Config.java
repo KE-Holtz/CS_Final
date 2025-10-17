@@ -27,7 +27,7 @@ public class Config {
             }
         }
         opts.putIfAbsent("os", "windows");
-        opts.putIfAbsent("session_space", "S:\\High School\\WuestC\\Drop Box\\KE_Multi_2");
+        opts.putIfAbsent("session_space", "S:\\High School\\WuestC\\Drop Box\\Multiplayer");
         opts.putIfAbsent("delimiter", opts.get("os").equals("windows")?"\\":"/");
     }
 
