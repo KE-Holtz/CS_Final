@@ -36,7 +36,7 @@ public class GlobalVar<T> {
                 .getName();
 
         this.name = name;
-        this.varFile = playerSpacePath.resolve(clientName, "globalVars", name).toFile();
+        this.varFile = playerSpacePath.resolve(clientName).resolve("globalVars").resolve(name).toFile();
         this.valueParser = valueParser;
 
         if (!varFile.mkdir()) {
