@@ -33,7 +33,7 @@ public class Session {
         this.sessionName = sessionName;
         this.sessionSpacePath = Path.of(Config.getSessionSpace());
 
-        this.clientPlayer = new Player(clientName, this);
+        this.clientPlayer = new Player(clientName, getPlayerSpacePath());
         isHost = hosting;
 
         this.lobby = new Lobby(this);
