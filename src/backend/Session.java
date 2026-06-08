@@ -105,6 +105,11 @@ public class Session {
     public void runGame(String gameName, boolean isHost) {
         Game game = games.get(gameName);
         game.initialize(this);
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         game.startGame();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(() -> {
