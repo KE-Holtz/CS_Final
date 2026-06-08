@@ -26,6 +26,7 @@ import backend.Session;
 import frontend.WrappingLayout;
 import gameplay.games.Game;
 import gameplay.games.ReadWriteGame;
+import gameplay.games.hangout.Hangout;
 import gameplay.games.uno.Uno;
 
 public class Main {
@@ -155,6 +156,7 @@ public class Main {
         ArrayList<Game> games = new ArrayList<Game>();
         games.add(new ReadWriteGame());
         games.add(new Uno());
+        games.add(new Hangout());
 
         Session session;
         String sessionName;
