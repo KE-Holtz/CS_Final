@@ -2,6 +2,7 @@ package gameplay.games.hangout;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.Time;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -16,9 +17,15 @@ public class Hangout extends Game {
     public Lobby lobby;
 
     public Player self;
+    public JFrame myFrame;
     public ArrayList<Player> players;
 
+    public long lastTimestamp;
+    public long deltaT;
+    public boolean grounded;
     public int x = 0;
+    public int vy = 0;
+    public final int gravityConstant = 10; 
     public int y = 0;
 
     public PublicInt publicX;
@@ -45,14 +52,12 @@ public class Hangout extends Game {
         for (int i = 0; i < players.size(); i++) {
             JFrame frame = new JFrame(players.get(i).getName());
             if (players.get(i).equals(self)) {
-                frame.addKeyListener(new KeyAdapter() {
+                myFrame = frame;
+                myFrame.addKeyListener(new KeyAdapter() {
                     public void keyPressed(KeyEvent e) {
                         int keyCode = e.getKeyCode();
                         if (keyCode == KeyEvent.VK_UP) {
-                            y-=15;
-                        }
-                        if (keyCode == KeyEvent.VK_DOWN) {
-                            y+=15;
+                            vy+=15;
                         }
                         if (keyCode == KeyEvent.VK_LEFT) {
                             x-=15;
@@ -72,17 +77,21 @@ public class Hangout extends Game {
             frames[i] = frame;
             xs[i] = (PublicInt) players.get(i).getVariable("x").get();
             ys[i] = (PublicInt) players.get(i).getVariable("y").get();
-
+            lastTimestamp = System.currentTimeMillis();
         }
     }
 
     @Override
     public boolean periodic() {
+        deltaT = lastTimestamp - System.currentTimeMillis();
+        lastTimestamp = System.currentTimeMillis();
+        vy += gravityConstant * deltaT;
+        y += vy * deltaT;
+        myFrame.setLocation(x,y);
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).equals(self)) {
                 publicX.setValue(x);
                 publicY.setValue(y);
-                frames[i].setLocation(x,y);
             } else {
                 frames[i].setLocation(xs[i].getValue().orElse(0), ys[i].getValue().orElse(0));
             }
