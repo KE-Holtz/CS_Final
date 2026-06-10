@@ -2,7 +2,6 @@ package gameplay.games.hangout;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Time;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -24,8 +23,9 @@ public class Hangout extends Game {
     public long deltaT;
     public boolean grounded;
     public int x = 0;
-    public int vy = 0;
-    public final int gravityConstant = 10; 
+    public double vx = 0;
+    public double vy = 0;
+    public final double gravityConstant = 0.02;
     public int y = 0;
 
     public PublicInt publicX;
@@ -57,17 +57,28 @@ public class Hangout extends Game {
                     public void keyPressed(KeyEvent e) {
                         int keyCode = e.getKeyCode();
                         if (keyCode == KeyEvent.VK_UP) {
-                            vy+=15;
+                            // if (grounded) {
+                            vy = -5;
+                            grounded = false;
+                            // }
                         }
                         if (keyCode == KeyEvent.VK_LEFT) {
-                            x-=15;
+                            vx = -1.5;
                         }
                         if (keyCode == KeyEvent.VK_RIGHT) {
-                            x+=15;
+                            vx = 1.5;
+                        }
+                    }
+                    public void keyReleased(KeyEvent e) {
+                        int keyCode = e.getKeyCode();
+                        if(keyCode == KeyEvent.VK_LEFT) {
+                            vx = 0;
+                        }
+                        if (keyCode == KeyEvent.VK_RIGHT) {
+                            vx = 0;
                         }
                     }
                 });
-
             }
             frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             frame.setResizable(false);
@@ -83,11 +94,21 @@ public class Hangout extends Game {
 
     @Override
     public boolean periodic() {
-        deltaT = lastTimestamp - System.currentTimeMillis();
+        // This prints stuff out
+        deltaT = System.currentTimeMillis() - lastTimestamp;
         lastTimestamp = System.currentTimeMillis();
-        vy += gravityConstant * deltaT;
-        y += vy * deltaT;
-        myFrame.setLocation(x,y);
+        if(!grounded) {
+            vy += gravityConstant * deltaT;
+            y += vy * deltaT;
+        }
+        x += vx * deltaT;
+        System.out.println(y + " " + vy); 
+        if (y >= 1080 - 200) {
+            grounded = true;
+            y = 1080 - 200;
+            vy = 0;
+        }
+        myFrame.setLocation(x, y);
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).equals(self)) {
                 publicX.setValue(x);
