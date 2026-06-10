@@ -112,12 +112,15 @@ public class Session {
         }
         game.startGame();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(() -> {
+        while(game.periodic()) {
             lobby.synchronize();
-            if(!game.periodic())
-                scheduler.shutdown();
-        }, 0, 50, TimeUnit.MILLISECONDS);
-        while(!scheduler.isShutdown());
+        }
+        // scheduler.scheduleAtFixedRate(() -> {
+        //     // lobby.synchronize();
+        //     if(!game.periodic())
+        //         scheduler.shutdown();
+        // }, 0, 100, TimeUnit.MILLISECONDS);
+        // while(!scheduler.isShutdown());
         game.endGame();
         if (isHost) {
             host(game.getName());

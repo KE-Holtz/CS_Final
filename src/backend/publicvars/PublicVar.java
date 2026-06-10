@@ -48,6 +48,10 @@ public class PublicVar<T> {
     // ? Returns null if no value is found - is this ok?
 
     public Optional<T> getValue() {
+        String[] varFileContents = varFile.list();
+        if(varFileContents.length == 0) {
+            return Optional.empty();
+        }
         String value = varFile.list()[0];
         // System.out.println(value);
         ArrayList<Tag> tags = getTags(value);

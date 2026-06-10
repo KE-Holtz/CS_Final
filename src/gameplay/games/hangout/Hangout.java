@@ -58,8 +58,8 @@ public class Hangout extends Game {
                         int keyCode = e.getKeyCode();
                         if (keyCode == KeyEvent.VK_UP) {
                             if (grounded) {
-                            vy = -5;
-                            grounded = false;
+                                vy = -5;
+                                grounded = false;
                             }
                         }
                         if (keyCode == KeyEvent.VK_LEFT) {
@@ -69,9 +69,10 @@ public class Hangout extends Game {
                             vx = 1.5;
                         }
                     }
+
                     public void keyReleased(KeyEvent e) {
                         int keyCode = e.getKeyCode();
-                        if(keyCode == KeyEvent.VK_LEFT) {
+                        if (keyCode == KeyEvent.VK_LEFT) {
                             vx = 0;
                         }
                         if (keyCode == KeyEvent.VK_RIGHT) {
@@ -96,7 +97,7 @@ public class Hangout extends Game {
     public boolean periodic() {
         deltaT = System.currentTimeMillis() - lastTimestamp;
         lastTimestamp = System.currentTimeMillis();
-        if(!grounded) {
+        if (!grounded) {
             vy += gravityConstant * deltaT;
             y += vy * deltaT;
         }
@@ -111,7 +112,7 @@ public class Hangout extends Game {
             if (players.get(i).equals(self)) {
                 publicX.setValue(x);
                 publicY.setValue(y);
-            } else {
+            } else if (xs[i].getValue().isPresent() && ys[i].getValue().isPresent()) {
                 frames[i].setLocation(xs[i].getValue().orElse(0), ys[i].getValue().orElse(0));
             }
         }
