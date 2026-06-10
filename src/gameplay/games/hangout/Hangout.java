@@ -57,10 +57,10 @@ public class Hangout extends Game {
                     public void keyPressed(KeyEvent e) {
                         int keyCode = e.getKeyCode();
                         if (keyCode == KeyEvent.VK_UP) {
-                            // if (grounded) {
+                            if (grounded) {
                             vy = -5;
                             grounded = false;
-                            // }
+                            }
                         }
                         if (keyCode == KeyEvent.VK_LEFT) {
                             vx = -1.5;
@@ -94,7 +94,6 @@ public class Hangout extends Game {
 
     @Override
     public boolean periodic() {
-        // This prints stuff out
         deltaT = System.currentTimeMillis() - lastTimestamp;
         lastTimestamp = System.currentTimeMillis();
         if(!grounded) {
@@ -102,7 +101,6 @@ public class Hangout extends Game {
             y += vy * deltaT;
         }
         x += vx * deltaT;
-        System.out.println(y + " " + vy); 
         if (y >= 1080 - 200) {
             grounded = true;
             y = 1080 - 200;
