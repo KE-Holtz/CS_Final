@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import backend.Lobby;
 import backend.Session;
@@ -64,7 +66,9 @@ public class Hangout extends Game {
     public void startGame() {
         for (int i = 0; i < players.size(); i++) {
             JFrame frame = new JFrame(players.get(i).getName());
+            JLabel name = new JLabel(players.get(i).getName(),  SwingConstants.CENTER);
             frame.setUndecorated(true);
+            frame.add(name);
             if (players.get(i).equals(self)) {
                 myFrame = frame;
                 myFrame.addKeyListener(new KeyAdapter() {
