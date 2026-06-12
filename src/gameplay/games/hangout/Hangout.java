@@ -1,8 +1,10 @@
 package gameplay.games.hangout;
 
+import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.swing.JFrame;
 
@@ -13,6 +15,13 @@ import gameplay.Player;
 import gameplay.games.Game;
 
 public class Hangout extends Game {
+    public final int frameWidth = 200;
+    public final int frameHeight = 200;
+    public final int screenHeight = 1080;
+    public final int headBoxHeight = 60;
+    public final int footBoxHeight = 60;
+    // public final Color[] colorChoices = {Color.BLACK,Color.BLUE,Color.CYAN,Color.GREEN,Color.MAGENTA,Color.ORANGE,Color.PINK,Color.RED,Color.WHITE,Color.YELLOW,Color.GRAY};
+
     public Lobby lobby;
 
     public Player self;
@@ -22,6 +31,8 @@ public class Hangout extends Game {
     public long lastTimestamp;
     public long deltaT;
     public boolean grounded;
+    public boolean riding;
+    public int ridingPlayerIndex;
     public int x = 0;
     public double vx = 0;
     public double vy = 0;
@@ -30,6 +41,7 @@ public class Hangout extends Game {
 
     public PublicInt publicX;
     public PublicInt publicY;
+    // public PublicInt colorIndex;
 
     public PublicInt[] xs;
     public PublicInt[] ys;
@@ -42,6 +54,7 @@ public class Hangout extends Game {
         players = lobby.getPlayers();
         publicX = new PublicInt(self, "x", 0);
         publicY = new PublicInt(self, "y", 0);
+        // colorIndex = new PublicInt(self, "colorIndex", (int)(colorChoices.length*Math.random()));
         frames = new JFrame[lobby.getPlayers().size()];
         xs = new PublicInt[lobby.getPlayers().size()];
         ys = new PublicInt[lobby.getPlayers().size()];
@@ -51,6 +64,7 @@ public class Hangout extends Game {
     public void startGame() {
         for (int i = 0; i < players.size(); i++) {
             JFrame frame = new JFrame(players.get(i).getName());
+            frame.setUndecorated(true);
             if (players.get(i).equals(self)) {
                 myFrame = frame;
                 myFrame.addKeyListener(new KeyAdapter() {
@@ -60,6 +74,7 @@ public class Hangout extends Game {
                             if (grounded) {
                                 vy = -5;
                                 grounded = false;
+                                riding = false;
                             }
                         }
                         if (keyCode == KeyEvent.VK_LEFT) {
@@ -85,7 +100,7 @@ public class Hangout extends Game {
             frame.setResizable(false);
             frame.setVisible(true);
             frame.setLocationRelativeTo(null);
-            frame.setSize(200, 200);
+            frame.setSize(frameWidth, frameHeight);
             frames[i] = frame;
             xs[i] = (PublicInt) players.get(i).getVariable("x").get();
             ys[i] = (PublicInt) players.get(i).getVariable("y").get();
@@ -97,25 +112,55 @@ public class Hangout extends Game {
     public boolean periodic() {
         deltaT = System.currentTimeMillis() - lastTimestamp;
         lastTimestamp = System.currentTimeMillis();
-        if (!grounded) {
-            vy += gravityConstant * deltaT;
-            y += vy * deltaT;
-        }
-        x += vx * deltaT;
-        if (y >= 1080 - 200) {
-            grounded = true;
-            y = 1080 - 200;
-            vy = 0;
-        }
-        myFrame.setLocation(x, y);
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).equals(self)) {
-                publicX.setValue(x);
-                publicY.setValue(y);
-            } else if (xs[i].getValue().isPresent() && ys[i].getValue().isPresent()) {
-                frames[i].setLocation(xs[i].getValue().orElse(0), ys[i].getValue().orElse(0));
+        if (!riding) {
+            if (!grounded) {
+                vy += gravityConstant * deltaT;
+                y += vy * deltaT;
+            }
+            x += vx * deltaT;
+            if (y >= screenHeight - frameHeight) {
+                grounded = true;
+                y = screenHeight - frameHeight;
+                vy = 0;
             }
         }
+        for (int i = 0; i < players.size(); i++) {
+            Optional<Integer> optionalX = xs[i].getValue();
+            Optional<Integer> optionalY = ys[i].getValue();
+            if (players.get(i).equals(self)) {
+                if (riding) {
+                    Optional<Integer> ridingOptionalX = xs[ridingPlayerIndex].getValue();
+                    Optional<Integer> ridingOptionalY = ys[ridingPlayerIndex].getValue();
+                    if (ridingOptionalX.isPresent() && ridingOptionalY.isPresent()) {
+                        x = ridingOptionalX.get();
+                        y = ridingOptionalY.get() - frameHeight;
+                        myFrame.setLocation(x, y);
+                        publicX.setValue(x);
+                        publicY.setValue(y);
+                    }
+                } else {
+                    publicX.setValue(x);
+                    publicY.setValue(y);
+                    myFrame.setLocation(x, y);
+                }
+            } else if (optionalX.isPresent() && optionalY.isPresent()) {
+                int otherX = optionalX.get();
+                int otherY = optionalY.get();
+                frames[i].setLocation(otherX, otherY);
+                if (vy > 0 && areRectanglesIntersecting(x, y + frameHeight - footBoxHeight, frameWidth,
+                        footBoxHeight, otherX, otherY + frameHeight - headBoxHeight, frameHeight, headBoxHeight)
+                        && !riding) {
+                    y = otherY - frameHeight;
+                    grounded = true;
+                    riding = true;
+                    ridingPlayerIndex = i;
+                    vy = 0;
+                    System.out.println("Getting head");
+                }
+            }
+
+        }
+        System.out.println(x + " " + y);
         return true;
     }
 
@@ -130,4 +175,13 @@ public class Hangout extends Game {
         return "Hangout";
     }
 
+    private static boolean areRectanglesIntersecting(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+        if (x1 + w1 >= x2 && // r1 right edge past r2 left
+                x1 <= x2 + w2 && // r1 left edge past r2 right
+                y1 + h2 >= y2 && // r1 top edge past r2 bottom
+                y1 <= y2 + h2) { // r1 bottom edge past r2 top
+            return true;
+        }
+        return false;
+    }
 }
